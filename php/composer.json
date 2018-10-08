@@ -1,0 +1,14 @@
+{
+  "name": "aweber/public-api-examples",
+  "description": "AWeber PHP code examples",
+  "version": "0.0.0",
+  "homepage": "https://api.aweber.com/",
+  "license": "BSD-3-Clause",
+  "support": {
+    "email": "api@aweber.com"
+  },
+  "require": {
+    "guzzlehttp/guzzle": "~6.0",
+    "guzzlehttp/oauth-subscriber": "~0.3"
+  }
+}
