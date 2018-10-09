@@ -2,37 +2,37 @@
 from __future__ import print_function
 import json
 
-import requests
-from requests_oauthlib import OAuth1
+from requests_oauthlib import OAuth1Session
 
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
 
-with open('credentials.json', 'rt') as file:
-    credentials = json.load(file)
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
 
-auth = OAuth1(credentials['consumer_key'],
-            client_secret=credentials['consumer_secret'],
-            resource_owner_key=credentials['access_token'],
-            resource_owner_secret=credentials['token_secret'])
+session = OAuth1Session(credentials['consumer_key'],
+                        client_secret=credentials['consumer_secret'],
+                        resource_owner_key=credentials['access_token'],
+                        resource_owner_secret=credentials['token_secret'])
 
 
-def get_collection(url, collection):
-    request = requests.get(url, auth=auth)
-    body = request.json()
-    collection.extend(body['entries'])
-
-    # if there is a next link, there are more pages to retrieve
-    next_link = body.get('next_collection_link')
-    if next_link:
-        get_collection(next_link, collection)
+def get_collection(url):
+    collection = []
+    while url:
+        request = session.get(url).json()
+        request.raise_for_status()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = request.get('next_collection_link')
+        url = next_link if next_link else None
     return collection
+
 
 # get an account to search on
 account_url = 'https://api.aweber.com/1.0/accounts'
-accounts = get_collection(account_url, [])
+accounts = get_collection(account_url)
 account_id = accounts[0]['id']  # choose the first account
 
 # find all subscribers across lists that match an email
@@ -40,5 +40,5 @@ params = urlencode({'email': 'example@example.com',
                     'ws.op': 'findSubscribers'})
 find_url = 'https://api.aweber.com/1.0/accounts/{}?{}'.format(account_id,
                                                               params)
-found_subscribers = get_collection(find_url, [])
+found_subscribers = get_collection(find_url)
 print(json.dumps(found_subscribers, indent=4))
