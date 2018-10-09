@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+// Create a Guzzle client configured to use OAuth for authentication
+$stack = HandlerStack::create();
+$client = new Client([
+    'base_uri' => 'https://api.aweber.com/1.0/',
+    'handler' => $stack,
+    'auth' => 'oauth'
+]);
+
+// Load credentials into the Oauth client
+$credentials = parse_ini_file('credentials.ini');
+$requestMiddleware = new Oauth1([
+    'consumer_key'    => $credentials['consumerKey'],
+    'consumer_secret' => $credentials['consumerSecret'],
+    'token' => $credentials['accessToken'],
+    'token_secret' => $credentials['tokenSecret'],
+]);
+$stack->push($requestMiddleware);
+
+function getCollection($client, $url) {
+    $collection = array();
+    while (isset($url)) {
+        $body = $client->get($url)->getBody();
+        $page = json_decode($body);
+        $collection = array_merge($page->entries, $collection);
+        $nextLink = str_replace($client->base_uri, '', $page->next_collection_link);
+        $url = $nextLink ? $nextLink : null;
+    }
+    return $collection;
+}
+
+$accounts = getCollection($client, 'accounts');
+$accountId = $accounts[0]->id;
+
+$email = 'example@example.com';  // email to search for
+$find_url = 'accounts/' . $accountId . '?ws.size=1&ws.op=findSubscribers&email=' . urlencode($email);
+$foundSubscribers = getCollection($client, $find_url);
+print_r($foundSubscribers);
