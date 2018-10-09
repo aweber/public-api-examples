@@ -67,8 +67,8 @@ directory::
      "token_secret": "****"
    }
 
-You can also create it using your existing consumer key and secret from the `My
-Apps page`_::
+You can also create the *credentials.json* file using your existing consumer key and secret from the
+`My Apps page`_::
 
    ./get_access_token.py
    Enter your consumer key: ****
