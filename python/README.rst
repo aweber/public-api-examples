@@ -70,7 +70,7 @@ directory::
 You can also create the *credentials.json* file using your existing consumer key and secret from the
 `My Apps page`_::
 
-   ./get_access_token.py
+   prompt (env)$ ./get-access-token
    Enter your consumer key: ****
    Enter your consumer secret:
    Go to this url: https://auth.aweber.com/1.0/oauth/authorize?oauth_token=****
