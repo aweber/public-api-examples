@@ -56,7 +56,28 @@ to install them into your isolated environment::
 Running examples
 ~~~~~~~~~~~~~~~~
 Once you have the requirements installed into the isolated environment, you
-can run any example directly::
+must create a credentials file.  If you already have a consumer key/secret pair
+and access token/secret pair, you can create *credentials.json* in this
+directory::
+
+   {
+     "consumer_key": "****",
+     "consumer_secret": "****",
+     "access_token": "****",
+     "token_secret": "****"
+   }
+
+You can also create the *credentials.json* file using your existing consumer key and secret from the
+`My Apps page`_::
+
+   prompt (env)$ ./get-access-token
+   Enter your consumer key: ****
+   Enter your consumer secret:
+   Go to this url: https://auth.aweber.com/1.0/oauth/authorize?oauth_token=****
+   Log in and paste the returned verifier code here: ****
+   Updated credentials.json with your new credentials
+
+You can now can run any example directly::
 
    prompt (env)$ ./hello-world
 
@@ -67,4 +88,4 @@ You can also run examples using a specific python interpreter::
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _venv: https://docs.python.org/3/library/venv.html#module-venv
 .. _virtualenv: https://virtualenv.pypa.io/en/stable/
-
+.. _My Apps page: https://labs.aweber.com/apps
