@@ -2,6 +2,7 @@
 from __future__ import print_function
 import getpass
 import json
+import os
 
 from requests_oauthlib import OAuth1Session
 
@@ -10,40 +11,39 @@ try:
 except NameError:
     pass
 
-OAUTH_URL = 'https://auth.aweber.com/1.0/oauth/'
+OAUTH_URL = 'https://auth.aweber.com/1.0/oauth/{}'
 
+consumer_key = input('Enter your consumer key: ')
+consumer_secret = getpass.getpass('Enter your consumer secret: ')
 
-def main():
-    consumer_key = input('Enter your consumer key: ')
-    consumer_secret = getpass.getpass('Enter your consumer secret: ')
+# Use your consumer key and secret to get a request token and secret.
+#
+# Use "oob" as the callback_uri to display the verifier so it can be copied.
+# See the Getting Started guide to redirect to a callback URL:
+# https://api.aweber.com/#tag/Getting-Started
+oauth = OAuth1Session(consumer_key,
+                      client_secret=consumer_secret,
+                      callback_uri='oob')
+oauth.fetch_request_token(OAUTH_URL.format('request_token'))
 
-    # Use your consumer key and secret to get a request token and secret
-    oauth = OAuth1Session(consumer_key,
-                          client_secret=consumer_secret,
-                          callback_uri='oob')
-    oauth.fetch_request_token(OAUTH_URL + 'request_token')
+# Log in to receive a verifier code for the request token
+href = oauth.authorization_url(OAUTH_URL.format('authorize'))
+print('Go to this url: ' + href)
+verifier = input('Log in and paste the returned verifier code here: ')
+try:
+    verifier = verifier.decode()  # decode byte string in python2
+except AttributeError:
+    pass
 
-    # Log in to receive a verifier code for the request token
-    href = oauth.authorization_url(OAUTH_URL + 'authorize')
-    print('Go to this url: ' + href)
-    verifier = input('Log in and paste the returned verifier code here: ')
-    try:
-        verifier = verifier.decode()  # decode byte string in python2
-    except AttributeError:
-        pass
+# Trade the request token/secret and verifier for an access token/secret
+credentials = oauth.fetch_access_token(OAUTH_URL.format('access_token'),
+                                       verifier)
 
-    # Trade the request token/secret and verifier for an access token/secret
-    credentials = oauth.fetch_access_token(OAUTH_URL + 'access_token',
-                                           verifier)
-
-    with open('credentials.json', 'wt') as creds_file:
-        json.dump({'consumer_key': consumer_key,
-                   'consumer_secret': consumer_secret,
-                   'access_token': credentials['oauth_token'],
-                   'token_secret': credentials['oauth_token_secret']},
-                  creds_file)
-    print('Updated credentials.json with your new credentials')
-
-
-if __name__ == '__main__':
-    main()
+with open('credentials.json', 'wt') as creds_file:
+    json.dump({'consumer_key': consumer_key,
+               'consumer_secret': consumer_secret,
+               'access_token': credentials['oauth_token'],
+               'token_secret': credentials['oauth_token_secret']},
+              creds_file)
+os.chmod('credentials.json', 0o600)
+print('Updated credentials.json with your new credentials')
