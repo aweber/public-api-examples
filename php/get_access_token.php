@@ -30,7 +30,7 @@ $res = $client->post('request_token', ['form_params' => ['oauth_callback' => 'oo
 $params = [];
 parse_str($res->getBody(), $params);
 
-// Log in with to receive a verifier code for the request token
+// Log in to receive a verifier code for the request token
 echo "Go to this url: " . OAUTH_URL . "authorize?oauth_token={$params['oauth_token']}\n";
 echo 'Log in and paste the returned verifier code here: ';
 $verifier = rtrim(fgets(STDIN), PHP_EOL);

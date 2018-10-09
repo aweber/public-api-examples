@@ -25,7 +25,7 @@ this directory:
     accessKey = ****
     accessSecret = ****
 
-You can create them using your existing consumer key and secret from the [My Apps page](https://labs.aweber.com/apps):
+You can also create it using your existing consumer key and secret from the [My Apps page](https://labs.aweber.com/apps):
 
     prompt$ php get_access_token.php
     Enter your consumer key: ****
