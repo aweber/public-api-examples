@@ -1,2 +1,4 @@
-requests==2.19.1
+flake8==3.5.0
 requests-oauthlib==1.0.0
+requests==2.19.1
+yapf==0.24.0

@@ -21,9 +21,8 @@ consumer_secret = getpass.getpass('Enter your consumer secret: ')
 # Use "oob" as the callback_uri to display the verifier so it can be copied.
 # See the Getting Started guide to redirect to a callback URL:
 # https://api.aweber.com/#tag/Getting-Started
-oauth = OAuth1Session(consumer_key,
-                      client_secret=consumer_secret,
-                      callback_uri='oob')
+oauth = OAuth1Session(
+    consumer_key, client_secret=consumer_secret, callback_uri='oob')
 oauth.fetch_request_token(OAUTH_URL.format('request_token'))
 
 # Log in to receive a verifier code for the request token
@@ -36,14 +35,15 @@ except AttributeError:
     pass
 
 # Trade the request token/secret and verifier for an access token/secret
-credentials = oauth.fetch_access_token(OAUTH_URL.format('access_token'),
-                                       verifier)
+credentials = oauth.fetch_access_token(
+    OAUTH_URL.format('access_token'), verifier)
 
 with open('credentials.json', 'wt') as creds_file:
-    json.dump({'consumer_key': consumer_key,
-               'consumer_secret': consumer_secret,
-               'access_token': credentials['oauth_token'],
-               'token_secret': credentials['oauth_token_secret']},
-              creds_file)
+    json.dump({
+        'consumer_key': consumer_key,
+        'consumer_secret': consumer_secret,
+        'access_token': credentials['oauth_token'],
+        'token_secret': credentials['oauth_token_secret']
+    }, creds_file)
 os.chmod('credentials.json', 0o600)
 print('Updated credentials.json with your new credentials')

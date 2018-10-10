@@ -1,7 +1,9 @@
 Python code examples
 ====================
 This directory contains executable examples of how to use
-https://api.aweber.com from within Python code.
+https://api.aweber.com from within Python code.  If you haven't read
+`CONTRIBUTING`_, please take a moment to read it now.  It describes the
+basic configuration and process and this document picks up where it leaves off.
 
 Quickstart
 ----------
@@ -16,13 +18,6 @@ described by the `Python Packaging User Guide`_.  The following sections
 describe the minimum that you need to do to run the examples.  The
 `Python Packaging User Guide`_ provides additional background information on
 how packaging works and what each command does.
-
-Cloning the repository
-~~~~~~~~~~~~~~~~~~~~~~
-Before you can use the examples, you need to clone the repository onto your
-computer::
-
-   prompt$ git clone https://github.com/aweber/public-api-examples.git
 
 Python 3 environments
 ~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +37,6 @@ If you are forced to use Python 2.7, then you will need to install
    prompt$ cd public-api-examples/python
    prompt$ python2.7 -m pip install --user virtualenv
    prompt$ python2.7 -m virtualenv env
-
 
 Installing requirements
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,8 +61,8 @@ directory::
      "token_secret": "****"
    }
 
-You can also create the *credentials.json* file using your existing consumer key and secret from the
-`My Apps page`_::
+You can also create the *credentials.json* file using your existing consumer
+key and secret from the `My Apps page`_::
 
    prompt (env)$ ./get-access-token
    Enter your consumer key: ****
@@ -79,13 +73,25 @@ You can also create the *credentials.json* file using your existing consumer key
 
 You can now can run any example directly::
 
-   prompt (env)$ ./hello-world
+   prompt (env)$ ./some-example
 
 You can also run examples using a specific python interpreter::
 
-   prompt$ ./env/bin/python hello-world
+   prompt$ ./env/bin/python some-example
+
+Contributing
+------------
+In addition to the notes in the top-level *CONTRIBUTING* file, we do require
+that our python examples pass through both `flake8`_ and `yapf`_ cleanly.
+You SHOULD run both utilities locally before you issue a pull request::
+
+   prompt (env)$ flake8 some-example
+   prompt (env)$ yapf -d some-example
+
+Both utilities should exit cleanly.
 
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _venv: https://docs.python.org/3/library/venv.html#module-venv
 .. _virtualenv: https://virtualenv.pypa.io/en/stable/
 .. _My Apps page: https://labs.aweber.com/apps
+.. _CONTRIBUTING: https://github.com/aweber/public-api-examples/blob/master/CONTRIBUTING.md
