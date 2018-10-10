@@ -21,11 +21,12 @@ session = OAuth1Session(credentials['consumer_key'],
 def get_collection(url):
     collection = []
     while url:
-        request = session.get(url).json()
-        request.raise_for_status()
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
         collection.extend(body['entries'])
         # if there is a next link, there are more pages to retrieve
-        next_link = request.get('next_collection_link')
+        next_link = body.get('next_collection_link')
         url = next_link if next_link else None
     return collection
 
