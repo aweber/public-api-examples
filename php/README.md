@@ -9,7 +9,7 @@ you don't have it already.
 Before you can use the examples, you need to clone the repository onto your
 computer:
 
-   prompt$ git clone https://github.com/aweber/public-api-examples.git
+    prompt$ git clone https://github.com/aweber/public-api-examples.git
 
 ## Installing requirements
 The requirements are in *composer.json*. Install them using composer:
