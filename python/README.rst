@@ -1,7 +1,9 @@
 Python code examples
 ====================
 This directory contains executable examples of how to use
-https://api.aweber.com from within Python code.
+https://api.aweber.com from within Python code.  If you haven't read
+`CONTRIBUTING`_, please take a moment to read it now.  It describes the
+basic configuration and process and this document picks up where it leaves off.
 
 Quickstart
 ----------
@@ -16,13 +18,6 @@ described by the `Python Packaging User Guide`_.  The following sections
 describe the minimum that you need to do to run the examples.  The
 `Python Packaging User Guide`_ provides additional background information on
 how packaging works and what each command does.
-
-Cloning the repository
-~~~~~~~~~~~~~~~~~~~~~~
-Before you can use the examples, you need to clone the repository onto your
-computer::
-
-   prompt$ git clone https://github.com/aweber/public-api-examples.git
 
 Python 3 environments
 ~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +37,6 @@ If you are forced to use Python 2.7, then you will need to install
    prompt$ cd public-api-examples/python
    prompt$ python2.7 -m pip install --user virtualenv
    prompt$ python2.7 -m virtualenv env
-
 
 Installing requirements
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,3 +83,4 @@ You can also run examples using a specific python interpreter::
 .. _venv: https://docs.python.org/3/library/venv.html#module-venv
 .. _virtualenv: https://virtualenv.pypa.io/en/stable/
 .. _My Apps page: https://labs.aweber.com/apps
+.. _CONTRIBUTING: https://github.com/aweber/public-api-examples/blob/master/CONTRIBUTING.md
