@@ -61,8 +61,8 @@ directory::
      "token_secret": "****"
    }
 
-You can also create the *credentials.json* file using your existing consumer key and secret from the
-`My Apps page`_::
+You can also create the *credentials.json* file using your existing consumer
+key and secret from the `My Apps page`_::
 
    prompt (env)$ ./get-access-token
    Enter your consumer key: ****
@@ -73,11 +73,22 @@ You can also create the *credentials.json* file using your existing consumer key
 
 You can now can run any example directly::
 
-   prompt (env)$ ./hello-world
+   prompt (env)$ ./some-example
 
 You can also run examples using a specific python interpreter::
 
-   prompt$ ./env/bin/python hello-world
+   prompt$ ./env/bin/python some-example
+
+Contributing
+------------
+In addition to the notes in the top-level *CONTRIBUTING* file, we do require
+that our python examples pass through both `flake8`_ and `yapf`_ cleanly.
+You SHOULD run both utilities locally before you issue a pull request::
+
+   prompt (env)$ flake8 some-example
+   prompt (env)$ yapf -d some-example
+
+Both utilities should exit cleanly.
 
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _venv: https://docs.python.org/3/library/venv.html#module-venv
