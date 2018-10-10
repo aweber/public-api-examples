@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+
+from requests_oauthlib import OAuth1Session
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(credentials['consumer_key'],
+                        client_secret=credentials['consumer_secret'],
+                        resource_owner_key=credentials['access_token'],
+                        resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get an account to search on
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+account_id = accounts[0]['id']  # choose the first account
+
+# find all subscribers across lists that match an email
+params = urlencode({'email': 'example@example.com',
+                    'ws.op': 'findSubscribers'})
+find_url = 'https://api.aweber.com/1.0/accounts/{}?{}'.format(account_id,
+                                                              params)
+found_subscribers = get_collection(find_url)
+print(json.dumps(found_subscribers, indent=4))
