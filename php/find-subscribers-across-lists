@@ -43,11 +43,11 @@ function getCollection($client, $url) {
 
 
 $accounts = getCollection($client, 'accounts');
-$accountId = $accounts[0]['id'];
+$accountUrl = $accounts[0]['self_link'];
 $params = array(
     'ws.op' => 'findSubscribers',
     'email' => 'example@example.com'  // email to search for
 );
-$find_url = 'accounts/' . $accountId . '?' . http_build_query($params);
-$foundSubscribers = getCollection($client, $find_url);
+$findUrl = $accountUrl . '?' . http_build_query($params);
+$foundSubscribers = getCollection($client, $findUrl);
 print_r($foundSubscribers);

@@ -33,16 +33,15 @@ def get_collection(url):
 
 
 # get an account to search on
-account_url = 'https://api.aweber.com/1.0/accounts'
-accounts = get_collection(account_url)
-account_id = accounts[0]['id']  # choose the first account
+accounts_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(accounts_url)
+account_url = accounts[0]['self_link']  # choose the first account
 
 # find all subscribers across lists that match an email
 params = urlencode({
     'email': 'example@example.com',
     'ws.op': 'findSubscribers'
 })
-find_url = 'https://api.aweber.com/1.0/accounts/{}?{}'.format(
-    account_id, params)
+find_url = '{}?{}'.format(account_url, params)
 found_subscribers = get_collection(find_url)
 print(json.dumps(found_subscribers, indent=4))
