@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+
+from requests_oauthlib import OAuth1Session
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body.pop('entries'))
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get all the accounts entries
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+# get all the list entries for the first account
+lists_url = accounts[0]['lists_collection_link']
+lists = get_collection(lists_url)
+
+# find out if a subscriber exists on the first list
+email = 'example@example.com'
+params = urlencode({'email': email, 'ws.op': 'find'})
+find_url = '{}?{}'.format(lists[0]['subscribers_collection_link'], params)
+found_subscribers = get_collection(find_url)
+print('Found subscribers: {}'.format(json.dumps(found_subscribers, indent=4)))
+
+if found_subscribers:
+    # update the subscriber if they are on the first list
+    subscriber_url = found_subscribers[0]['self_link']
+    data = {
+        'custom_fields': {
+            'awesomeness': 'really awesome'
+        },
+        'tags': {
+            'add': ['prospect']
+        }
+    }
+    patch_response = session.patch(subscriber_url, json=data)
+    patch_response.raise_for_status()
+    subscriber = patch_response.json()
+    print('Updated Subscriber: {}'.format(json.dumps(subscriber, indent=4)))
+else:
+    # add the subscriber if they are not already on the first list
+    data = {
+        'email': email,
+        'custom_fields': {
+            'awesomeness': 'somewhat'
+        },
+        'tags': ['prospect']
+    }
+    subs_url = lists[0]['subscribers_collection_link']
+    post_response = session.post(subs_url, json=data)
+    post_response.raise_for_status()
+    subscriber_url = post_response.headers['Location']
+
+    # get the subscriber entry using the Location header from the post request
+    get_response = session.get(subscriber_url)
+    get_response.raise_for_status()
+    subscriber = get_response.json()
+    print('Created Subscriber: {}'.format(json.dumps(subscriber, indent=4)))
+
+# get the activity for the subscriber
+activity_url = '{}?ws.op=getActivity'.format(subscriber_url)
+activities = get_collection(activity_url)
+print('Subscriber Activity: {}'.format(json.dumps(activities, indent=4)))
+
+# delete the subscriber; this can only be performed on confirmed subscribers
+# or a 405 Method Not Allowed will be returned
+if subscriber['status'] == 'subscribed':
+    delete_response = session.delete(subscriber_url)
+    delete_response.raise_for_status()
+    print('Deleted subscriber with email: {}'.format(email))
