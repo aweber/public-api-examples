@@ -8,6 +8,7 @@
     "email": "api@aweber.com"
   },
   "require": {
+    "ext-json": "*",
     "guzzlehttp/guzzle": "~6.0",
     "guzzlehttp/oauth-subscriber": "~0.3"
   }
