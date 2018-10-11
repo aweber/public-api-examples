@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+
+from requests_oauthlib import OAuth1Session
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get an account to search on
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+lists_url = accounts[0]['lists_collection_link']  # choose the first account
+list_name = 'my list'
+params = urlencode({'ws.op': 'find', 'name': list_name})
+find_list_url = '{}?{}'.format(lists_url, params)
+lists = get_collection(find_list_url)
+if lists:
+    tag_url = '{}/tags'.format(lists[0]['self_link'])  # choose the first list
+    tag_response = session.get(tag_url)
+    tag_response.raise_for_status()
+    print(tag_response.json())
+else:
+    print('Could not find a list with name: {}'.format(list_name))
