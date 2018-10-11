@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+
+from requests_oauthlib import OAuth1Session
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get an account to search on
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+account = accounts[0]  # choose the first account
+
+# get a list to find messages on
+lists_url = account['lists_collection_link']
+lists = get_collection(lists_url)
+list_info = lists[0]  # choose the first list
+
+
+def campaign_type_name(campaign_type):
+    if campaign_type == 'b':
+        return 'broadcast'
+    elif campaign_type == 'f':
+        return 'followup'
+    else:
+        return '"{}" type campaign'.format(campaign_type)
+
+
+# get a followup or broadcast to get links for
+campaigns_url = list_info['campaigns_collection_link']
+campaigns = get_collection(campaigns_url)
+campaign = campaigns[0]  # choose the first campaign
+ctype = campaign_type_name(campaign['campaign_type'])
+print('Clicks for {} "{}" by link:'.format(ctype, campaign['subject']))
+
+# cache subscriber email addresses to avoid looking them up repeatedly
+subscriber_emails = {}
+
+# get all the links included in the message
+links_url = campaign['links_collection_link']
+links = get_collection(links_url)
+for link in links:
+    print(link['url'])
+    # get all the clicks for each link
+    clicks_url = link['clicks_collection_link']
+    clicks = get_collection(clicks_url)
+    for click in clicks:
+        # look up the email address of each subscriber who clicked
+        subscriber_url = click['subscriber_link']
+        email = subscriber_emails.get(subscriber_url)
+        if not email:
+            # first time looking up a subscriber: save the email for next time
+            subscriber_response = session.get(subscriber_url)
+            subscriber = subscriber_response.json()
+            email = subscriber['email']
+            subscriber_emails[subscriber_url] = email
+        print('    {}: {}'.format(click['event_time'], email))
