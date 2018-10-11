@@ -23,21 +23,27 @@ $requestMiddleware = new Oauth1([
 ]);
 $stack->push($requestMiddleware);
 
+/**
+ * Get all of the entries for a collection
+ *
+ * @param Client $client HTTP Client used to make a GET request
+ * @param string $url Relative path or full url to make the request
+ * @return array Every entry in the collection
+ */
 function getCollection($client, $url) {
-/* Get all the entries for a collection by paginating */
     $collection = array();
     while (isset($url)) {
         $body = $client->get($url)->getBody();
-        $page = json_decode($body);
-        $collection = array_merge($page->entries, $collection);
-        $nextLink = str_replace($client->base_uri, '', $page->next_collection_link);
-        $url = $nextLink ? $nextLink : null;
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
     }
     return $collection;
 }
 
+
 $accounts = getCollection($client, 'accounts');
-$accountId = $accounts[0]->id;
+$accountId = $accounts[0]['id'];
 $params = array(
     'ws.op' => 'findSubscribers',
     'email' => 'example@example.com'  // email to search for
