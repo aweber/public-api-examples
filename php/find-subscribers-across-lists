@@ -24,10 +24,10 @@ $requestMiddleware = new Oauth1([
 $stack->push($requestMiddleware);
 
 /**
- * Get all the entries for a collection by paginating
+ * Get all the entries for a collection by paginating.
  *
- * @param Client $client
- * @param string $url
+ * @param Client $client guzzle client instance
+ * @param string $url URL to get
  * @return array
  */
 function getCollection($client, $url) {
