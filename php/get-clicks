@@ -1,0 +1,99 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+
+// Create a Guzzle client configured to use OAuth for authentication
+$stack = HandlerStack::create();
+$client = new Client([
+    'base_uri' => 'https://api.aweber.com/1.0/',
+    'handler' => $stack,
+    'auth' => 'oauth'
+]);
+
+// Load credentials into the Oauth client
+$credentials = parse_ini_file('credentials.ini');
+$requestMiddleware = new Oauth1([
+    'consumer_key'    => $credentials['consumerKey'],
+    'consumer_secret' => $credentials['consumerSecret'],
+    'token' => $credentials['accessToken'],
+    'token_secret' => $credentials['tokenSecret'],
+]);
+$stack->push($requestMiddleware);
+
+/**
+ * Get all the entries for a collection by paginating
+ *
+ * @param Client $client guzzle client instance
+ * @param string $url URL to get
+ * @return array
+ */
+function getCollection($client, $url) {
+    $collection = array();
+    do {
+        $body = $client->get($url)->getBody();
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    } while (isset($url));
+    return $collection;
+}
+
+// Get an account to search on
+$accounts = getCollection($client, 'accounts');
+$account = $accounts[0];  // choose the first account
+
+// Get a list to find messages on
+$lists = getCollection($client, $account['lists_collection_link']);
+$list = $lists[0];  // choose the first list
+
+/**
+ * Return the full name of a campaign type code
+ *
+ * @param string $campaignType
+ * @return string
+ */
+function campaignTypeName($campaignType) {
+    if ($campaignType == 'b') {
+        return 'broadcast';
+    } elseif ($campaignType == 'f') {
+        return 'followup';
+    } else {
+        return "\"${$campaignType}\" type campaign";
+    }
+}
+
+// Get a followup or broadcast to get links for
+$campaignsUrl = $list['campaigns_collection_link'];
+$campaigns = getCollection($client, $campaignsUrl);
+$campaign = $campaigns[0];  // choose the first campaign
+$type = campaignTypeName($campaign['campaign_type']);
+echo "Clicks for {$type} \"{$campaign['subject']}\" by link:\n";
+
+// Cache subscriber email addresses to avoid looking them up repeatedly
+$subscriberEmails = array();
+
+// Get all the links included in the message
+$linksUrl = $campaign['links_collection_link'];
+$links = getCollection($client, $linksUrl);
+foreach ($links as $link) {
+    echo "{$link['url']}\n";
+    // Get all the clicks for each link
+    $clicksUrl = $link['clicks_collection_link'];
+    $clicks = getCollection($client, $clicksUrl);
+    foreach ($clicks as $click) {
+        // Look up the email address of each subscriber who clicked
+        $subscriberUrl = $click['subscriber_link'];
+        if (!isset($subscriberEmails[$subscriberUrl])) {
+            // First time looking up a subscriber: save the email for next time
+            $subscriberBody = $client->get($subscriberUrl)->getBody();
+            $subscriber = json_decode($subscriberBody, true);
+            $subscriberEmails[$subscriberUrl] = $subscriber['email'];
+        }
+        $email = $subscriberEmails[$subscriberUrl];
+        echo "    {$click['event_time']}: {$email}\n";
+    }
+}
