@@ -87,11 +87,11 @@ $account = $accounts[0];  // choose the first account
 
 // Get a list to find broadcasts on
 $lists = getCollection($client, $account['lists_collection_link']);
-$listId = $lists[0]['id'];  // choose the first list
+$listUrl = $lists[0]['self_link'];  // choose the first list
 
 // Get broadcast totals
 foreach (['draft', 'scheduled', 'sent'] as $status) {
-    $totalUrl = "accounts/{$account['id']}/lists/{$listId}/broadcasts/total?status={$status}";
+    $totalUrl = "{$listUrl}/broadcasts/total?status={$status}";
     $totalResponse = getWithRetry($client, $totalUrl);
     $totalBody = json_decode($totalResponse->getBody(), true);
     $total = $totalBody['total_size'];
@@ -100,7 +100,7 @@ foreach (['draft', 'scheduled', 'sent'] as $status) {
 
 // Get the first broadcast in each category
 foreach (['draft', 'scheduled', 'sent'] as $status) {
-    $bcUrl = "accounts/{$account['id']}/lists/{$listId}/broadcasts?status={$status}";
+    $bcUrl = "{$listUrl}/broadcasts?status={$status}";
     $broadcasts = getCollection($client, $bcUrl);
     $subject = $broadcasts ? $broadcasts[0]['subject'] : 'N/A';
     echo "First {$status} broadcast subject: ${subject}\n";

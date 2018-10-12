@@ -59,12 +59,11 @@ account = accounts[0]  # choose the first account
 # get a list to find broadcasts on
 lists_url = account['lists_collection_link']
 lists = get_collection(lists_url)
-list_id = lists[0]['id']  # choose the first list
+list_url = lists[0]['self_link']  # choose the first list
 
 # get broadcast totals
 for status in 'draft', 'scheduled', 'sent':
-    total_url = 'https://api.aweber.com/1.0/accounts/{}/lists/{}/broadcasts' \
-                '/total?status={}'.format(account['id'], list_id, status)
+    total_url = '{}/broadcasts/total?status={}'.format(list_url, status)
     total_response = get_with_retry(total_url)
     total_response.raise_for_status()
     total_body = total_response.json()
@@ -73,8 +72,7 @@ for status in 'draft', 'scheduled', 'sent':
 
 # get the first broadcast in each category
 for status in 'draft', 'scheduled', 'sent':
-    bc_url = 'https://api.aweber.com/1.0/accounts/{}/lists/{}/broadcasts' \
-             '?status={}'.format(account['id'], list_id, status)
+    bc_url = '{}/broadcasts?status={}'.format(list_url, status)
     broadcasts = get_collection(bc_url)
     subject = broadcasts[0]['subject'] if broadcasts else 'N/A'
     print('First {} broadcast subject: {}'.format(status, subject))
