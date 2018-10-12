@@ -50,10 +50,9 @@ $params = array(
 );
 $findListUrl = $listsUrl . '?' . http_build_query($params);
 $lists = getCollection($client, $findListUrl);
-$listLink = $lists[0]['self_link'];  // choose the first list
 
-if (isset($listLink)) {
-    $tagUrl = $listLink . '/tags';
+if (isset($lists[0]['self_link'])) {
+    $tagUrl = $lists[0]['self_link'] . '/tags';  // choose the first list
     $tags = $client->get($tagUrl)->getBody();
     print_r(json_decode($tags, true));
 } else {
