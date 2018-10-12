@@ -2,6 +2,7 @@
 <?php
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
@@ -35,28 +36,30 @@ $stack->push($requestMiddleware);
  */
 function getWithRetry($client, $url) {
     foreach (range(1, MAX_RETRIES) as $i) {
-        // Disable http_errors exceptions to handle rate limiting
-        $response = $client->get($url, ['http_errors' => false]);
-
-        // Only retry on a 403 (forbidden) status code with a rate limit error
-        if ($response->getStatusCode() != 403) {
-            return $response;
+        try {
+            $response = $client->get($url);
+        } catch(RequestException $e) {
+            // Only retry on a 403 (forbidden) status code with a rate limit error
+            if (!$e->hasResponse() || $e->getResponse()->getStatusCode() != 403) {
+                throw $e;
+            }
+            $body = json_decode($e->getResponse()->getBody(), true);
+            if (!preg_match('/rate limit/i', $body['error']['message'])) {
+                throw $e;
+            }
+            echo "Request was rate limited\n";
+            if ($i < MAX_RETRIES) {
+                // Wait longer between every attempt
+                sleep(2 ** $i);
+                echo "Retry #{$i}...\n";
+            }
+            continue;
         }
-        $body = json_decode($response->getBody(), true);
-        if (!preg_match('/rate limit/i', $body['error']['message'])) {
-            return $response;
-        }
-
-        echo "Request was rate limited\n";
-        if ($i < MAX_RETRIES) {
-            // Wait longer between every attempt
-            sleep(2**$i);
-            echo "Retry #{$i}...\n";
-        }
+        return $response;
     }
 
     echo "Giving up after " . MAX_RETRIES . " tries\n";
-    return $response;
+    throw $e;
 }
 
 /**
@@ -70,7 +73,7 @@ function getCollection($client, $url) {
     $collection = array();
     do {
         $response = getWithRetry($client, $url);
-        if($response->getStatusCode() >= 400) {
+        if ($response->getStatusCode() >= 400) {
             echo "HTTP {$response->getStatusCode()} error loading {$url}\n";
             return false;
         }
