@@ -67,7 +67,7 @@ function getWithRetry($client, $url) {
  *
  * @param Client $client guzzle client instance
  * @param string $url URL to get
- * @return array|bool
+ * @return array
  */
 function getCollection($client, $url) {
     $collection = array();
