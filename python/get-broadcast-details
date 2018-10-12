@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+import time
+
+from requests_oauthlib import OAuth1Session
+
+MAX_RETRIES = 6
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_with_retry(url):
+    for i in range(1, MAX_RETRIES + 1):
+        response = session.get(url)
+
+        # only retry on a 403 (forbidden) status code with a rate limit error
+        if response.status_code != 403:
+            return response
+        body = response.json()
+        if 'rate limit' not in body['error']['message'].lower():
+            return response
+
+        print('Request was rate limited')
+        if i < MAX_RETRIES:
+            # wait longer between every attempt
+            time.sleep(2**i)
+            print('Retry #{}...'.format(i))
+
+    print('Giving up after {} tries'.format(MAX_RETRIES))
+    return response
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = get_with_retry(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get an account to search on
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+account = accounts[0]  # choose the first account
+
+# get a list to find broadcasts on
+lists_url = account['lists_collection_link']
+lists = get_collection(lists_url)
+list_url = lists[0]['self_link']  # choose the first list
+
+# get broadcast totals
+for status in 'draft', 'scheduled', 'sent':
+    total_url = '{}/broadcasts/total?status={}'.format(list_url, status)
+    total_response = get_with_retry(total_url)
+    total_response.raise_for_status()
+    total_body = total_response.json()
+    total = total_body['total_size']
+    print('Total {} broadcasts: {}'.format(status, total))
+
+# get the first broadcast in each category
+for status in 'draft', 'scheduled', 'sent':
+    bc_url = '{}/broadcasts?status={}'.format(list_url, status)
+    broadcasts = get_collection(bc_url)
+    subject = broadcasts[0]['subject'] if broadcasts else 'N/A'
+    print('First {} broadcast subject: {}'.format(status, subject))
