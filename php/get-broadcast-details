@@ -73,10 +73,6 @@ function getCollection($client, $url) {
     $collection = array();
     do {
         $response = getWithRetry($client, $url);
-        if ($response->getStatusCode() >= 400) {
-            echo "HTTP {$response->getStatusCode()} error loading {$url}\n";
-            return false;
-        }
         $page = json_decode($response->getBody(), true);
         $collection = array_merge($page['entries'], $collection);
         $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
