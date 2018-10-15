@@ -10,7 +10,10 @@ try:
 except ImportError:
     from urllib import urlencode
 
-MAX_RETRIES = 2
+# Each retry after a rate limit response will exponentially back off. This max
+# retries should be 6 or greater which will ensure that the final attempt will
+# be in the next minute and escape the rate limit window. (2⁶ = 64 seconds)
+MAX_RETRIES = 6
 
 with open('credentials.json', 'rt') as f:
     credentials = json.load(f)
@@ -77,6 +80,7 @@ print('Broadcast: {}'.format(json.dumps(broadcast, indent=4)))
 messages_url = broadcast['messages_collection_link']
 messages = get_collection(messages_url)
 
+# mapping of subscriber url to email address
 subscriber_cache = {}
 
 print('Opens for broadcast:')
@@ -101,11 +105,12 @@ for link in links:
     print(link['url'])
     clicks_url = link['clicks_collection_link']
     for click in get_collection(clicks_url):
-        link = click['subscriber_link']
-        email = subscriber_cache.get(link)
+        click_sub_link = click['subscriber_link']
+        email = subscriber_cache.get(click_sub_link)
         if not email:
-            click_response = get_with_retry(link)
+            click_response = get_with_retry(click_sub_link)
             click_response.raise_for_status()
             click_body = click_response.json()
             subscriber_cache[link] = click_body
-        print('    {}: {}'.format(click['event_time'], subscriber_cache[link]))
+        print('    {}: {}'.format(click['event_time'],
+                                  subscriber_cache[click_sub_link]))
