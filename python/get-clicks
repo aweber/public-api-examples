@@ -27,6 +27,15 @@ def get_collection(url):
     return collection
 
 
+def campaign_type_name(campaign_type):
+    if campaign_type == 'b':
+        return 'broadcast'
+    elif campaign_type == 'f':
+        return 'followup'
+    else:
+        return '"{}" type campaign'.format(campaign_type)
+
+
 # get an account to search on
 account_url = 'https://api.aweber.com/1.0/accounts'
 accounts = get_collection(account_url)
@@ -36,16 +45,6 @@ account = accounts[0]  # choose the first account
 lists_url = account['lists_collection_link']
 lists = get_collection(lists_url)
 list_info = lists[0]  # choose the first list
-
-
-def campaign_type_name(campaign_type):
-    if campaign_type == 'b':
-        return 'broadcast'
-    elif campaign_type == 'f':
-        return 'followup'
-    else:
-        return '"{}" type campaign'.format(campaign_type)
-
 
 # get a followup or broadcast to get links for
 campaigns_url = list_info['campaigns_collection_link']

@@ -42,14 +42,6 @@ function getCollection($client, $url) {
     return $collection;
 }
 
-// Get an account to search on
-$accounts = getCollection($client, 'accounts');
-$account = $accounts[0];  // choose the first account
-
-// Get a list to find messages on
-$lists = getCollection($client, $account['lists_collection_link']);
-$list = $lists[0];  // choose the first list
-
 /**
  * Return the full name of a campaign type code
  *
@@ -65,6 +57,14 @@ function campaignTypeName($campaignType) {
         return "\"${$campaignType}\" type campaign";
     }
 }
+
+// Get an account to search on
+$accounts = getCollection($client, 'accounts');
+$account = $accounts[0];  // choose the first account
+
+// Get a list to find messages on
+$lists = getCollection($client, $account['lists_collection_link']);
+$list = $lists[0];  // choose the first list
 
 // Get a followup or broadcast to get links for
 $campaignsUrl = $list['campaigns_collection_link'];
