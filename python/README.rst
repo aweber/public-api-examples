@@ -95,3 +95,5 @@ Both utilities should exit cleanly.
 .. _virtualenv: https://virtualenv.pypa.io/en/stable/
 .. _My Apps page: https://labs.aweber.com/apps
 .. _CONTRIBUTING: https://github.com/aweber/public-api-examples/blob/master/CONTRIBUTING.md
+.. _flake8: http://flake8.pycqa.org/en/latest/
+.. _yapf: https://github.com/google/yapf
