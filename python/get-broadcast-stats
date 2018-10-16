@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+# coding=utf-8
+from __future__ import print_function
+import pprint
+import json
+
+from requests_oauthlib import OAuth1Session
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body.pop('entries'))
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get all the accounts entries
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+# get all the list entries for the first account
+lists_url = accounts[0]['lists_collection_link']
+lists = get_collection(lists_url)
+
+# get a sent broadcast
+params = urlencode({'ws.op': 'find', 'campaign_type': 'b'})
+broadcasts_url = '{}?{}'.format(lists[0]['campaigns_collection_link'], params)
+sent_broadcasts = get_collection(broadcasts_url)
+broadcast = sent_broadcasts[0]  # get the first broadcast to retrieve stats
+
+print('Broadcast id: {} Subject: {} Sent At: {}\n'.format(
+    broadcast['id'], broadcast['subject'], broadcast['sent_at']))
+
+stats = get_collection(broadcast['stats_collection_link'])
+
+# look at every stat for the first broadcast
+for stat in stats:
+    # stats entries can be in many formats
+    # daily stats are shown over 14 days
+    # hourly stats are shown over 24 hours
+    # some stats show the top 10 (e.g. webhits_by_link)
+    # some stats show total counts (e.g. total_clicks)
+    value = stat['value']
+    if not value:
+        print('\n{}: N/A'.format(stat['description']))
+    elif isinstance(value, list):
+        print('\n{}:'.format(stat['description']))
+        for item in value:
+            print('')  # add an extra newline between each item
+            for k, v in item.items():
+                print('    {}: {}'.format(k, v))
+    else:
+        print('\n{}: {}'.format(stat['description'], value))
