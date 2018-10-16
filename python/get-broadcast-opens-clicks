@@ -1,0 +1,117 @@
+#!/usr/bin/env python
+# coding=utf-8
+from __future__ import print_function
+import json
+import time
+
+from requests_oauthlib import OAuth1Session
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
+# Each retry after a rate limit response will exponentially back off. This max
+# retries should be 6 or greater which will ensure that the final attempt will
+# be in the next minute and escape the rate limit window. (2⁶ = 64 seconds)
+MAX_RETRIES = 6
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body.pop('entries'))
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+def get_with_retry(url):
+    for i in range(1, MAX_RETRIES + 1):
+        response = session.get(url)
+
+        # only retry on a 403 (forbidden) status code with a rate limit error
+        if response.status_code != 403:
+            return response
+        body = response.json()
+        if 'rate limit' not in body['error']['message'].lower():
+            return response
+
+        print('Request was rate limited')
+        if i < MAX_RETRIES:
+            # wait longer between every attempt
+            time.sleep(2**i)
+            print('Retry #{}...'.format(i))
+
+    print('Giving up after {} tries'.format(MAX_RETRIES))
+    return response
+
+
+# get all the accounts entries
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+# get all the list entries for the first account
+lists_url = accounts[0]['lists_collection_link']
+lists = get_collection(lists_url)
+
+# get a sent broadcast
+params = urlencode({'ws.op': 'find', 'campaign_type': 'b'})
+broadcasts_url = '{}?{}'.format(lists[0]['campaigns_collection_link'], params)
+sent_broadcasts = get_collection(broadcasts_url)
+broadcast = sent_broadcasts[0]
+print('Broadcast: {}'.format(json.dumps(broadcast, indent=4)))
+
+# A broadcast is the receipt of sending email messages to a list.
+# Messages are each email sent to a subscriber; they
+# can be opened and clicked by each subscriber multiple times.
+messages_url = broadcast['messages_collection_link']
+messages = get_collection(messages_url)
+
+# mapping of subscriber url to email address
+subscriber_cache = {}
+
+print('Opens for broadcast:')
+for message in messages:
+    if message['total_opens'] > 0:
+        # You could also paginate the opens collection of each message,
+        # but the open count and the last_opened timestamp are in the
+        # message entry so unless we need exact times of each non-unique open,
+        # we use the message entry.
+        open_sub_link = message['subscriber_link']
+        open_response = get_with_retry(open_sub_link)
+        open_response.raise_for_status()
+        open_body = open_response.json()
+        print('    {}: {}'.format(message['last_opened'], open_body['email']))
+        subscriber_cache[open_sub_link] = open_body['email']
+
+links_url = broadcast['links_collection_link']
+links = get_collection(links_url)
+
+print('Clicks for broadcast:')
+for link in links:
+    print(link['url'])
+    clicks_url = link['clicks_collection_link']
+    for click in get_collection(clicks_url):
+        click_sub_link = click['subscriber_link']
+        email = subscriber_cache.get(click_sub_link)
+        if not email:
+            click_response = get_with_retry(click_sub_link)
+            click_response.raise_for_status()
+            click_body = click_response.json()
+            subscriber_cache[link] = click_body
+        print('    {}: {}'.format(click['event_time'],
+                                  subscriber_cache[click_sub_link]))

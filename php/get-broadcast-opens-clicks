@@ -1,0 +1,147 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+// Each retry after a rate limit response will exponentially back off. This max
+// retries should be 6 or greater which will ensure that the final attempt will
+// be in the next minute and escape the rate limit window. (2⁶ = 64 seconds)
+const MAX_RETRIES = 6;
+
+// Create a Guzzle client configured to use OAuth for authentication
+$stack = HandlerStack::create();
+$client = new Client([
+    'base_uri' => 'https://api.aweber.com/1.0/',
+    'handler' => $stack,
+    'auth' => 'oauth'
+]);
+
+// Load credentials into the Oauth client
+$credentials = parse_ini_file('credentials.ini');
+$requestMiddleware = new Oauth1([
+    'consumer_key'    => $credentials['consumerKey'],
+    'consumer_secret' => $credentials['consumerSecret'],
+    'token' => $credentials['accessToken'],
+    'token_secret' => $credentials['tokenSecret'],
+]);
+$stack->push($requestMiddleware);
+
+/**
+ * Get all of the entries for a collection
+ *
+ * @param Client $client HTTP Client used to make a GET request
+ * @param string $url Relative path or full url to make the request
+ * @return array Every entry in the collection
+ */
+function getCollection($client, $url) {
+    $collection = array();
+    while (isset($url)) {
+        $body = $client->get($url)->getBody();
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    }
+    return $collection;
+}
+
+/**
+ * Get a URL, retrying on rate limit errors
+ *
+ * @param Client $client guzzle client instance
+ * @param string $url URL to get
+ * @return \Psr\Http\Message\ResponseInterface
+ */
+function getWithRetry($client, $url) {
+    foreach (range(1, MAX_RETRIES) as $i) {
+        try {
+            $response = $client->get($url);
+        } catch(GuzzleHttp\Exception\RequestException $e) {
+
+            // Only retry on a 403 (forbidden) status code with a rate limit error
+            if (!$e->hasResponse() || $e->getResponse()->getStatusCode() != 403) {
+                throw $e;
+            }
+            $body = json_decode($e->getResponse()->getBody(), true);
+            if (!preg_match('/rate limit/i', $body['error']['message'])) {
+                throw $e;
+            }
+            echo "Request was rate limited\n";
+            if ($i < MAX_RETRIES) {
+                // Wait longer between every attempt
+                sleep(2 ** $i);
+                echo "Retry #{$i}...\n";
+            }
+            continue;
+        }
+        return $response;
+    }
+    echo "Giving up after " . MAX_RETRIES . " tries\n";
+    throw $e;
+}
+
+// get all the accounts entries
+$accounts = getCollection($client, 'accounts');
+$accountUrl = $accounts[0]['self_link'];
+
+// get all the list entries for the first account
+$listsUrl = $accounts[0]['lists_collection_link'];
+$lists = getCollection($client, $listsUrl);
+
+// get a sent broadcast
+$params = array(
+    'ws.op' => 'find',
+    'campaign_type' => 'b'
+);
+$campaignsUrl = $lists[0]['campaigns_collection_link'];
+$broadcastsUrl = $campaignsUrl . '?' . http_build_query($params);
+$sentBroadcasts = getCollection($client, $broadcastsUrl);
+$broadcast = $sentBroadcasts[0];
+echo 'Broadcast: ';
+print_r($broadcast);
+
+// A broadcast is the receipt of sending email messages to a list.
+// Messages are each email sent to a subscriber; they
+// can be opened and clicked by each subscriber multiple times.
+$messagesUrl = $broadcast['messages_collection_link'];
+$messages = getCollection($client, $messagesUrl);
+
+// mapping of subscriber url to email address
+$subscriberCache = array();
+
+echo "\nOpens for broadcast:\n";
+foreach ($messages as $message) {
+    if ($message['total_opens'] > 0) {
+        // You could also paginate the opens collection of each message,
+        // but the open count and the last_opened timestamp are in the message entry
+        // so unless we need exact times of each non-unique open, we use the message entry.
+        $openSubLink = $message['subscriber_link'];
+        $openSub = getWithRetry($client, $openSubLink);
+        $openSubBody = json_decode($openSub->getBody(), true);
+        echo "    {$message['last_opened']}: {$openSubBody['email']}\n";
+        // First time looking up a subscriber; save them for next time
+        $subscriberCache[$subLink] = $openSubBody['email'];
+    }
+}
+
+$links = getCollection($client, $broadcast['links_collection_link']);
+
+echo "\nClicks for broadcast:\n";
+foreach ($links as $link) {
+    echo "{$link['url']}\n";
+    $clicksUrl = $link['clicks_collection_link'];
+    $clicks = getCollection($client, $clicksUrl);
+    foreach ($clicks as $click) {
+        $clickSubLink = $click['subscriber_link'];
+        $cachedSubscriber = $subscriberCache[$clickSubLink];
+        if (isset($cachedSubscriber)) {
+            $email = $cachedSubscriber['email'];
+        } else {
+            $clickSub = getWithRetry($client, $clickSubLink)->getBody();
+            $clickSubBody = json_decode($clickSub, true);
+            $email = $clickSubBody['email'];
+        }
+        echo "    {$click['event_time']}: {$email}\n";
+    }
+}
