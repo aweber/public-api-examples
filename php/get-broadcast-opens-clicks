@@ -21,7 +21,7 @@ $client = new Client([
 // Load credentials into the Oauth client
 $credentials = parse_ini_file('credentials.ini');
 $requestMiddleware = new Oauth1([
-    'consumer_key'    => $credentials['consumerKey'],
+    'consumer_key' => $credentials['consumerKey'],
     'consumer_secret' => $credentials['consumerSecret'],
     'token' => $credentials['accessToken'],
     'token_secret' => $credentials['tokenSecret'],
