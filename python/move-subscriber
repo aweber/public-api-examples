@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+import sys
+
+import requests
+from requests_oauthlib import OAuth1Session
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body.pop('entries'))
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get all the accounts entries
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+# get all the list entries for the first account
+lists = get_collection(accounts[0]['lists_collection_link'])
+
+if len(lists) < 2:
+    print('You must have 2 lists to move a subscriber!')
+    sys.exit()
+
+# pick the list to move the subscriber from and to
+origin_list = lists[0]
+destination_list = lists[1]
+
+subscribers = get_collection(origin_list['subscribers_collection_link'])
+
+# pick the subscriber we want to move
+subscriber = subscribers[0]
+if not subscriber:
+    print('You must have a subscriber on list: {}!'.format(
+        origin_list['name']))
+    sys.exit()
+
+data = {'ws.op': 'move', 'list_link': destination_list['self_link']}
+
+try:
+    # attempt to move the subscriber to the second list
+    move_response = session.post(subscriber['self_link'], json=data)
+    move_response.raise_for_status()
+    print('Moved subscriber {} from list: {} to list: {}'.format(
+        subscriber['email'], origin_list['name'], destination_list['name']))
+except requests.RequestException as e:
+    error = e.response.json()['error']
+    status = e.response.status_code
+    # An error will contain the following information:
+    #     type, message, documentation_url and status
+    # The error type is most often an HTTP reason.
+    # The error message gives you the most detail about an error.
+    # The documentation_url is a link to the error explanation.
+    # The status is the error HTTP status code.
+    # For more info see: https://api.aweber.com/#tag/Troubleshooting
+    print('Could not move subscriber!')
+    print('( {} {} ) {}'.format(status, error['type'], error['message']))
+    print('Follow this link for more information: {}'.format(
+        error['documentation_url']))
