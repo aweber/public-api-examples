@@ -68,8 +68,8 @@ if (isset($foundSubscribers[0]['self_link'])) {
         'tags' => array('add' => array('prospect'))
     );
     $subscriberUrl = $foundSubscribers[0]['self_link'];
-    $subscriber_response = $client->patch($subscriberUrl, ['json' => $data])->getBody();
-    $subscriber = json_decode($subscriber_response, true);
+    $subscriberResponse = $client->patch($subscriberUrl, ['json' => $data])->getBody();
+    $subscriber = json_decode($subscriberResponse, true);
     echo 'Updated Subscriber: ';
 } else {
     // add the subscriber if they are not already on the first list
@@ -82,8 +82,8 @@ if (isset($foundSubscribers[0]['self_link'])) {
 
     // get the subscriber entry using the Location header from the post request
     $subscriberUrl = $body->getHeader('Location')[0];
-    $subscriber_response = $client->get($subscriberUrl)->getBody();
-    $subscriber = json_decode($subscriber_response, true);
+    $subscriberResponse = $client->get($subscriberUrl)->getBody();
+    $subscriber = json_decode($subscriberResponse, true);
     echo 'Created Subscriber: ';
 }
 print_r($subscriber);
