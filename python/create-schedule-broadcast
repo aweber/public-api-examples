@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+from __future__ import print_function
+from datetime import datetime
+import json
+
+from requests_oauthlib import OAuth1Session
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get an account to search on
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+# get a list to find broadcasts on
+lists = get_collection(accounts[0]['lists_collection_link'])
+
+data = {
+    # the broadcast html, this can be provided without body_text
+    'body_html': '<html><body>An html version of my email</body></html>',
+
+    # if provided, this will be the plain text version of the email
+    # if this is not provided, it will be auto-generated based on the body_html
+    'body_text': 'A plain text version of my email',
+
+    # this is the broadcast subject line
+    'subject': 'This is an email created by the api!',
+
+    # if there are links in this broadcast, track them
+    'click_tracking_enabled': True,
+
+    # include or exclude subscribers on other lists in this broadcast
+    'exclude_lists': [],
+    'include_lists': [],
+
+    # this means the broadcast will be available via a url after it's sent
+    'is_archived': True,
+
+    # if notifications are enabled and notify_on_send is True, send an email
+    # to the AWeber account holder when this broadcast stats' are available
+    'notify_on_send': True,
+}
+
+# if enabled, get the facebook url to share the broadcast to facebook
+integrations = get_collection(accounts[0]['integrations_collection_link'])
+for integration in integrations:
+    if integration['service_name'].lower() == 'facebook':
+        # there could be multiple, so pick the first one we find and break
+        data['facebook_integration'] = integration['self_link']
+        break
+
+# make the broadcast on the first list
+broadcast_url = '{}/broadcasts'.format(lists[0]['self_link'])
+broadcast_response = session.post(broadcast_url, data=data)
+broadcast_response.raise_for_status()
+broadcast = broadcast_response.json()
+
+# schedule the broadcast we made
+schedule_url = '{}/schedule'.format(broadcast['self_link'])
+scheduled_for = str(datetime.utcnow().isoformat())  # must be iso8601 compliant
+schedule_response = session.post(
+    schedule_url, data={'scheduled_for': scheduled_for})
+schedule_response.raise_for_status()
+
+# retrieve the scheduled broadcast to see the updated scheduled_for
+scheduled_broadcast_response = session.get(broadcast['self_link'])
+scheduled_broadcast_response.raise_for_status()
+scheduled_broadcast = scheduled_broadcast_response.json()
+print('Scheduled broadcast subject: {} on list: {} to be sent at: {}'.format(
+    scheduled_broadcast['subject'], lists[0]['name'],
+    scheduled_broadcast['scheduled_for']))
