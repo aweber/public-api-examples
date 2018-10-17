@@ -62,6 +62,7 @@ $data = array(
     'click_tracking_enabled' => 'true',
 
     // include or exclude subscribers on other lists in this broadcast
+    // these are lists of URI's or list links
     'exclude_lists' => [],
     'include_lists' => [],
 
@@ -89,7 +90,7 @@ $broadcastResponse = $client->post(
 $broadcast = json_decode($broadcastResponse->getBody(), true);
 
 // schedule the broadcast we made
-$timestamp = new \DateTime("now", new \DateTimeZone("UTC"));
+$timestamp = new \DateTime('now', new \DateTimeZone('UTC'));
 $scheduledFor = $timestamp->format(DateTime::ATOM);  // must be iso8601 compliant
 $scheduleResponse = $client->post(
         "{$broadcast['self_link']}/schedule", ['form_params' => array('scheduled_for' => $scheduledFor)]);
