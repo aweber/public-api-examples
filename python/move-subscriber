@@ -34,10 +34,9 @@ account_url = 'https://api.aweber.com/1.0/accounts'
 accounts = get_collection(account_url)
 
 # get all the list entries for the first account
-lists_url = accounts[0]['lists_collection_link']
-lists = get_collection(lists_url)
+lists = get_collection(accounts[0]['lists_collection_link'])
 
-if len(lists) <= 1 or not lists[0] or not lists[1]:
+if len(lists) < 2:
     print('You must have 2 lists to move a subscriber!')
     sys.exit()
 
@@ -71,7 +70,8 @@ except requests.RequestException as e:
     # The error message gives you the most detail about an error.
     # The documentation_url is a link to the error explanation.
     # The status is the error HTTP status code.
-    print('Could not move subscriber!\n( {} {} ) {}\n'
-          'Follow this link for more information: {}'.format(
-              status, error['type'], error['message'],
-              error['documentation_url']))
+    # For more info see: https://api.aweber.com/#tag/Troubleshooting
+    print('Could not move subscriber!')
+    print('( {} {} ) {}'.format(status, error['type'], error['message']))
+    print('Follow this link for more information: {}'.format(
+        error['documentation_url']))

@@ -43,11 +43,9 @@ function getCollection($client, $url) {
 
 // get all the accounts entries
 $accounts = getCollection($client, 'accounts');
-$accountUrl = $accounts[0]['self_link'];
 
 // get all the list entries for the first account
-$listsUrl = $accounts[0]['lists_collection_link'];
-$lists = getCollection($client, $listsUrl);
+$lists = getCollection($client, $accounts[0]['lists_collection_link']);
 
 // pick the list to move the subscriber from and to
 $originList = $lists[0];
@@ -88,6 +86,7 @@ try {
     // The error message gives you the most detail about an error.
     // The documentation_url is a link to the error explanation.
     // The status is the error HTTP status code.
+    // For more info see: https://api.aweber.com/#tag/Troubleshooting
     echo "Could not move subscriber!
     ( {$errorResponse->getStatusCode()} {$error['type']} ) {$error['message']}
     Follow this link for more information: {$error['documentation_url']}";
