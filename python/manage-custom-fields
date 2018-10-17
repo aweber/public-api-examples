@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+import sys
+
+from requests_oauthlib import OAuth1Session
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get an account to manage custom fields on
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+account = accounts[0]  # choose the first account
+
+# get a list to manage custom fields on
+lists_url = account['lists_collection_link']
+lists = get_collection(lists_url)
+list_info = lists[0]  # choose the first list
+
+# check if custom fields already exist with the names we use below
+custom_fields_url = list_info['custom_fields_collection_link']
+custom_fields = get_collection(custom_fields_url)
+for entry in custom_fields:
+    for name in 'Test', 'Renamed':
+        if entry['name'] == name:
+            print('A custom field called {} already exists on {}'.format(
+                name, list_info['name']))
+            sys.exit()
+
+# create a custom field called Test
+create_params = urlencode({'ws.op': 'create', 'name': 'Test'})
+create_response = session.post(custom_fields_url, data=create_params)
+create_response.raise_for_status()
+field_url = create_response.headers['Location']
+print('Created new custom field at', field_url)
+
+# update the custom field
+update_params = {'name': 'Renamed', 'is_subscriber_updateable': True}
+update_response = session.patch(field_url, json=update_params)
+update_response.raise_for_status()
+print('Updated the custom field:', repr(update_response.json()))
+
+# delete the custom field
+delete_response = session.delete(field_url)
+delete_response.raise_for_status()
+print('Deleted the custom field')
