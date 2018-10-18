@@ -34,7 +34,7 @@ def print_webform_info(data, indent=8):
     print(prefix, 'Type:', data['type'])
     print(prefix, 'HTML source:', data['html_source_link'])
     print(prefix, 'JS source:', data['javascript_source_link'])
-    print(prefix, 'Total displays: {} ({} unique)'.format(
+    print(prefix, 'Displays: {} ({} unique)'.format(
         data['total_displays'], data['total_unique_displays']))
     print(prefix, 'Submissions:', data['total_submissions'])
     print(prefix, 'Conversion: {:.1f}% ({:.1f}% unique)'.format(
