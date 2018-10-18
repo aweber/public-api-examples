@@ -52,7 +52,7 @@ function printWebformInfo($data, $indent = 8) {
     echo "{$prefix}Type: {$data['type']}\n";
     echo "{$prefix}HTML source: {$data['html_source_link']}\n";
     echo "{$prefix}JS source: {$data['javascript_source_link']}\n";
-    echo "{$prefix}Total displays: {$data['total_displays']} ({$data['total_unique_displays']} unique)\n";
+    echo "{$prefix}Displays: {$data['total_displays']} ({$data['total_unique_displays']} unique)\n";
     echo "{$prefix}Submissions: {$data['total_submissions']}\n";
     echo "{$prefix}Conversion: " . number_format($data['conversion_percentage'], 1) . "% ";
     echo "(" . number_format($data['unique_conversion_percentage'], 1) . "% unique)\n";
