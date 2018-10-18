@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+
+from requests_oauthlib import OAuth1Session
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get all the accounts
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+# get all sharing integration uri's for twitter and facebook
+# these are used to create a broadcast that will post to twitter or facebook
+integrations = get_collection(accounts[0]['integrations_collection_link'])
+print('Integrations:')
+for integration in integrations:
+    if integration['service_name'].lower() in ('twitter', 'facebook'):
+        print(integration['service_name'], integration['login'],
+              integration['self_link'])
