@@ -54,11 +54,9 @@ $list = $lists[0];  // choose the first list
 $customFieldsUrl = $list['custom_fields_collection_link'];
 $customFields = getCollection($client, $customFieldsUrl);
 foreach ($customFields as $entry) {
-    foreach (['Test', 'Renamed'] as $name) {
-        if ($entry['name'] == $name) {
-            echo "A custom field called {$name} already exists on {$list['name']}\n";
-            exit();
-        }
+    if (in_array($entry['name'], ['Test', 'Renamed'], true)) {
+        echo "A custom field called {$entry['name']} already exists on {$list['name']}\n";
+        exit();
     }
 }
 

@@ -47,11 +47,10 @@ list_info = lists[0]  # choose the first list
 custom_fields_url = list_info['custom_fields_collection_link']
 custom_fields = get_collection(custom_fields_url)
 for entry in custom_fields:
-    for name in 'Test', 'Renamed':
-        if entry['name'] == name:
-            print('A custom field called {} already exists on {}'.format(
-                name, list_info['name']))
-            sys.exit()
+    if entry['name'] in ('Test', 'Renamed'):
+        print('A custom field called {} already exists on {}'.format(
+            entry['name'], list_info['name']))
+        sys.exit()
 
 # create a custom field called Test
 create_params = urlencode({'ws.op': 'create', 'name': 'Test'})
