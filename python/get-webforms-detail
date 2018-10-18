@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+import sys
+
+from requests_oauthlib import OAuth1Session
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+session = OAuth1Session(
+    credentials['consumer_key'],
+    client_secret=credentials['consumer_secret'],
+    resource_owner_key=credentials['access_token'],
+    resource_owner_secret=credentials['token_secret'])
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# print the info for a webform or split test component
+def print_webform_info(data, indent=8):
+    prefix = ' ' * (indent - 1)
+    print(prefix, 'Type:', data['type'])
+    print(prefix, 'HTML source:', data['html_source_link'])
+    print(prefix, 'JS source:', data['javascript_source_link'])
+    print(prefix, 'Total displays: {} ({} unique)'.format(
+        data['total_displays'], data['total_unique_displays']))
+    print(prefix, 'Submissions:', data['total_submissions'])
+    print(prefix, 'Conversion: {:.1f}% ({:.1f}% unique)'.format(
+        data['conversion_percentage'], data['unique_conversion_percentage']))
+
+
+# get an account to get webforms for
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+account = accounts[0]  # choose the first account
+
+# get a list to get webforms for
+lists_url = account['lists_collection_link']
+lists = get_collection(lists_url)
+list_info = lists[0]  # choose the first list
+
+# get all the webforms for a list
+webforms_url = list_info['web_forms_collection_link']
+webforms = get_collection(webforms_url)
+if not webforms:
+    print('No webforms for', list_info['name'])
+    sys.exit()
+
+print('Webforms for {}:'.format(list_info['name']))
+for webform in webforms:
+    print('    {}:'.format(webform['name']))
+    print_webform_info(webform)
+
+print()
+
+# get all the webform split tests for a list
+split_tests_url = list_info['web_form_split_tests_collection_link']
+split_tests = get_collection(split_tests_url)
+if not split_tests:
+    print('No webform split tests for', list_info['name'])
+    sys.exit()
+
+print('Webform split tests for {}:'.format(list_info['name']))
+for split_test in split_tests:
+    print('    {}: {}'.format(split_test['name'],
+                              split_test['javascript_source_link']))
+    components_url = split_test['components_collection_link']
+    components = get_collection(components_url)
+    for component in components:
+        print('        {} ({}%)'.format(component['name'],
+                                        component['weight']))
+        print_webform_info(component, indent=12)
