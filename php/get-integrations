@@ -1,0 +1,56 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+// Create a Guzzle client configured to use OAuth for authentication
+$stack = HandlerStack::create();
+$client = new Client([
+    'base_uri' => 'https://api.aweber.com/1.0/',
+    'handler' => $stack,
+    'auth' => 'oauth'
+]);
+
+// Load credentials into the Oauth client
+$credentials = parse_ini_file('credentials.ini');
+$requestMiddleware = new Oauth1([
+    'consumer_key' => $credentials['consumerKey'],
+    'consumer_secret' => $credentials['consumerSecret'],
+    'token' => $credentials['accessToken'],
+    'token_secret' => $credentials['tokenSecret'],
+]);
+$stack->push($requestMiddleware);
+
+/**
+ * Get all the entries for a collection by paginating
+ *
+ * @param Client $client guzzle client instance
+ * @param string $url URL to get
+ * @return array
+ */
+function getCollection($client, $url) {
+    $collection = array();
+    do {
+        $response = $client->get($url);
+        $page = json_decode($response->getBody(), true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    } while (isset($url));
+    return $collection;
+}
+
+// get all of the accounts
+$accounts = getCollection($client, 'accounts');
+
+// get all sharing integration uri's for twitter and facebook
+// these are used to create a broadcast that will post to twitter or facebook
+// see broadcast example here: https://github.com/aweber/public-api-examples/blob/master/php/create-schedule-broadcast
+$integrations = getCollection($client, $accounts[0]['integrations_collection_link']);
+echo("Integrations:\n");
+foreach ($integrations as $integration) {
+    if (in_array(strtolower($integration['service_name']), ['twitter', 'facebook'], true)) {
+        echo "{$integration['service_name']} {$integration['login']} {$integration['self_link']}\n";
+    }
+}
