@@ -1,0 +1,78 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+// Create a Guzzle client configured to use OAuth for authentication
+$stack = HandlerStack::create();
+$client = new Client([
+    'base_uri' => 'https://api.aweber.com/1.0/',
+    'handler' => $stack,
+    'auth' => 'oauth'
+]);
+
+// Load credentials into the Oauth client
+$credentials = parse_ini_file('credentials.ini');
+$requestMiddleware = new Oauth1([
+    'consumer_key' => $credentials['consumerKey'],
+    'consumer_secret' => $credentials['consumerSecret'],
+    'token' => $credentials['accessToken'],
+    'token_secret' => $credentials['tokenSecret'],
+]);
+$stack->push($requestMiddleware);
+
+/**
+ * Get all of the entries for a collection
+ *
+ * @param Client $client HTTP Client used to make a GET request
+ * @param string $url Relative path or full url to make the request
+ * @return array Every entry in the collection
+ */
+function getCollection($client, $url) {
+    $collection = array();
+    while (isset($url)) {
+        $body = $client->get($url)->getBody();
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    }
+    return $collection;
+}
+
+// Get an account to manage custom fields on
+$accounts = getCollection($client, 'accounts');
+$account = $accounts[0];  // choose the first account
+
+// Get a list to manage custom fields on
+$listsUrl = $account['lists_collection_link'];
+$lists = getCollection($client, $listsUrl);
+$list = $lists[0];  // choose the first list
+
+// Check if custom fields already exist with the names we use below
+$customFieldsUrl = $list['custom_fields_collection_link'];
+$customFields = getCollection($client, $customFieldsUrl);
+foreach ($customFields as $entry) {
+    if (in_array($entry['name'], ['Test', 'Renamed'], true)) {
+        echo "A custom field called {$entry['name']} already exists on {$list['name']}\n";
+        exit();
+    }
+}
+
+// Create a custom field called Test
+$createResponse = $client->post($customFieldsUrl, ['form_params' =>
+    ['ws.op' => 'create', 'name' => 'Test']]);
+$fieldUrl = $createResponse->getHeader('Location')[0];
+echo "Create new custom field at {$fieldUrl}\n";
+
+// Update the custom field
+$updateResponse = $client->patch($fieldUrl, ['json' =>
+    ['name' => 'Renamed', 'is_subscriber_updateable' => true]]);
+$updatedField = json_decode($updateResponse->getBody(), true);
+echo "Updated the custom field: ";
+print_r($updatedField);
+
+// Delete the custom field
+$client->delete($fieldUrl);
+echo "Deleted the custom field\n";
