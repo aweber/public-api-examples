@@ -41,15 +41,16 @@ function getCollection($client, $url) {
     return $collection;
 }
 
-// get all the accounts
+// get all of the accounts
 $accounts = getCollection($client, 'accounts');
 
 // get all sharing integration uri's for twitter and facebook
 // these are used to create a broadcast that will post to twitter or facebook
+// see broadcast example here: https://github.com/aweber/public-api-examples/blob/master/php/create-schedule-broadcast
 $integrations = getCollection($client, $accounts[0]['integrations_collection_link']);
 echo("Integrations:\n");
 foreach ($integrations as $integration) {
-    if (in_array($integration['service_name'], ['twitter', 'facebook'], true)) {
+    if (in_array(strtolower($integration['service_name']), ['twitter', 'facebook'], true)) {
         echo "{$integration['service_name']} {$integration['login']} {$integration['self_link']}\n";
     }
 }

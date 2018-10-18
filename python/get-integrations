@@ -27,12 +27,13 @@ def get_collection(url):
     return collection
 
 
-# get all the accounts
+# get all of the accounts
 account_url = 'https://api.aweber.com/1.0/accounts'
 accounts = get_collection(account_url)
 
 # get all sharing integration uri's for twitter and facebook
 # these are used to create a broadcast that will post to twitter or facebook
+# see broadcast example here: https://github.com/aweber/public-api-examples/blob/master/python/create-schedule-broadcast
 integrations = get_collection(accounts[0]['integrations_collection_link'])
 print('Integrations:')
 for integration in integrations:
