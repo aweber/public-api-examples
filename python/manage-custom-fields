@@ -64,7 +64,7 @@ print('Created new custom field at', field_url)
 update_params = {'name': 'Renamed', 'is_subscriber_updateable': True}
 update_response = session.patch(field_url, json=update_params)
 update_response.raise_for_status()
-print('Updated the custom field:', repr(update_response.json()))
+print('Updated the custom field:', json.dumps(update_response.json(), indent=4))
 
 # delete the custom field
 delete_response = session.delete(field_url)
