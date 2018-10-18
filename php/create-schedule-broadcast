@@ -1,0 +1,103 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+// Create a Guzzle client configured to use OAuth for authentication
+$stack = HandlerStack::create();
+$client = new Client([
+    'base_uri' => 'https://api.aweber.com/1.0/',
+    'handler' => $stack,
+    'auth' => 'oauth'
+]);
+
+// Load credentials into the Oauth client
+$credentials = parse_ini_file('credentials.ini');
+$requestMiddleware = new Oauth1([
+    'consumer_key' => $credentials['consumerKey'],
+    'consumer_secret' => $credentials['consumerSecret'],
+    'token' => $credentials['accessToken'],
+    'token_secret' => $credentials['tokenSecret'],
+]);
+$stack->push($requestMiddleware);
+
+/**
+ * Get all the entries for a collection by paginating
+ *
+ * @param Client $client guzzle client instance
+ * @param string $url URL to get
+ * @return array
+ */
+function getCollection($client, $url) {
+    $collection = array();
+    do {
+        $response = $client->get($url);
+        $page = json_decode($response->getBody(), true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    } while (isset($url));
+    return $collection;
+}
+
+// Get an account to search on
+$accounts = getCollection($client, 'accounts');
+
+// Get a list to find broadcasts on
+$lists = getCollection($client, $accounts[0]['lists_collection_link']);
+
+$data = array(
+    // the broadcast html, this can be provided without body_text
+    'body_html' => '<html><body>An html version of my email</body></html>',
+
+    // if provided, this will be the plain text version of the email
+    // if this is not provided, it will be auto-generated based on the body_html
+    'body_text' => 'A plain text version of my email',
+
+    // this is the broadcast subject line
+    'subject' => 'This is an email created by the api!',
+
+    // if there are links in this broadcast, track them
+    'click_tracking_enabled' => 'true',
+
+    // include or exclude subscribers on other lists in this broadcast
+    // these are lists of URI's or list links
+    'exclude_lists' => [],
+    'include_lists' => [],
+
+    // this means the broadcast will be available via a url after it's sent
+    'is_archived' => 'true',
+
+    // if notifications are enabled and notify_on_send is True, send an email
+    // to the AWeber account holder when this broadcast stats' are available
+    'notify_on_send' => 'true',
+);
+
+// if enabled, get the facebook url to share the broadcast to facebook
+$integrations = getCollection($client, $accounts[0]['integrations_collection_link']);
+foreach ($integrations as $integration) {
+    if (strtolower($integration['service_name']) == 'facebook') {
+        // there could be multiple, so pick the first one we find and break
+        $data['facebook_integration'] = $integration['self_link'];
+        break;
+    }
+}
+
+// make the broadcast on the first list
+$broadcastResponse = $client->post(
+    "{$lists[0]['self_link']}/broadcasts", ['form_params' => $data]);
+$broadcast = json_decode($broadcastResponse->getBody(), true);
+
+// schedule the broadcast we made
+$timestamp = new \DateTime('now', new \DateTimeZone('UTC'));
+$scheduledFor = $timestamp->format(DateTime::ATOM);  // must be iso8601 compliant
+$scheduleResponse = $client->post(
+        "{$broadcast['self_link']}/schedule", ['form_params' => array('scheduled_for' => $scheduledFor)]);
+
+// retrieve the scheduled broadcast to see the updated scheduled_for
+$scheduledResponse = $client->get($broadcast['self_link']);
+$scheduledBroadcast = json_decode($scheduledResponse->getBody(), true);
+
+echo "Scheduled broadcast subject: {$scheduledBroadcast['subject']} on list: {$lists[0]['name']}";
+echo "to be sent at: {$scheduledBroadcast['scheduled_for']}";
