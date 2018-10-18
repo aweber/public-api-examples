@@ -42,18 +42,15 @@ def print_webform_info(data, indent=8):
 
 
 # get an account to get webforms for
-account_url = 'https://api.aweber.com/1.0/accounts'
-accounts = get_collection(account_url)
-account = accounts[0]  # choose the first account
+accounts = get_collection('https://api.aweber.com/1.0/accounts')
+account_info = accounts[0]  # choose the first account
 
 # get a list to get webforms for
-lists_url = account['lists_collection_link']
-lists = get_collection(lists_url)
+lists = get_collection(account_info['lists_collection_link'])
 list_info = lists[0]  # choose the first list
 
 # get all the webforms for a list
-webforms_url = list_info['web_forms_collection_link']
-webforms = get_collection(webforms_url)
+webforms = get_collection(list_info['web_forms_collection_link'])
 if not webforms:
     print('No webforms for', list_info['name'])
     sys.exit()
