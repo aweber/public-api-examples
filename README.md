@@ -14,13 +14,13 @@ set.
 **AWeber Developer accounts** are completely free accounts that are used to
 create and publish applications that are available for use to *AWeber
 Customers*.  You can create a new account or access an existing one at
-https://labs.aweber.com/.
+<https://labs.aweber.com/>.
 
 **AWeber Customer accounts** are used by small businesses, entrepreneurs,
 and email marketers to maintain relationships with their customers.  Customer
 accounts use AWeber API applications to automate managing their customer
 data or integrate their AWeber account [with other services].  You can get a
-free account at https://www.aweber.com/order.htm.
+free account at <https://www.aweber.com/order.htm>.
 
 ## Sample scripts
 Once you have an *AWeber Developer account* and access to an *AWeber Customer
@@ -28,7 +28,7 @@ account*, you need to create an **application** in the *AWeber Developer
 account*.  The *application* is simply a name for a pair of OAuth tokens
 along with the access that the tokens require.  Applications are easy to
 create so you can simply create one to run examples with.  Log in to your
-Developer account and go to https://labs.aweber.com/apps to create a new
+Developer account and go to <https://labs.aweber.com/apps> to create a new
 application.  You will need the **Consumer Key** and **Consumer Secret**
 that are displayed for the application to run the examples.
 
