@@ -4,7 +4,7 @@ actions. Each sub-directory contains example scripts in a specific
 programming language.
 
 ## Pre-requisites
-You need a **AWeber Developer account** as well as a **AWeber Customer
+You need an **AWeber Developer account** as well as an **AWeber Customer
 account** in order to run the examples. The AWeber API uses OAuth 1.0a to
 control and secure access to our system. Each sub-directory contains a script
 that will generate the necessary OAuth credentials but you need access to
@@ -16,15 +16,15 @@ create and publish applications that are available for use to *AWeber
 Customers*.  You can create a new account or access an existing one at
 https://labs.aweber.com/.
 
-**AWeber Customer accounts** are used by small businesses, entreprenaurs,
+**AWeber Customer accounts** are used by small businesses, entrepreneurs,
 and email marketers to maintain relationships with their customers.  Customer
 accounts use AWeber API applications to automate managing their customer
 data or integrate their AWeber account [with other services].  You can get a
 free account at https://www.aweber.com/order.htm.
 
 ## Sample scripts
-Once you have a *AWeber Developer account* and access to a *AWeber Customer
-account*, you need to create a **application** in the *AWeber Developer
+Once you have an *AWeber Developer account* and access to an *AWeber Customer
+account*, you need to create an **application** in the *AWeber Developer
 account*.  The *application* is simply a name for a pair of OAuth tokens
 along with the access that the tokens require.  Applications are easy to
 create so you can simply create one to run examples with.  Log in to your
@@ -34,7 +34,7 @@ that are displayed for the application to run the examples.
 
 ### Retrieving access tokens
 Each sub-directory contains a script named **get-access-tokens** that will
-connect your application to a *AWeber Customer account* and record the
+connect your application to an *AWeber Customer account* and record the
 generated tokens in a file that is used by the other scripts.  You will need
 to run this script *before* you can run the other scripts.  The following
 transcript is an example of running this script:
@@ -50,9 +50,9 @@ You enter the *Consumer Key* and *Consumer Secret* associated with your
 application.  The Consumer Key is shown as `pT9ObgUOU8E8jbDzSiejjEFC` in the
 example.  The script will initiate the OAuth handshake and generate a URL to
 complete the connection.  Open the URL in a web browser to connect your
-application to a *AWeber Customer account*.  After logging in you will be
+application to an *AWeber Customer account*.  After logging in you will be
 directed to a page containing a **verifier code** that you need to enter.
-This is shown as `RZx7nX` in the exmaple.  Once this process is completed,
+This is shown as `RZx7nX` in the example.  Once this process is completed,
 the OAuth tokens are stored in a file that is read in by the other scripts
 so that you do not need to paste the access tokens into each script.
 
