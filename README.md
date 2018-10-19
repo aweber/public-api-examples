@@ -46,15 +46,16 @@ transcript is an example of running this script:
     Log in and paste the returned verifier code here: RZx7nX
     Updated credentials.json with your new credentials
 
-You enter the *Consumer Key* and *Consumer Secret* associated with your
+You enter the **Consumer Key** and **Consumer Secret** associated with your
 application.  The Consumer Key is shown as `pT9ObgUOU8E8jbDzSiejjEFC` in the
 example.  The script will initiate the OAuth handshake and generate a URL to
 complete the connection.  Open the URL in a web browser to connect your
 application to an *AWeber Customer account*.  After logging in you will be
-directed to a page containing a **verifier code** that you need to enter.
-This is shown as `RZx7nX` in the example.  Once this process is completed,
-the OAuth tokens are stored in a file that is read in by the other scripts
-so that you do not need to paste the access tokens into each script.
+directed to a page containing a **verifier code** that you will copy and
+paste when running the *get-access-tokens* script.  This is shown as `RZx7nX`
+in the example.  Once this process is completed, the OAuth tokens are stored
+in a file that is read in by the other scripts so that you do not need to
+paste the access tokens into each script.
 
 ### Running the examples
 Once you have retrieved the access tokens, you can run any of the scripts
