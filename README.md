@@ -11,16 +11,15 @@ that will generate the necessary OAuth credentials but you need access to
 **both** the AWeber Developer and Customer accounts to generate a credential
 set.
 
-**AWeber Developer accounts** are completely free accounts that are used to
-create and publish applications that are available for use to *AWeber
-Customers*.  You can create a new account or access an existing one at
-<https://labs.aweber.com/>.
+**AWeber Developer accounts** are free accounts used to create applications
+for use by *AWeber Customers*.  You can create a new *developer* account or
+access an existing one at <https://labs.aweber.com/>.
 
 **AWeber Customer accounts** are used by small businesses, entrepreneurs,
 and email marketers to maintain relationships with their customers.  Customer
-accounts use AWeber API applications to automate managing their customer
-data or integrate their AWeber account [with other services].  You can get a
-free account at <https://www.aweber.com/order.htm>.
+accounts applications created by developers to automate the management of
+their customer data or integrate their AWeber account [with other services].
+You can get a *trial customer* account at <https://www.aweber.com/order.htm>.
 
 ## Sample scripts
 Once you have an *AWeber Developer account* and access to an *AWeber Customer
