@@ -1,0 +1,100 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+// Create a Guzzle client configured to use OAuth for authentication
+$stack = HandlerStack::create();
+$client = new Client([
+    'base_uri' => 'https://api.aweber.com/1.0/',
+    'handler' => $stack,
+    'auth' => 'oauth'
+]);
+
+// Load credentials into the Oauth client
+$credentials = parse_ini_file('credentials.ini');
+$requestMiddleware = new Oauth1([
+    'consumer_key' => $credentials['consumerKey'],
+    'consumer_secret' => $credentials['consumerSecret'],
+    'token' => $credentials['accessToken'],
+    'token_secret' => $credentials['tokenSecret'],
+]);
+$stack->push($requestMiddleware);
+
+/**
+ * Get all the entries for a collection by paginating
+ *
+ * @param Client $client guzzle client instance
+ * @param string $url URL to get
+ * @return array
+ */
+function getCollection($client, $url) {
+    $collection = array();
+    do {
+        $body = $client->get($url)->getBody();
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    } while (isset($url));
+    return $collection;
+}
+
+/**
+ * Print details for a webform or split test component.
+ *
+ * @param array $data webform or split test data
+ * @param int $indent number of spaces to indent
+ */
+function printWebformInfo($data, $indent = 8) {
+    $prefix = str_repeat(' ', $indent);
+    echo "{$prefix}Type: {$data['type']}\n";
+    echo "{$prefix}HTML source: {$data['html_source_link']}\n";
+    echo "{$prefix}JS source: {$data['javascript_source_link']}\n";
+    echo "{$prefix}Displays: {$data['total_displays']} ({$data['total_unique_displays']} unique)\n";
+    echo "{$prefix}Submissions: {$data['total_submissions']}\n";
+    echo "{$prefix}Conversion: " . number_format($data['conversion_percentage'], 1) . "% ";
+    echo "(" . number_format($data['unique_conversion_percentage'], 1) . "% unique)\n";
+}
+
+// Get an account to get webforms for
+$accounts = getCollection($client, 'accounts');
+$account = $accounts[0];  // choose the first account
+
+// Get a list to get webforms for
+$lists = getCollection($client, $account['lists_collection_link']);
+$list = $lists[0];  // choose the first list
+
+
+// Get all the webforms for a list
+$webforms = getCollection($client, $list['web_forms_collection_link']);
+if (empty($webforms)) {
+    echo "No webforms for {$list['name']}\n";
+    exit();
+}
+
+echo "Webforms for {$list['name']}:\n";
+foreach ($webforms as $webform) {
+    echo "    {$webform['name']}:\n";
+    printWebformInfo($webform);
+}
+
+echo "\n";
+
+// Get all the webform split tests for a list
+$splitTests = getCollection($client, $list['web_form_split_tests_collection_link']);
+if (empty($splitTests)) {
+    echo "No webform split tests for {$list['name']}\n";
+    exit();
+}
+
+echo "Webform split tests for {$list['name']}:\n";
+foreach ($splitTests as $splitTest) {
+    echo "    {$splitTest['name']}: {$splitTest['javascript_source_link']}\n";
+    $components = getCollection($client, $splitTest['components_collection_link']);
+    foreach ($components as $component) {
+        echo "        {$component['name']} ({$component['weight']}%)\n";
+        printWebformInfo($component, 12);
+    }
+}
