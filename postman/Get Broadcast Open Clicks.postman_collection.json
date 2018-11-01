@@ -1,0 +1,309 @@
+{
+	"info": {
+		"_postman_id": "b8fcf893-93e4-4d97-85e2-7fdcea96f15d",
+		"name": "Get Broadcast Open Clicks",
+		"description": "This collection will return a list of link in a randomly selected broadcast",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
+						"exec": [
+							"pm.test(\"Successfully got an accountId\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    if (typeof jsonData.entries[0].id == 'number' ) {",
+							"        pm.globals.set(\"accountId\",jsonData.entries[0].id )",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists on Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
+						"exec": [
+							"pm.test(\"Successfully got an listId\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    if (typeof jsonData.total_size == 'number' ) {",
+							"        var listId = Math.floor((Math.random() * jsonData.total_size ))",
+							"        pm.globals.set(\"listId\",jsonData.entries[listId].id) ",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Number of Broadcasts on List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
+						"exec": [
+							"pm.test(\"Successfully number of broadcasts in list\", function() {",
+							"    var broadcast_entry = Math.floor((Math.random() * responseBody ))",
+							"    if (typeof broadcast_entry == 'number' ) {",
+							"        pm.globals.set(\"broadcast_entry\",broadcast_entry )",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?campaign_type=b&ws.op=find&ws.show=total_size",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns"
+					],
+					"query": [
+						{
+							"key": "campaign_type",
+							"value": "b"
+						},
+						{
+							"key": "ws.op",
+							"value": "find"
+						},
+						{
+							"key": "ws.show",
+							"value": "total_size"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Random Broadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
+						"exec": [
+							"pm.test(\"Successfully got a random broadcast\", function() {",
+							"    var jsonData = pm.response.json()",
+							"    if (typeof jsonData.entries[pm.globals.get(\"broadcast_entry\")].id == 'number' ) {",
+							"        pm.globals.set(\"broadcastId\", jsonData.entries[pm.globals.get(\"broadcast_entry\")].id)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=b",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns"
+					],
+					"query": [
+						{
+							"key": "ws.op",
+							"value": "find"
+						},
+						{
+							"key": "campaign_type",
+							"value": "b"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Links for Broadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
+						"exec": [
+							"pm.test(\"Sucessfully retreived links in broadcast\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.a('number')",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/links",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"links"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			},
+			{
+				"key": "addParamsToHeader",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": false,
+				"type": "boolean"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "00ba3184-049b-4f7c-8fe5-05aba9341f03",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f260ba97-0427-43a5-9a77-3eae909bc925",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Successfully submitted request\", function(){",
+					"    pm.response.to.have.status(200);",
+					"});",
+					""
+				]
+			}
+		}
+	]
+}

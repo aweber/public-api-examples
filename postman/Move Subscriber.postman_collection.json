@@ -1,0 +1,293 @@
+{
+	"info": {
+		"_postman_id": "9a10c8c3-abf7-49da-961f-751b6a598a44",
+		"name": "Move Subscriber",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Successfully get an account Id\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries[0].id).to.be.a('number')",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id )",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"pm.test(\"Successfully get a  random list\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"At least two lists found\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.above(1);",
+							"    pm.globals.set(\"source_listId\",jsonData.entries[0].id );",
+							"    pm.globals.set(\"destination_listId\",jsonData.entries[1].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Subscribers on Source List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
+						"exec": [
+							"pm.test(\"Successfully get a list\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"List has at least one subscriber\", function() {",
+							"   var jsonData = pm.response.json() ;",
+							"   pm.expect(jsonData.total_size).to.be.above(0);",
+							"   pm.globals.set(\"subscriber_link\", jsonData.entries[0].self_link);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{source_listId}}/subscribers",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{source_listId}}",
+						"subscribers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Subscriber",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
+						"exec": [
+							"pm.test(\"Successfully requested subscriber info\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{subscriber_link}}",
+					"host": [
+						"{{subscriber_link}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Move subscriber",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "054015e7-1062-4de8-9dc2-8e4b84849b25",
+						"exec": [
+							"pm.test(\"Successfully moved subscriber\", function(){",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "list_link",
+							"value": "{{destination_listId}}",
+							"type": "text"
+						},
+						{
+							"key": "ws.op",
+							"value": "move",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{subscriber_link}}",
+					"host": [
+						"{{subscriber_link}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			},
+			{
+				"key": "addParamsToHeader",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": false,
+				"type": "boolean"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6450ab20-d1e5-4c86-a7da-ee2006aa0142",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0d0e8432-9dcd-4f24-a050-f94b01ab49d2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

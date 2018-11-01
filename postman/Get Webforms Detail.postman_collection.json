@@ -1,0 +1,239 @@
+{
+	"info": {
+		"_postman_id": "45659f46-b201-42a1-8918-9b13b852dbb3",
+		"name": "Get Webforms Detail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Successfully get an account Id\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries[0].id).to.be.a('number')",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id )",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"pm.test(\"Successfully get a  random list\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.a('number')",
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id )",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Webforms",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1b925ef-99c3-4ff6-95c9-1cd3b4f44801",
+						"exec": [
+							"pm.test(\"Successfully got the webforms for the list\", function() {",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/web_forms",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"web_forms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Split Tests for List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a03c4a53-5303-4017-88a5-7d6bf4b04e7f",
+						"exec": [
+							"pm.test(\"Successfully got the split tests for the list\", function() {",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/web_form_split_tests",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"web_form_split_tests"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			},
+			{
+				"key": "addParamsToHeader",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": false,
+				"type": "boolean"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "acf88c90-760a-47d1-bb38-c9ecd3621ac3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "32ff2b2f-711b-4e17-b1f5-0ea1d5de170c",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Successfully submitted request\", function(){",
+					"    pm.response.to.have.status(200);",
+					"});",
+					""
+				]
+			}
+		}
+	]
+}

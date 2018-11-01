@@ -1,0 +1,483 @@
+{
+	"info": {
+		"_postman_id": "ea93854f-6abc-4488-a498-7d8313a6d42e",
+		"name": "Get Broadcast Stats",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"accountId\",jsonData.entries[0].id )"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists on Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"var listId = Math.floor((Math.random() * jsonData.total_size ))",
+							"pm.globals.set(\"listId\",jsonData.entries[listId].id )"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Random List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b41770d3-1044-48f5-9536-6cf9ba89088a",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"list_name\",jsonData.name )"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Total Sent Broadcasts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e238f70c-3010-41a2-ba60-6fd4e312850d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"var broadcastNumber = Math.floor((Math.random() * jsonData.total_size ))",
+							"pm.globals.set(\"broadcast_number\",broadcastNumber )"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}/broadcasts/total?status=sent",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"broadcasts",
+						"total"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "sent"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Broadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c8c9f482-117c-4cc9-87c7-04dbb1e65bfb",
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"pm.globals.set(\"broadcastId\", jsonData.broadcastId)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{broadcast_self_link}}",
+					"host": [
+						"{{broadcast_self_link}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Stats Entries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c51162ab-dfa9-42e5-82da-3acf6ca35bd1",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Clicks by Link",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/clicks_by_link",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"clicks_by_link"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Unique and Total Clicks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_clicks",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_clicks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Unique and Total Opens",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_opens",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_opens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Sales",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_sales",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_sales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Unsubscribed",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_unsubscribed",
+					"protocol": "https",
+					"host": [
+						"api",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"1.0",
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_unsubscribed"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			},
+			{
+				"key": "addParamsToHeader",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": false,
+				"type": "boolean"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "00ba3184-049b-4f7c-8fe5-05aba9341f03",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f260ba97-0427-43a5-9a77-3eae909bc925",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Successfully submitted request\", function(){",
+					"    pm.response.to.have.status(200);",
+					"});",
+					""
+				]
+			}
+		}
+	]
+}
