@@ -99,8 +99,8 @@ foreach (['draft', 'scheduled', 'sent'] as $status) {
 
 // Get the first broadcast in each category
 foreach (['draft', 'scheduled', 'sent'] as $status) {
-    $bcUrl = "{$listUrl}/broadcasts?status={$status}";
-    $broadcasts = getCollection($client, $bcUrl);
+    $linkKey = "{$status}_broadcasts_link";
+    $broadcasts = getCollection($client, $lists[0][$linkKey]);
     $subject = $broadcasts ? $broadcasts[0]['subject'] : 'N/A';
     echo "First {$status} broadcast subject: ${subject}\n";
 }
