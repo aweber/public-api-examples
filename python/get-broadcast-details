@@ -72,7 +72,7 @@ for status in 'draft', 'scheduled', 'sent':
 
 # get the first broadcast in each category
 for status in 'draft', 'scheduled', 'sent':
-    bc_url = '{}/broadcasts?status={}'.format(list_url, status)
+    bc_url = lists[0]['{}_broadcasts_link'.format(status)]
     broadcasts = get_collection(bc_url)
     subject = broadcasts[0]['subject'] if broadcasts else 'N/A'
     print('First {} broadcast subject: {}'.format(status, subject))
