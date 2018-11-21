@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b8fcf893-93e4-4d97-85e2-7fdcea96f15d",
+		"_postman_id": "d8065a43-83c9-489c-9009-2db997bd9f46",
 		"name": "Get Broadcast Open Clicks",
 		"description": "This collection will return a list of link in a randomly selected broadcast",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -14,11 +14,27 @@
 					"script": {
 						"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
 						"exec": [
-							"pm.test(\"Successfully got an accountId\", function() {",
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
 							"    var jsonData = pm.response.json();",
-							"    if (typeof jsonData.entries[0].id == 'number' ) {",
-							"        pm.globals.set(\"accountId\",jsonData.entries[0].id )",
-							"    }",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
 							"});"
 						],
 						"type": "text/javascript"
@@ -33,9 +49,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts",
+					"raw": "{{base_url}}/accounts",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts"
@@ -52,11 +68,16 @@
 					"script": {
 						"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
 						"exec": [
-							"pm.test(\"Successfully got an listId\", function() {",
-							"    var jsonData = pm.response.json();",
-							"    if (typeof jsonData.total_size == 'number' ) {",
-							"        var listId = Math.floor((Math.random() * jsonData.total_size ))",
-							"        pm.globals.set(\"listId\",jsonData.entries[listId].id) ",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Retrieved more one or more lists for account\", function(){",
+							"    pm.expect(jsonData.total_size).is.be.above(0);",
+							"});",
+							"",
+							"pm.test(\"Successfully selected a random listId\", function() {",
+							"    var listId = Math.floor((Math.random() * jsonData.total_size ));",
+							"    if (typeof jsonData.entries[0].id == 'number' ) {",
+							"        pm.globals.set(\"listId\",jsonData.entries[0].id );",
 							"    }",
 							"});"
 						],
@@ -72,9 +93,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts/{{accountId}}/lists",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts",
@@ -93,10 +114,10 @@
 					"script": {
 						"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
 						"exec": [
-							"pm.test(\"Successfully number of broadcasts in list\", function() {",
-							"    var broadcast_entry = Math.floor((Math.random() * responseBody ))",
+							"pm.test(\"Successfully selected a random broadcast Id from list\", function() {",
+							"    var broadcast_entry = Math.floor((Math.random() * 100 ));",
 							"    if (typeof broadcast_entry == 'number' ) {",
-							"        pm.globals.set(\"broadcast_entry\",broadcast_entry )",
+							"        pm.globals.set(\"broadcast_entry\", broadcast_entry );",
 							"    }",
 							"});"
 						],
@@ -112,9 +133,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?campaign_type=b&ws.op=find&ws.show=total_size",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?campaign_type=b&ws.op=find&ws.show=total_size",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts",
@@ -149,11 +170,9 @@
 					"script": {
 						"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
 						"exec": [
-							"pm.test(\"Successfully got a random broadcast\", function() {",
-							"    var jsonData = pm.response.json()",
-							"    if (typeof jsonData.entries[pm.globals.get(\"broadcast_entry\")].id == 'number' ) {",
-							"        pm.globals.set(\"broadcastId\", jsonData.entries[pm.globals.get(\"broadcast_entry\")].id)",
-							"    }",
+							"pm.test(\"Successfully retrieved a random broadcast\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.globals.set(\"broadcastId\", jsonData.entries[pm.globals.get(\"broadcast_entry\")].id);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -168,9 +187,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=b",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=b",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts",
@@ -218,9 +237,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/links",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/links",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts",
@@ -239,6 +258,11 @@
 	"auth": {
 		"type": "oauth1",
 		"oauth1": [
+			{
+				"key": "addEmptyParamsToSign",
+				"value": true,
+				"type": "boolean"
+			},
 			{
 				"key": "tokenSecret",
 				"value": "{{token_secret}}",
@@ -271,12 +295,7 @@
 			},
 			{
 				"key": "addParamsToHeader",
-				"value": false,
-				"type": "boolean"
-			},
-			{
-				"key": "addEmptyParamsToSign",
-				"value": false,
+				"value": true,
 				"type": "boolean"
 			}
 		]
@@ -304,6 +323,14 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "a1ce6662-b8b1-4a6f-b202-de1d618156d3",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
 		}
 	]
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9a10c8c3-abf7-49da-961f-751b6a598a44",
+		"_postman_id": "daac5da3-63ab-4d26-9766-5981cf6977f5",
 		"name": "Move Subscriber",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,12 +13,33 @@
 					"script": {
 						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
 						"exec": [
-							"pm.test(\"Successfully get an account Id\", function() {",
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
 							"    pm.response.to.have.status(200);",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.entries[0].id).to.be.a('number')",
-							"    pm.globals.set(\"accountId\",jsonData.entries[0].id )",
-							"});"
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -32,16 +53,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://api.aweber.com/1.0/accounts",
-					"protocol": "https",
+					"raw": "{{base_url}}accounts",
 					"host": [
-						"api",
-						"aweber",
-						"com"
-					],
-					"path": [
-						"1.0",
-						"accounts"
+						"{{base_url}}accounts"
 					]
 				}
 			},
@@ -78,16 +92,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists",
-					"protocol": "https",
+					"raw": "{{base_url}}accounts/{{accountId}}/lists",
 					"host": [
-						"api",
-						"aweber",
-						"com"
+						"{{base_url}}accounts"
 					],
 					"path": [
-						"1.0",
-						"accounts",
 						"{{accountId}}",
 						"lists"
 					]
@@ -125,9 +134,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{source_listId}}/subscribers",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{source_listId}}/subscribers",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts",
@@ -227,6 +236,16 @@
 		"type": "oauth1",
 		"oauth1": [
 			{
+				"key": "addParamsToHeader",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": true,
+				"type": "boolean"
+			},
+			{
 				"key": "tokenSecret",
 				"value": "{{token_secret}}",
 				"type": "string"
@@ -255,16 +274,6 @@
 				"key": "version",
 				"value": "1.0",
 				"type": "string"
-			},
-			{
-				"key": "addParamsToHeader",
-				"value": false,
-				"type": "boolean"
-			},
-			{
-				"key": "addEmptyParamsToSign",
-				"value": false,
-				"type": "boolean"
 			}
 		]
 	},
@@ -288,6 +297,14 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d84e8f56-0ad5-4d28-9e32-d177f9336c2d",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1,0",
+			"type": "string"
 		}
 	]
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "45659f46-b201-42a1-8918-9b13b852dbb3",
+		"_postman_id": "4de0a8c8-cef6-487d-9c93-ceedf9573ea7",
 		"name": "Get Webforms Detail",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,11 +13,29 @@
 					"script": {
 						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
 						"exec": [
-							"pm.test(\"Successfully get an account Id\", function() {",
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.entries[0].id).to.be.a('number')",
-							"    pm.globals.set(\"accountId\",jsonData.entries[0].id )",
-							"});"
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -31,15 +49,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://api.aweber.com/1.0/accounts",
-					"protocol": "https",
+					"raw": "{{base_url}}/accounts",
 					"host": [
-						"api",
-						"aweber",
-						"com"
+						"{{base_url}}"
 					],
 					"path": [
-						"1.0",
 						"accounts"
 					]
 				}
@@ -72,16 +86,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://api.aweber.com/1.0/accounts/{{accountId}}/lists",
-					"protocol": "https",
+					"raw": "{{base_url}}accounts/{{accountId}}/lists",
 					"host": [
-						"api",
-						"aweber",
-						"com"
+						"{{base_url}}accounts"
 					],
 					"path": [
-						"1.0",
-						"accounts",
 						"{{accountId}}",
 						"lists"
 					]
@@ -112,9 +121,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/web_forms",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/web_forms",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts",
@@ -150,9 +159,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_URL}}/accounts/{{accountId}}/lists/{{listId}}/web_form_split_tests",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/web_form_split_tests",
 					"host": [
-						"{{base_URL}}"
+						"{{base_url}}"
 					],
 					"path": [
 						"accounts",
@@ -201,7 +210,7 @@
 			},
 			{
 				"key": "addParamsToHeader",
-				"value": false,
+				"value": true,
 				"type": "boolean"
 			},
 			{
@@ -234,6 +243,14 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e04762ca-a018-47bd-ab2b-17951d2e952f",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
 		}
 	]
 }

@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "2af9e2ea-d7f5-4fcc-bf03-9e37f4109ce4",
-		"name": "Manage Custom Fields",
+		"_postman_id": "cf8049f8-9671-4c2b-81a9-b9fbd088d029",
+		"name": "Manage Subscriber",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [{
@@ -36,7 +36,9 @@
 						"",
 						"pm.test(\"Successfully submitted request\", function() {",
 						"    pm.response.to.have.status(200);",
-						"});"
+						"});",
+						"",
+						""
 					],
 					"type": "text/javascript"
 				}
@@ -71,9 +73,9 @@
 						"    pm.response.to.have.status(200);",
 						"});",
 						"",
-						"pm.test(\"At least one list returned\", function() {",
+						"pm.test(\"At least two lists found\", function() {",
 						"    var jsonData = pm.response.json();",
-						"    pm.expect(jsonData.total_size).to.be.above(0);",
+						"    pm.expect(jsonData.total_size).to.be.above(1);",
 						"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
 						"});"
 					],
@@ -88,12 +90,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_url}}/0/accounts/{{accountId}}/lists",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"0",
 						"accounts",
 						"{{accountId}}",
 						"lists"
@@ -103,15 +104,25 @@
 			"response": []
 		},
 		{
-			"name": "Get the First List",
+			"name": "Check is subscriber is already on list",
 			"event": [{
 				"listen": "test",
 				"script": {
-					"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
+					"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
 					"exec": [
-						"pm.test(\"Successfully get a list\", function(){",
+						"pm.test(\"Successfully seaarched list for subscriber\", function(){",
 						"    pm.response.to.have.status(200);",
+						"    pm.test(\"Subscriber email is not empty or null\", function() {",
+						"        pm.expect(pm.environment.has(\"subscriber_email\")).to.eql(true) && pm.expect(pm.environment.get(\"subscriber_email\")).not.eql(\"\");",
+						"        pm.test(\"Subscriber not already on list\", function() {",
+						"            var jsonData = pm.response.json();",
+						"            pm.expect(jsonData.entries.length).eql(0)",
+						"        });",
+						"    });",
 						"});",
+						"",
+						"",
+						"",
 						""
 					],
 					"type": "text/javascript"
@@ -125,60 +136,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"accounts",
-						"{{accountId}}",
-						"lists",
-						"{{listId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Custom Fields",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
-					"exec": [
-						"var jsonData =  pm.response.json();",
-						"",
-						"pm.test(\"Get custom fields in list\", function(){",
-						"    pm.response.to.have.status(200);",
-						"});",
-						"",
-						"pm.test(\"One or more custom fields returned\", function() {",
-						"    pm.expect(jsonData.total_size).to.be.above(0);",
-						"});",
-						"",
-						"pm.test(\"New custom field is not empty and not null\", function() {",
-						"   pm.expect(pm.environment.has(\"custom_field\")).not.eql(\"\") && pm.expect(pm.environment.get(\"custom_field\")).to.eql(true);",
-						"});",
-						"",
-						"pm.test(\"New custom field is unique\", function() {",
-						"    for ( i = 0; i < jsonData.entries.length; i++ ){",
-						"        pm.expect(jsonData.entries[i].name).to.not.include(pm.globals.get(\"custom_field\") );",
-						"    } ",
-						"});",
-						""
-					],
-					"type": "text/javascript"
-				}
-			}],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/custom_fields",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/subscribers?ws.op=find&email={{subscriber_email}}",
 					"host": [
 						"{{base_url}}"
 					],
@@ -187,22 +145,30 @@
 						"{{accountId}}",
 						"lists",
 						"{{listId}}",
-						"custom_fields"
+						"subscribers"
+					],
+					"query": [{
+							"key": "ws.op",
+							"value": "find"
+						},
+						{
+							"key": "email",
+							"value": "{{subscriber_email}}"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Create Custom Field",
+			"name": "Add subscriber to list",
 			"event": [{
 				"listen": "test",
 				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+					"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
 					"exec": [
-						"pm.test(\"Create custom field\", function(){",
+						"pm.test(\"Successfully added subscriber to list\", function(){",
 						"    pm.response.to.have.status(201);",
-						"    pm.globals.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
 						"});"
 					],
 					"type": "text/javascript"
@@ -213,25 +179,15 @@
 				"header": [{
 					"key": "Content-Type",
 					"name": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
+					"value": "application/json",
 					"type": "text"
 				}],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [{
-							"key": "name",
-							"value": "{{custom_field}}",
-							"type": "text"
-						},
-						{
-							"key": "ws.op",
-							"value": "create",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\t\"email\": \"{{subscriber_email\"}"
 				},
 				"url": {
-					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/custom_fields",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/subscribers?ws.op=create",
 					"host": [
 						"{{base_url}}"
 					],
@@ -240,87 +196,12 @@
 						"{{accountId}}",
 						"lists",
 						"{{listId}}",
-						"custom_fields"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Custom Field",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
-					"exec": [
-						"pm.test(\"Update custom field\", function(){",
-						"    pm.response.to.have.status(209);",
-						"});",
-						"",
-						""
+						"subscribers"
 					],
-					"type": "text/javascript"
-				}
-			}],
-			"request": {
-				"method": "PATCH",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/json",
-					"type": "text"
-				}],
-				"body": {
-					"mode": "raw",
-					"raw": "{\t\"name\": \"{{updated_custom_field}}\",\t\"is_subscriber_updateable\": true}"
-				},
-				"url": {
-					"raw": "{{custom_field_url}}",
-					"host": [
-						"{{custom_field_url}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Custom Field",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
-					"exec": [
-						"pm.test(\"Delete custom field\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    pm.globals.set(\"custom_field_url\", \"\");",
-						"});",
-						"",
-						""
-					],
-					"type": "text/javascript"
-				}
-			}],
-			"request": {
-				"method": "DELETE",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
-					"type": "text"
-				}],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [{
+					"query": [{
 						"key": "ws.op",
-						"value": "delete",
-						"type": "text"
+						"value": "create"
 					}]
-				},
-				"url": {
-					"raw": "{{custom_field_url}}",
-					"host": [
-						"{{custom_field_url}}"
-					]
 				}
 			},
 			"response": []
@@ -392,8 +273,8 @@
 		}
 	],
 	"variable": [{
-		"id": "cebba303-82b2-449e-b3ea-f3ce8c777f6a",
-		"key": "{{base_url}}",
+		"id": "4fdee44b-57ad-4c31-b6d2-08c4ff93c916",
+		"key": "base_url",
 		"value": "https://api.aweber.com/1.0",
 		"type": "string"
 	}]
