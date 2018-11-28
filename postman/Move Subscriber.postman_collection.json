@@ -303,7 +303,7 @@
 		{
 			"id": "d84e8f56-0ad5-4d28-9e32-d177f9336c2d",
 			"key": "base_url",
-			"value": "https://api.aweber.com/1,0",
+			"value": "https://api.aweber.com/1.0",
 			"type": "string"
 		}
 	]

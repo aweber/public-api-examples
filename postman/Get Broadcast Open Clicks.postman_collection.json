@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d8065a43-83c9-489c-9009-2db997bd9f46",
+		"_postman_id": "886568e4-566c-42d1-833e-58b3de8c0833",
 		"name": "Get Broadcast Open Clicks",
 		"description": "This collection will return a list of link in a randomly selected broadcast",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -115,8 +115,8 @@
 						"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
 						"exec": [
 							"pm.test(\"Successfully selected a random broadcast Id from list\", function() {",
-							"    var broadcast_entry = Math.floor((Math.random() * 100 ));",
-							"    if (typeof broadcast_entry == 'number' ) {",
+							"    if (pm.expect(parseInt(responseBody)).to.be.above(0)) {",
+							"        var broadcast_entry = Math.floor((Math.random() * parseInt(responseBody) ));",
 							"        pm.globals.set(\"broadcast_entry\", broadcast_entry );",
 							"    }",
 							"});"

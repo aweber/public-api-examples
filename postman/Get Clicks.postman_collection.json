@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7624955b-8fa1-48f4-8fe2-9b5366b9c685",
+		"_postman_id": "c35a94f9-f5a1-4dae-b976-07c9fd4862aa",
 		"name": "Get Clicks",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -74,8 +74,8 @@
 									"pm.test(\"Successfully got a  random list\", function() {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.total_size).to.be.a('number')",
-									"    var listId = Math.floor((Math.random() * jsonData.total_size ))",
-									"    pm.globals.set(\"listId\",jsonData.entries[listId].id )",
+									"    var list_entry = Math.floor((Math.random() * jsonData.total_size ))",
+									"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id )",
 									"});"
 								],
 								"type": "text/javascript"
@@ -131,14 +131,15 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"accounts",
 								"{{accountId}}",
-								"lists"
+								"lists",
+								"{{listId}}"
 							]
 						}
 					},
@@ -578,9 +579,9 @@
 	],
 	"variable": [
 		{
-			"id": "4ffd9896-ed5f-4ece-a39a-d1568c12ac0a",
-			"key": "{{base_url}",
-			"value": "",
+			"id": "33544656-6242-425d-af03-1668ab40ebb6",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
 			"type": "string"
 		}
 	]

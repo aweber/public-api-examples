@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e3858bf6-6475-4841-97ee-8cf5d364e6a3",
+		"_postman_id": "bfdf9c92-6d2e-4e7d-9f72-94a65d6964c1",
 		"name": "Get Broadcast Details",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -256,13 +256,11 @@
 					"script": {
 						"id": "0d1babcb-7bac-46f3-8982-dd5d013f4b79",
 						"exec": [
-							"pm.test(\"Successfully retrieved link for first draft broadcast\", function(){",
-							"    var jsonData = pm.response.json();",
-							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
-							"        pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
-							"    }",
-							"});",
-							"",
+							"if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"    pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
+							"} else {",
+							"    pm.globals.set(\"draft_broadcast_link\", '');",
+							"}",
 							""
 						],
 						"type": "text/javascript"
@@ -324,12 +322,12 @@
 					"script": {
 						"id": "bdc9f89d-300b-424d-8f3e-99b24d49ec71",
 						"exec": [
-							"pm.test(\"Successfully retrieved link for first scheduled broadcast\", function(){",
-							"    var jsonData = pm.response.json();",
-							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
-							"        pm.globals.set(\"scheduled_broadcast_link\", jsonData.entries[0].self_link);",
-							"    }",
-							"});",
+							"if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"    pm.globals.set(\"scheduled_broadcast_link\", jsonData.entries[0].self_link);",
+							"} else {",
+							"    pm.globals.set(\"scheduled_broadcast_link\", '');",
+							"}",
+							"",
 							""
 						],
 						"type": "text/javascript"
@@ -391,12 +389,11 @@
 					"script": {
 						"id": "42349437-b50b-47da-8b97-d530b3aeffe7",
 						"exec": [
-							"pm.test(\"Successfully retrieved link for first sent broadcast\", function(){",
-							"    var jsonData = pm.response.json();",
-							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
-							"        pm.globals.set(\"sent_broadcast_link\", jsonData.entries[0].self_link);",
-							"    }",
-							"});"
+							"if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"    pm.globals.set(\"sent_broadcast_link\", jsonData.entries[0].self_link);",
+							"} else {",
+							"    pm.globals.set(\"sent_broadcast_link\", '');",
+							"}"
 						],
 						"type": "text/javascript"
 					}
