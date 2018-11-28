@@ -1,48 +1,51 @@
 {
 	"info": {
-		"_postman_id": "cf8049f8-9671-4c2b-81a9-b9fbd088d029",
+		"_postman_id": "04e3d2c8-1dcd-48ec-83cc-d533d220d9c0",
 		"name": "Manage Subscriber",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"item": [{
+	"item": [
+		{
 			"name": "Get Account",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
-					"exec": [
-						"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check access_token is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check token_secret is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Successfully get an account Id\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    var jsonData = pm.response.json();",
-						"    pm.expect(jsonData.entries.length).to.be.above(0);",
-						"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
-						"});",
-						"",
-						"pm.test(\"Successfully submitted request\", function() {",
-						"    pm.response.to.have.status(200);",
-						"});",
-						"",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -64,24 +67,26 @@
 		},
 		{
 			"name": "Get Lists",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
-					"exec": [
-						"pm.test(\"Successfully get a  random list\", function() {",
-						"    pm.response.to.have.status(200);",
-						"});",
-						"",
-						"pm.test(\"At least two lists found\", function() {",
-						"    var jsonData = pm.response.json();",
-						"    pm.expect(jsonData.total_size).to.be.above(1);",
-						"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
-						"});"
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"pm.test(\"Successfully get a  random list\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"At least one list found\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -105,29 +110,31 @@
 		},
 		{
 			"name": "Check is subscriber is already on list",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
-					"exec": [
-						"pm.test(\"Successfully seaarched list for subscriber\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    pm.test(\"Subscriber email is not empty or null\", function() {",
-						"        pm.expect(pm.environment.has(\"subscriber_email\")).to.eql(true) && pm.expect(pm.environment.get(\"subscriber_email\")).not.eql(\"\");",
-						"        pm.test(\"Subscriber not already on list\", function() {",
-						"            var jsonData = pm.response.json();",
-						"            pm.expect(jsonData.entries.length).eql(0)",
-						"        });",
-						"    });",
-						"});",
-						"",
-						"",
-						"",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
+						"exec": [
+							"pm.test(\"Successfully seaarched list for subscriber\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    pm.test(\"Subscriber email is not empty or null\", function() {",
+							"        pm.expect(pm.environment.has(\"subscriber_email\")).to.eql(true) && pm.expect(pm.environment.get(\"subscriber_email\")).not.eql(\"\");",
+							"        pm.test(\"Subscriber not already on list\", function() {",
+							"            var jsonData = pm.response.json();",
+							"            pm.expect(jsonData.entries.length).eql(0)",
+							"        });",
+							"    });",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -147,7 +154,8 @@
 						"{{listId}}",
 						"subscribers"
 					],
-					"query": [{
+					"query": [
+						{
 							"key": "ws.op",
 							"value": "find"
 						},
@@ -162,26 +170,30 @@
 		},
 		{
 			"name": "Add subscriber to list",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
-					"exec": [
-						"pm.test(\"Successfully added subscriber to list\", function(){",
-						"    pm.response.to.have.status(201);",
-						"});"
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
+						"exec": [
+							"pm.test(\"Successfully added subscriber to list\", function(){",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "POST",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/json",
-					"type": "text"
-				}],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\t\"email\": \"{{subscriber_email\"}"
@@ -198,10 +210,12 @@
 						"{{listId}}",
 						"subscribers"
 					],
-					"query": [{
-						"key": "ws.op",
-						"value": "create"
-					}]
+					"query": [
+						{
+							"key": "ws.op",
+							"value": "create"
+						}
+					]
 				}
 			},
 			"response": []
@@ -209,7 +223,8 @@
 	],
 	"auth": {
 		"type": "oauth1",
-		"oauth1": [{
+		"oauth1": [
+			{
 				"key": "addParamsToHeader",
 				"value": true,
 				"type": "boolean"
@@ -251,7 +266,8 @@
 			}
 		]
 	},
-	"event": [{
+	"event": [
+		{
 			"listen": "prerequest",
 			"script": {
 				"id": "6450ab20-d1e5-4c86-a7da-ee2006aa0142",
@@ -272,10 +288,12 @@
 			}
 		}
 	],
-	"variable": [{
-		"id": "4fdee44b-57ad-4c31-b6d2-08c4ff93c916",
-		"key": "base_url",
-		"value": "https://api.aweber.com/1.0",
-		"type": "string"
-	}]
+	"variable": [
+		{
+			"id": "4fdee44b-57ad-4c31-b6d2-08c4ff93c916",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		}
+	]
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f7faf09d-70cc-41c6-8faa-f92d1e225c0f",
+		"_postman_id": "f4f9c4b5-e81b-4d20-ba76-9fc3576d9009",
 		"name": "Get Tags",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -68,7 +68,7 @@
 					"script": {
 						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
 						"exec": [
-							"pm.test(\"Successfully get an account Id\", function() {",
+							"pm.test(\"Successfully get a list Id\", function() {",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.total_size).to.be.above(0);",
 							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
@@ -144,9 +144,6 @@
 					"script": {
 						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
 						"exec": [
-							"pm.test(\"Get tags in list\", function(){",
-							"});",
-							"",
 							""
 						],
 						"type": "text/javascript"

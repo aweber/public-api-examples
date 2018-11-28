@@ -1,46 +1,49 @@
 {
 	"info": {
-		"_postman_id": "2af9e2ea-d7f5-4fcc-bf03-9e37f4109ce4",
+		"_postman_id": "9f736719-a5e0-47bf-a482-53a9b6647e65",
 		"name": "Manage Custom Fields",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"item": [{
+	"item": [
+		{
 			"name": "Get Account",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
-					"exec": [
-						"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check access_token is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check token_secret is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Successfully get an account Id\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    var jsonData = pm.response.json();",
-						"    pm.expect(jsonData.entries.length).to.be.above(0);",
-						"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
-						"});",
-						"",
-						"pm.test(\"Successfully submitted request\", function() {",
-						"    pm.response.to.have.status(200);",
-						"});"
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -62,24 +65,26 @@
 		},
 		{
 			"name": "Get Lists",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
-					"exec": [
-						"pm.test(\"Successfully get a  random list\", function() {",
-						"    pm.response.to.have.status(200);",
-						"});",
-						"",
-						"pm.test(\"At least one list returned\", function() {",
-						"    var jsonData = pm.response.json();",
-						"    pm.expect(jsonData.total_size).to.be.above(0);",
-						"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
-						"});"
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully get a  random list\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"At least one list returned\", function() {",
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -88,12 +93,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_url}}/0/accounts/{{accountId}}/lists",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"0",
 						"accounts",
 						"{{accountId}}",
 						"lists"
@@ -104,19 +108,21 @@
 		},
 		{
 			"name": "Get the First List",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
-					"exec": [
-						"pm.test(\"Successfully get a list\", function(){",
-						"    pm.response.to.have.status(200);",
-						"});",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
+						"exec": [
+							"pm.test(\"Successfully get a list\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -141,35 +147,37 @@
 		},
 		{
 			"name": "Get Custom Fields",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
-					"exec": [
-						"var jsonData =  pm.response.json();",
-						"",
-						"pm.test(\"Get custom fields in list\", function(){",
-						"    pm.response.to.have.status(200);",
-						"});",
-						"",
-						"pm.test(\"One or more custom fields returned\", function() {",
-						"    pm.expect(jsonData.total_size).to.be.above(0);",
-						"});",
-						"",
-						"pm.test(\"New custom field is not empty and not null\", function() {",
-						"   pm.expect(pm.environment.has(\"custom_field\")).not.eql(\"\") && pm.expect(pm.environment.get(\"custom_field\")).to.eql(true);",
-						"});",
-						"",
-						"pm.test(\"New custom field is unique\", function() {",
-						"    for ( i = 0; i < jsonData.entries.length; i++ ){",
-						"        pm.expect(jsonData.entries[i].name).to.not.include(pm.globals.get(\"custom_field\") );",
-						"    } ",
-						"});",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"var jsonData =  pm.response.json();",
+							"",
+							"pm.test(\"Get custom fields in list\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"One or more custom fields returned\", function() {",
+							"    pm.expect(jsonData.total_size).to.be.above(0);",
+							"});",
+							"",
+							"pm.test(\"New custom field is not empty and not null\", function() {",
+							"   pm.expect(pm.environment.has(\"custom_field\")).not.eql(\"\") && pm.expect(pm.environment.get(\"custom_field\")).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"New custom field is unique\", function() {",
+							"    for ( i = 0; i < jsonData.entries.length; i++ ){",
+							"        pm.expect(jsonData.entries[i].name).to.not.include(pm.globals.get(\"custom_field\") );",
+							"    } ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -195,30 +203,35 @@
 		},
 		{
 			"name": "Create Custom Field",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
-					"exec": [
-						"pm.test(\"Create custom field\", function(){",
-						"    pm.response.to.have.status(201);",
-						"    pm.globals.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
-						"});"
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"pm.test(\"Create custom field\", function(){",
+							"    pm.response.to.have.status(201);",
+							"    pm.globals.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "POST",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
-					"type": "text"
-				}],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": [{
+					"urlencoded": [
+						{
 							"key": "name",
 							"value": "{{custom_field}}",
 							"type": "text"
@@ -248,28 +261,32 @@
 		},
 		{
 			"name": "Update Custom Field",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
-					"exec": [
-						"pm.test(\"Update custom field\", function(){",
-						"    pm.response.to.have.status(209);",
-						"});",
-						"",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"pm.test(\"Update custom field\", function(){",
+							"    pm.response.to.have.status(209);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "PATCH",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/json",
-					"type": "text"
-				}],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\t\"name\": \"{{updated_custom_field}}\",\t\"is_subscriber_updateable\": true}"
@@ -285,36 +302,42 @@
 		},
 		{
 			"name": "Delete Custom Field",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
-					"exec": [
-						"pm.test(\"Delete custom field\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    pm.globals.set(\"custom_field_url\", \"\");",
-						"});",
-						"",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"pm.test(\"Delete custom field\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    pm.globals.set(\"custom_field_url\", \"\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "DELETE",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
-					"type": "text"
-				}],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": [{
-						"key": "ws.op",
-						"value": "delete",
-						"type": "text"
-					}]
+					"urlencoded": [
+						{
+							"key": "ws.op",
+							"value": "delete",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
 					"raw": "{{custom_field_url}}",
@@ -328,7 +351,8 @@
 	],
 	"auth": {
 		"type": "oauth1",
-		"oauth1": [{
+		"oauth1": [
+			{
 				"key": "addParamsToHeader",
 				"value": true,
 				"type": "boolean"
@@ -370,7 +394,8 @@
 			}
 		]
 	},
-	"event": [{
+	"event": [
+		{
 			"listen": "prerequest",
 			"script": {
 				"id": "6450ab20-d1e5-4c86-a7da-ee2006aa0142",
@@ -391,10 +416,12 @@
 			}
 		}
 	],
-	"variable": [{
-		"id": "cebba303-82b2-449e-b3ea-f3ce8c777f6a",
-		"key": "{{base_url}}",
-		"value": "https://api.aweber.com/1.0",
-		"type": "string"
-	}]
+	"variable": [
+		{
+			"id": "ce795667-8a60-42f3-96a3-d651fc9f291d",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		}
+	]
 }

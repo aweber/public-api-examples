@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4de0a8c8-cef6-487d-9c93-ceedf9573ea7",
+		"_postman_id": "ad3630ae-2917-4443-ba66-e53fb0ffceb2",
 		"name": "Get Webforms Detail",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -68,7 +68,7 @@
 					"script": {
 						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
 						"exec": [
-							"pm.test(\"Successfully get a  random list\", function() {",
+							"pm.test(\"Successfully get the first list\", function() {",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.total_size).to.be.a('number')",
 							"    pm.globals.set(\"listId\",jsonData.entries[0].id )",
@@ -86,11 +86,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_url}}accounts/{{accountId}}/lists",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
 					"host": [
-						"{{base_url}}accounts"
+						"{{base_url}}"
 					],
 					"path": [
+						"accounts",
 						"{{accountId}}",
 						"lists"
 					]
@@ -106,8 +107,7 @@
 					"script": {
 						"id": "b1b925ef-99c3-4ff6-95c9-1cd3b4f44801",
 						"exec": [
-							"pm.test(\"Successfully got the webforms for the list\", function() {",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -144,8 +144,7 @@
 					"script": {
 						"id": "a03c4a53-5303-4017-88a5-7d6bf4b04e7f",
 						"exec": [
-							"pm.test(\"Successfully got the split tests for the list\", function() {",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "94d39507-48ee-4414-8f13-3e82af0b7d5a",
+		"_postman_id": "cc0c4dd1-da3c-4c2a-a1c1-e230ebc12ee9",
 		"name": "Get Integrations",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -68,9 +68,9 @@
 					"script": {
 						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
 						"exec": [
-							"pm.test(\"Successfully associated integrations\", function() {",
+							"pm.test(\"Successfully found associated integrations\", function() {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.total_size).to.be.above(0);",
+							"    pm.expect(jsonData.resource_type_link).to.eql('https://api.aweber.com/1.0/#integration-page-resource');",
 							"});"
 						],
 						"type": "text/javascript"

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "daac5da3-63ab-4d26-9766-5981cf6977f5",
+		"_postman_id": "22430c3a-a197-403e-be89-a5d9a9fff64e",
 		"name": "Move Subscriber",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -53,9 +53,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_url}}accounts",
+					"raw": "{{base_url}}/accounts",
 					"host": [
-						"{{base_url}}accounts"
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
 					]
 				}
 			},
@@ -69,16 +72,19 @@
 					"script": {
 						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
 						"exec": [
-							"pm.test(\"Successfully get a  random list\", function() {",
-							"    pm.response.to.have.status(200);",
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"destination_list_self_link\", '');",
+							"pm.globals.set(\"source_listId\", '');",
+							" ",
+							"pm.test(\"Successfully get a random list\", function() {",
+							"    pm.expect(pm.response.to.have.status(200));",
 							"});",
 							"",
 							"pm.test(\"At least two lists found\", function() {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.total_size).to.be.above(1);",
 							"    pm.globals.set(\"source_listId\",jsonData.entries[0].id );",
-							"    pm.globals.set(\"destination_listId\",jsonData.entries[1].id );",
-							"});"
+							"    pm.globals.set(\"destination_list_self_link\",jsonData.entries[1].self_link );",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -92,11 +98,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_url}}accounts/{{accountId}}/lists",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
 					"host": [
-						"{{base_url}}accounts"
+						"{{base_url}}"
 					],
 					"path": [
+						"accounts",
 						"{{accountId}}",
 						"lists"
 					]
@@ -159,7 +166,8 @@
 						"exec": [
 							"pm.test(\"Successfully requested subscriber info\", function(){",
 							"    pm.response.to.have.status(200);",
-							"});"
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -189,9 +197,12 @@
 					"script": {
 						"id": "054015e7-1062-4de8-9dc2-8e4b84849b25",
 						"exec": [
-							"pm.test(\"Successfully moved subscriber\", function(){",
-							"    pm.response.to.have.status(201);",
-							"});"
+							" pm.globals.set(\"new_subscriber_url\", '');",
+							" ",
+							" pm.test(\"Successfully moved subscriber\", function(){",
+							"        pm.globals.set(\"new_subscriber_url\", postman.getResponseHeader(\"Location\"));",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -212,7 +223,7 @@
 					"urlencoded": [
 						{
 							"key": "list_link",
-							"value": "{{destination_listId}}",
+							"value": "{{destination_list_self_link}}",
 							"type": "text"
 						},
 						{
@@ -226,6 +237,38 @@
 					"raw": "{{subscriber_link}}",
 					"host": [
 						"{{subscriber_link}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get New Subscriber Location",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
+						"exec": [
+							"pm.test(\"Successfully requested subscriber info from new list location\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{new_subscriber_url}}",
+					"host": [
+						"{{new_subscriber_url}}"
 					]
 				}
 			},

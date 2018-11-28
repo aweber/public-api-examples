@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bfdf9c92-6d2e-4e7d-9f72-94a65d6964c1",
+		"_postman_id": "21cce715-5501-48ef-98c9-4a91fb7b109e",
 		"name": "Get Broadcast Details",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -69,17 +69,12 @@
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"",
-							"pm.test(\"Retrieved more one or more lists for account\", function(){",
-							"    pm.expect(jsonData.total_size).is.be.above(0);",
-							"});",
-							"",
 							"pm.test(\"Successfully selected a random listId\", function() {",
-							"    var listId = Math.floor((Math.random() * jsonData.total_size ));",
-							"    if (typeof jsonData.entries[0].id == 'number' ) {",
-							"        pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
+							"        var list_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"        pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
 							"    }",
 							"});",
-							"",
 							""
 						],
 						"type": "text/javascript"
@@ -256,11 +251,15 @@
 					"script": {
 						"id": "0d1babcb-7bac-46f3-8982-dd5d013f4b79",
 						"exec": [
-							"if (pm.expect(jsonData.entries.length).is.above(0)) {",
-							"    pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
-							"} else {",
-							"    pm.globals.set(\"draft_broadcast_link\", '');",
-							"}",
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"draft_broadcast_link\", '');",
+							"",
+							"pm.test(\"Successfully retrieved the first draft brodcast\", function() {",
+							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"        pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
+							"    } ",
+							"});",
+							"",
 							""
 						],
 						"type": "text/javascript"
@@ -322,12 +321,14 @@
 					"script": {
 						"id": "bdc9f89d-300b-424d-8f3e-99b24d49ec71",
 						"exec": [
-							"if (pm.expect(jsonData.entries.length).is.above(0)) {",
-							"    pm.globals.set(\"scheduled_broadcast_link\", jsonData.entries[0].self_link);",
-							"} else {",
-							"    pm.globals.set(\"scheduled_broadcast_link\", '');",
-							"}",
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"scheduled_broadcast_link\", '');",
 							"",
+							"pm.test(\"Successfully retrieved the first scheduled brodcast\", function() {",
+							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"        pm.globals.set(\"scheduled_broadcast_link\", jsonData.entries[0].self_link);",
+							"    } ",
+							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -389,11 +390,15 @@
 					"script": {
 						"id": "42349437-b50b-47da-8b97-d530b3aeffe7",
 						"exec": [
-							"if (pm.expect(jsonData.entries.length).is.above(0)) {",
-							"    pm.globals.set(\"sent_broadcast_link\", jsonData.entries[0].self_link);",
-							"} else {",
-							"    pm.globals.set(\"sent_broadcast_link\", '');",
-							"}"
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"sent_broadcast_link\", '');",
+							"",
+							"pm.test(\"Successfully retrieved the first sent brodcast\", function() {",
+							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"        pm.globals.set(\"sent_broadcast_link\", jsonData.entries[0].self_link);",
+							"    } ",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}

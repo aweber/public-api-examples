@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0453f576-675e-4e7d-8d2a-db3c5bf1ce94",
+		"_postman_id": "50fc39bd-e508-42a2-9426-4f5ef986c124",
 		"name": "Get Broadcast Stats",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -34,6 +34,10 @@
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.entries.length).to.be.above(0);",
 							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
 							"});",
 							""
 						],
@@ -70,16 +74,15 @@
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"",
-							"pm.test(\"Retrieved more one or more lists for account\", function(){",
-							"    pm.expect(jsonData.total_size).is.be.above(0);",
+							"pm.test(\"Successfully selected a random listId\", function() {",
+							"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
 							"});",
 							"",
-							"pm.test(\"Successfully selected a random listId\", function() {",
-							"    var list_entry = Math.floor((Math.random() * jsonData.total_size ));",
-							"    if (typeof jsonData.entries[list_entry].id == 'number' ) {",
-							"        pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
-							"    }",
-							"});"
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -114,12 +117,15 @@
 					"script": {
 						"id": "b41770d3-1044-48f5-9536-6cf9ba89088a",
 						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"sent_broadcasts_link\", '');",
+							"",
 							"pm.test(\"Successfully retrieved sent_broadcast_link from random list\", function() {",
-							"    var jsonData = pm.response.json();",
-							"    pm.globals.set(\"sent_broadcasts_link\", '');",
-							"    if (pm.expect(jsonData).has.property('sent_broadcasts_link') && pm.expect(jsonData.sent_broadcast_link).not.eql('')) {",
-							"        pm.globals.set(\"sent_broadcasts_link\", jsonData.sent_broadcasts_link);",
-							"    }",
+							"    pm.globals.set(\"sent_broadcasts_link\", jsonData.sent_broadcasts_link);",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
 							"});",
 							""
 						],
@@ -157,14 +163,20 @@
 					"script": {
 						"id": "e238f70c-3010-41a2-ba60-6fd4e312850d",
 						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"broadcast_self_link\", '');",
+							"",
 							"pm.test(\"Successfully retreived sent broadcasts from list\", function() {",
-							"  var jsonData = pm.response.json();",
-							"  pm.globals.set(\"broadcast_self_link\", '');",
-							"  if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
-							"    var broadcastNumber = Math.floor((Math.random() * jsonData.entries.length ));",
-							"    pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcastNumber].self_link );",
-							"  }",
-							"});"
+							"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
+							"        var broadcast_entry =  Math.floor((Math.random() * jsonData.entries.length ));",
+							"        pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link );",
+							"    }",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -194,11 +206,11 @@
 					"script": {
 						"id": "c8c9f482-117c-4cc9-87c7-04dbb1e65bfb",
 						"exec": [
-							"pm.test(\"Successfully retrieved broadcastId from list\", function(){",
-							"  var jsonData = pm.response.json();",
-							"  if (pm.expect(jsonData.broadcast_id).to.be.above(0)) {",
-							"      pm.globals.set(\"broadcastId\", jsonData.broadcast_id);",
-							"  }",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    pm.globals.set('broadcastId', jsonData.broadcast_id);",
 							"});",
 							""
 						],
@@ -230,6 +242,9 @@
 					"script": {
 						"id": "c51162ab-dfa9-42e5-82da-3acf6ca35bd1",
 						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -263,6 +278,21 @@
 		},
 		{
 			"name": "Get Clicks by Link",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fab4e0ec-20ee-4a6a-b622-7f71b114178a",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -291,6 +321,21 @@
 		},
 		{
 			"name": "Get Daily Unique and Total Clicks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b57c6a1-61fd-423c-b846-9b085b650b06",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -319,6 +364,21 @@
 		},
 		{
 			"name": "Get Daily Unique and Total Opens",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1ef8431-fceb-4f2a-86bb-e5576618249c",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -347,6 +407,21 @@
 		},
 		{
 			"name": "Get Daily Sales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "794a36eb-ba4a-4952-b09b-36c6d0ede82f",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"   pm.expect(pm.response.code).to.be.oneOf([200,404]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -374,6 +449,21 @@
 		},
 		{
 			"name": "Get Daily Unsubscribed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "26689c6f-f1a9-4957-b2fb-836a8a322553",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -463,9 +553,7 @@
 				"id": "f260ba97-0427-43a5-9a77-3eae909bc925",
 				"type": "text/javascript",
 				"exec": [
-					"pm.test(\"Successfully submitted request\", function(){",
-					"    pm.response.to.have.status(200);",
-					"});",
+					"",
 					""
 				]
 			}

@@ -1,47 +1,50 @@
 {
 	"info": {
-		"_postman_id": "91242393-418c-49a2-947e-b46584d95a0a",
+		"_postman_id": "169b3b31-f8a7-4a5c-bb4b-7bc334fcbacc",
 		"name": "Create and Schedule Boadcast",
 		"description": "This will get your account ID, select a random list and create a scheduled broadcast",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"item": [{
+	"item": [
+		{
 			"name": "Get Account",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
-					"exec": [
-						"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check access_token is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Check token_secret is defined and not empty\", function(){",
-						"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
-						"});",
-						"",
-						"pm.test(\"Successfully get an account Id\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    var jsonData = pm.response.json();",
-						"    pm.expect(jsonData.entries.length).to.be.above(0);",
-						"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
-						"});",
-						"",
-						"pm.test(\"Successfully submitted request\", function(){",
-						"    pm.response.to.have.status(200);",
-						"});"
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -63,25 +66,27 @@
 		},
 		{
 			"name": "Get Lists",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
-					"exec": [
-						"pm.test(\"Successfully submitted request\", function(){",
-						"    pm.response.to.have.status(200);",
-						"});",
-						"",
-						"pm.test(\"At least one list found\", function() {",
-						"    var jsonData = pm.response.json();",
-						"    pm.expect(jsonData.total_size).to.be.above(0);",
-						"    var listId = Math.floor((Math.random() * jsonData.total_size ));",
-						"    pm.globals.set(\"listId\",jsonData.entries[listId].id );",
-						"});"
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"At least one list found\", function() {",
+							"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"     pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -105,23 +110,23 @@
 		},
 		{
 			"name": "Get a List",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
-					"exec": [
-						"pm.test(\"Successfully submitted request\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    var jsonData = pm.response.json();",
-						"    pm.globals.set(\"list_name\",jsonData.name )",
-						"});",
-						"",
-						"",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -146,19 +151,21 @@
 		},
 		{
 			"name": "Get broadcasts on a list",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "c4f90423-ce8e-4ea3-85d4-fb295fc97735",
-					"exec": [
-						"pm.test(\"Successfully submitted request\", function(){",
-						"    pm.response.to.have.status(200);",
-						"});",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4f90423-ce8e-4ea3-85d4-fb295fc97735",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -178,46 +185,53 @@
 						"{{listId}}",
 						"broadcasts"
 					],
-					"query": [{
-						"key": "status",
-						"value": "sent"
-					}]
+					"query": [
+						{
+							"key": "status",
+							"value": "sent"
+						}
+					]
 				}
 			},
 			"response": []
 		},
 		{
 			"name": "Create a broadcast",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "ade9b194-0437-4033-93d6-5b49b98671a0",
-					"exec": [
-						"pm.test(\"Successfully created a new broadcast\", function(){",
-						"    pm.response.to.have.status(200);",
-						"    pm.test(\"Successfully got broadcast self link\", function() {",
-						"        var jsonData = pm.response.json();",
-						"        pm.expect(jsonData.self_link).not.eql(null);",
-						"        pm.globals.set(\"broadcast_self_link\",jsonData.self_link );",
-						"    });",
-						"});",
-						"",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ade9b194-0437-4033-93d6-5b49b98671a0",
+						"exec": [
+							"pm.test(\"Successfully created a new broadcast\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    pm.test(\"Successfully got broadcast self link\", function() {",
+							"        var jsonData = pm.response.json();",
+							"        pm.expect(jsonData.self_link).not.eql(null);",
+							"        pm.globals.set(\"broadcast_self_link\",jsonData.self_link );",
+							"    });",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "POST",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
-					"type": "text"
-				}],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": [{
+					"urlencoded": [
+						{
 							"key": "body_html",
 							"value": "{{body_html}}",
 							"type": "text"
@@ -287,7 +301,8 @@
 		},
 		{
 			"name": "Schedule the newly created broadcast",
-			"event": [{
+			"event": [
+				{
 					"listen": "prerequest",
 					"script": {
 						"id": "d1e2d010-92f0-482b-b02e-b0e3bdc59971",
@@ -313,19 +328,23 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
-					"type": "text"
-				}],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": [{
-						"key": "scheduled_for",
-						"value": " {{schedule_date}}",
-						"type": "text"
-					}]
+					"urlencoded": [
+						{
+							"key": "scheduled_for",
+							"value": " {{schedule_date}}",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
 					"raw": "{{broadcast_self_link}}/schedule",
@@ -341,58 +360,24 @@
 		},
 		{
 			"name": "Show updated time for scheduled broadcast",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "d23f7e80-e26b-4246-9d4d-239b6cb3e900",
-					"exec": [
-						"pm.test(\"Successfully submitted request\", function(){",
-						"    pm.response.to.have.status(200);",
-						"});",
-						""
-					],
-					"type": "text/javascript"
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d23f7e80-e26b-4246-9d4d-239b6cb3e900",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
-			}],
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{broadcast_self_link}}",
-					"host": [
-						"{{broadcast_self_link}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete newly created broadcast",
-			"event": [{
-				"listen": "test",
-				"script": {
-					"id": "81644944-0de8-4fb2-8671-fcc767d1476a",
-					"exec": [
-						"pm.test(\"Successfully deleted broadcast\", function(){",
-						"    pm.response.to.have.status(204);",
-						"});",
-						""
-					],
-					"type": "text/javascript"
-				}
-			}],
-			"request": {
-				"method": "DELETE",
-				"header": [{
-					"key": "Content-Type",
-					"name": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
-					"type": "text"
-				}],
 				"body": {
 					"mode": "raw",
 					"raw": ""
@@ -409,7 +394,8 @@
 	],
 	"auth": {
 		"type": "oauth1",
-		"oauth1": [{
+		"oauth1": [
+			{
 				"key": "addParamsToHeader",
 				"value": true,
 				"type": "boolean"
@@ -451,7 +437,8 @@
 			}
 		]
 	},
-	"event": [{
+	"event": [
+		{
 			"listen": "prerequest",
 			"script": {
 				"id": "81d71496-0a11-439b-bc8e-e2693371ee7f",
@@ -472,7 +459,8 @@
 			}
 		}
 	],
-	"variable": [{
+	"variable": [
+		{
 			"id": "8e75a2f2-b73b-49d9-90ca-067bc6de7832",
 			"key": "body_html",
 			"value": "<html><body>An html version of my email</body></html>",

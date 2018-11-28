@@ -2,21 +2,22 @@
 
 This directory contains examples for use with Postman
 
-Script | Link |
---- | --- |
-Create and Schedule Broadcast|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/8c408d4c102f2152f5c5)
-Find Subscribers Across Lists|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/bffa24a4a56d16e06c6e)
-Get Broadcast Details|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/cdb69f4c7f3dafefd0d9)
-Get Broadcast Open Clicks|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ba9d9c5722eaf0a8388e)
-Get Broadcast Stats|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/50e72a9d31ec072180d5)
-Get Clicks|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2ca986836d3bc2244e65)
-Get Integrations|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/fecdc287ffeb02d0c598)
-Get Tags|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2738b267fda3abc3be0c)
-Get Webforms Detail|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/a88306f31ebe6c8e1949)
-Manage Custom Fields|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/966f607e6a5b3b78751c)
-Manage Subscriber|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/23943d73ae00a6371eb5)
-Move Subscriber|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/8f089ea70138e1410c52)
-Please follow this tutorial to import this [Postman Collection](https://www.getpostman.com/docs/collections).
+| Script | Link |
+|--------|------|
+| Create and Schedule Broadcast|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/210e1bbb183a8ed3faf3)|
+| Find Subscribers Across Lists|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/bffa24a4a56d16e06c6e)|
+| Get Broadcast Details|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4d06c99751ff266027f7)|
+| Get Broadcast Links|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9d9d8c7374972720f5b8)|
+| Get Broadcast Stats|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/b633ef6c2c7c6a4f7b59)|
+| Get Clicks|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f6b5b792b4554ba0b10e)|
+| Get Integrations|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1818ac6da02bdf32e5da)|
+| Get Tags|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c3ce503da22f60621cfa)|
+| Get Webforms Detail|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/3f7be56bda2412df5fa9)|
+| Manage Custom Fields|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/614bb2ac025a6322ea8c)|
+| Manage Subscriber|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e4b763876cdbe9375c39)|
+| Move Subscriber|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/83be2f904144982dbbd7)|
+
+Please follow this tutorial to import this [Postman Collection](https://www.getpostman.com/docs/collections)
 
 ## Environment variables that need to be created in Postman:
 
@@ -27,7 +28,7 @@ Please follow this tutorial to import this [Postman Collection](https://www.getp
 - access_token
 - token_secret
 
-### To search for a subscriber by email across all lists
+### To search for a subscriber by email across all lists OR add a new subscriber in Manage Subscriber
 
 - subscriber_email
 

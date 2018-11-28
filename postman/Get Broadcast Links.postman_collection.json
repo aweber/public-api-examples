@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "886568e4-566c-42d1-833e-58b3de8c0833",
-		"name": "Get Broadcast Open Clicks",
-		"description": "This collection will return a list of link in a randomly selected broadcast",
+		"_postman_id": "2da0a379-ad39-41a9-8189-7d9c3bd3c456",
+		"name": "Get Broadcast Links",
+		"description": "This collection will return a list of links in a randomly selected broadcast",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -70,16 +70,11 @@
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"",
-							"pm.test(\"Retrieved more one or more lists for account\", function(){",
-							"    pm.expect(jsonData.total_size).is.be.above(0);",
-							"});",
-							"",
 							"pm.test(\"Successfully selected a random listId\", function() {",
-							"    var listId = Math.floor((Math.random() * jsonData.total_size ));",
-							"    if (typeof jsonData.entries[0].id == 'number' ) {",
-							"        pm.globals.set(\"listId\",jsonData.entries[0].id );",
-							"    }",
-							"});"
+							"    var list_entry = Math.floor((Math.random() * jsonData.entries.length) );",
+							"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -114,12 +109,7 @@
 					"script": {
 						"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
 						"exec": [
-							"pm.test(\"Successfully selected a random broadcast Id from list\", function() {",
-							"    if (pm.expect(parseInt(responseBody)).to.be.above(0)) {",
-							"        var broadcast_entry = Math.floor((Math.random() * parseInt(responseBody) ));",
-							"        pm.globals.set(\"broadcast_entry\", broadcast_entry );",
-							"    }",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -133,7 +123,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?campaign_type=b&ws.op=find&ws.show=total_size",
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts/total?status=sent",
 					"host": [
 						"{{base_url}}"
 					],
@@ -142,20 +132,13 @@
 						"{{accountId}}",
 						"lists",
 						"{{listId}}",
-						"campaigns"
+						"broadcasts",
+						"total"
 					],
 					"query": [
 						{
-							"key": "campaign_type",
-							"value": "b"
-						},
-						{
-							"key": "ws.op",
-							"value": "find"
-						},
-						{
-							"key": "ws.show",
-							"value": "total_size"
+							"key": "status",
+							"value": "sent"
 						}
 					]
 				}
@@ -170,9 +153,11 @@
 					"script": {
 						"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
 						"exec": [
-							"pm.test(\"Successfully retrieved a random broadcast\", function() {",
-							"    var jsonData = pm.response.json();",
-							"    pm.globals.set(\"broadcastId\", jsonData.entries[pm.globals.get(\"broadcast_entry\")].id);",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully selected a random broadcast Id from list\", function() {",
+							"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"        pm.globals.set(\"broadcastId\", jsonData.entries[broadcast_entry].id );",
 							"});"
 						],
 						"type": "text/javascript"
@@ -220,10 +205,11 @@
 					"script": {
 						"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
 						"exec": [
-							"pm.test(\"Sucessfully retreived links in broadcast\", function(){",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.total_size).to.be.a('number')",
-							"})"
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test('Sucessfully retrieved links for broadcast', function(){",
+							"   pm.expect(jsonData.resource_type_link).to.eql('https://api.aweber.com/1.0/#link-page-resource');",
+							"});"
 						],
 						"type": "text/javascript"
 					}
