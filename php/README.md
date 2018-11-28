@@ -21,7 +21,7 @@ this directory:
     accessKey = ****
     accessSecret = ****
 
-You can also create the *credentials.json* file using your existing consumer key and secret from the
+You can also create the *credentials.ini* file using your existing consumer key and secret from the
 [My Apps page](https://labs.aweber.com/apps):
 
     prompt$ php get-access-token
