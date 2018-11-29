@@ -1,0 +1,531 @@
+{
+	"info": {
+		"_postman_id": "2121a721-7afc-4ba5-90a8-c252519f8a06",
+		"name": "Get Broadcast Details",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
+						"exec": [
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists on Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully selected a random listId\", function() {",
+							"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
+							"        var list_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"        pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Broadcast Totals  - Drafts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "028258ae-2551-44e3-a6c3-40f3f93d68e6",
+						"exec": [
+							"pm.test(\"Successfully retrieved the total number of draft broadcasts on list\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.a('number')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts/total?status=draft",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"broadcasts",
+						"total"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "draft"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Broadcast Totals  - Scheduled",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aebe59b2-ac5a-41af-9f56-21bd56794e16",
+						"exec": [
+							"pm.test(\"Successfully retrieved the total number of scheduled broadcasts on list\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.a('number')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts/total?status=scheduled",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"broadcasts",
+						"total"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "scheduled"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Broadcast Totals  - Sent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "96754c67-4f3b-4523-9f57-27cf07835971",
+						"exec": [
+							"pm.test(\"Successfully retrieved the total number of sent broadcasts on list\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.a('number')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts/total?status=sent",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"broadcasts",
+						"total"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "sent"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Draft Broadcasts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d1babcb-7bac-46f3-8982-dd5d013f4b79",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"draft_broadcast_link\", '');",
+							"",
+							"pm.test(\"Successfully retrieved the first draft brodcast\", function() {",
+							"    pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts?status=draft",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"broadcasts"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "draft"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get First Draft Broadcast",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{draft_broadcast_link}}",
+					"host": [
+						"{{draft_broadcast_link}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Scheduled Broadcasts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bdc9f89d-300b-424d-8f3e-99b24d49ec71",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"scheduled_broadcast_link\", '');",
+							"",
+							"pm.test(\"Successfully retrieved the first scheduled brodcast\", function() {",
+							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"        pm.globals.set(\"scheduled_broadcast_link\", jsonData.entries[0].self_link);",
+							"    } ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts?status=scheduled",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"broadcasts"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "scheduled"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get First Scheduled Broadcast",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{scheduled_broadcast_link}}",
+					"host": [
+						"{{scheduled_broadcast_link}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Sent Broadcasts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "42349437-b50b-47da-8b97-d530b3aeffe7",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"sent_broadcast_link\", '');",
+							"",
+							"pm.test(\"Successfully retrieved the first sent brodcast\", function() {",
+							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
+							"        pm.globals.set(\"sent_broadcast_link\", jsonData.entries[0].self_link);",
+							"    } ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts?status=sent",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"broadcasts"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "sent"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get First Sent Broadcast",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{sent_broadcast_link}}",
+					"host": [
+						"{{sent_broadcast_link}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "addParamsToHeader",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8f832f64-e9aa-4e67-8303-d1d2d707b713",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "70428a75-cae4-4350-993d-1a68a8e948cc",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Successfully submitted request\", function(){",
+					"    pm.response.to.have.status(200);",
+					"});",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d843daab-31cf-4a98-8441-8f9d1b77d1e5",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		}
+	]
+}
