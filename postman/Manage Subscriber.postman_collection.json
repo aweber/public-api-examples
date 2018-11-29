@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "edc0e80c-c647-4783-bb05-820829a1977b",
+		"name": "Manage Subscriber",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"pm.test(\"Successfully get a  random list\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Successfully retrieved the first list Id on the account\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check is subscriber is already on list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
+						"exec": [
+							"pm.test(\"Successfully searched list for subscriber\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('subscriber_email vairiable defined and not null', function() {",
+							"    pm.expect(pm.globals.has(\"subscriber_email\")).to.eql(true) && pm.expect(pm.globals.get(\"subscriber_email\")).not.eql(\"\");",
+							"})",
+							"",
+							"pm.test('subscriber_email not found on list', function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.eql(0);",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/subscribers?ws.op=find&email={{subscriber_email}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"subscribers"
+					],
+					"query": [
+						{
+							"key": "ws.op",
+							"value": "find"
+						},
+						{
+							"key": "email",
+							"value": "{{subscriber_email}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add subscriber to list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e652d7e-fd45-4591-a567-b0c9589d9ce6",
+						"exec": [
+							"pm.test(\"Successfully added subscriber to list\", function(){",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\t\"email\": \"{{subscriber_email\"}"
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/subscribers?ws.op=create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"subscribers"
+					],
+					"query": [
+						{
+							"key": "ws.op",
+							"value": "create"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "addParamsToHeader",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6450ab20-d1e5-4c86-a7da-ee2006aa0142",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0d0e8432-9dcd-4f24-a050-f94b01ab49d2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "4fdee44b-57ad-4c31-b6d2-08c4ff93c916",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		}
+	]
+}
