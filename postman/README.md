@@ -13,8 +13,8 @@ This directory contains examples for use with Postman
 | Get Integrations|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1818ac6da02bdf32e5da)|
 | Get Tags|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c3ce503da22f60621cfa)|
 | Get Webforms Detail|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/3f7be56bda2412df5fa9)|
-| Manage Custom Fields|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e816843da34504009a49)|
-| Manage Subscriber|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/833d91a29acab705cfbf)|
+| Manage Custom Fields|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/eda4dd0e03bb759e9982)|
+| Manage Subscriber|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/698ef48f20cecfa77f20)|
 | Move Subscriber|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ecf9be7cab2c7c22821f)|
 
 Please follow this tutorial to import this [Postman Collection](https://www.getpostman.com/docs/collections)

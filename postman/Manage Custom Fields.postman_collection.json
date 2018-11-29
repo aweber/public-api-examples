@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "671a1be0-7aa6-4681-8ee4-06b1e45e620e",
+		"_postman_id": "4385fbd1-1c97-4fb6-82fc-2d6c78108655",
 		"name": "Manage Custom Fields",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -76,8 +76,9 @@
 							"});",
 							"",
 							"pm.test(\"At least one list returned\", function() {",
-							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
-							"});"
+							"    pm.gloabls.set(\"listId\",jsonData.entries[0].id );",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -157,25 +158,25 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"One or more custom fields returned\", function() {",
-							"    pm.expect(jsonData.total_size).to.be.above(0);",
+							"pm.test(\"One or more custom fields found\", function() {",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
 							"});",
 							"",
-							"pm.test(\"New custom field is not empty and not null\", function() {",
-							"   pm.expect(pm.globals.has(\"custom_field\")).to.eql(true) && pm.expect(pm.globals.get(\"custom_field\")).not.eql('');",
+							"pm.test(\"custom_field is not empty and not null\", function() {",
+							"    pm.expect(pm.variables.get(\"custom_field\")).not.empty;",
 							"});",
 							"",
 							"pm.test(\"updated_custom_field  variable exists and is not null\", function() {",
-							"   pm.expect(pm.globals.has(\"updated_custom_field\")).to.eql(true) && pm.expect(pm.globals.get(\"updated_custom_field\")).not.eql('');",
+							"    pm.expect(pm.variables.get(\"updated_custom_field\")).not.empty;",
 							"});",
 							"",
 							"pm.test(\"custom_field and updated_custom_field should not have the same value\", function(){",
-							"   pm.expect(pm.globals.get(\"custom_field\")).not.eql(pm.globals.get(\"updated_custom_field\"));",
+							"   pm.expect(pm.variables.get(\"custom_field\")).not.eql(pm.variables.get(\"updated_custom_field\"));",
 							"});",
 							"",
 							"pm.test(\"New custom field is unique\", function() {",
 							"    for ( i = 0; i < jsonData.entries.length; i++ ){",
-							"        pm.expect(jsonData.entries[i].name).to.not.include(pm.globals.get(\"custom_field\") );",
+							"        pm.expect(jsonData.entries[i].name).to.not.include(pm.variables.get(\"custom_field\") );",
 							"    } ",
 							"});",
 							""
@@ -217,7 +218,7 @@
 						"exec": [
 							"pm.test(\"Create custom field\", function(){",
 							"    pm.response.to.have.status(201);",
-							"    pm.globals.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
+							"    pm.variables.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
 							"});"
 						],
 						"type": "text/javascript"

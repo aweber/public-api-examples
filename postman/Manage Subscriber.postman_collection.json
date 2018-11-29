@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "edc0e80c-c647-4783-bb05-820829a1977b",
+		"_postman_id": "59031b7b-0283-485b-9fac-de13056348d1",
 		"name": "Manage Subscriber",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -71,7 +71,7 @@
 					"script": {
 						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
 						"exec": [
-							"pm.test(\"Successfully get a  random list\", function() {",
+							"pm.test(\"Successfully get a random list\", function() {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
@@ -117,11 +117,11 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test('subscriber_email vairiable defined and not null', function() {",
-							"    pm.expect(pm.globals.has(\"subscriber_email\")).to.eql(true) && pm.expect(pm.globals.get(\"subscriber_email\")).not.eql(\"\");",
+							"pm.test('subscriber_email variable defined and not null', function() {",
+							"    pm.expect(pm.variables.get(\"subscriber_email\")).not.empty;",
 							"})",
 							"",
-							"pm.test('subscriber_email not found on list', function(){",
+							"pm.test('Subscriber email not found on list', function(){",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.entries.length).to.eql(0);",
 							"});",
@@ -195,7 +195,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\t\"email\": \"{{subscriber_email\"}"
+					"raw": "{\n\t\"email\": \"{{subscriber_email}}\"\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/subscribers?ws.op=create",
