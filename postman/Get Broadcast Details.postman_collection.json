@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "21cce715-5501-48ef-98c9-4a91fb7b109e",
+		"_postman_id": "2121a721-7afc-4ba5-90a8-c252519f8a06",
 		"name": "Get Broadcast Details",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -255,9 +255,7 @@
 							"pm.globals.set(\"draft_broadcast_link\", '');",
 							"",
 							"pm.test(\"Successfully retrieved the first draft brodcast\", function() {",
-							"    if (pm.expect(jsonData.entries.length).is.above(0)) {",
-							"        pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
-							"    } ",
+							"    pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
 							"});",
 							"",
 							""
@@ -524,25 +522,7 @@
 	],
 	"variable": [
 		{
-			"id": "545d9397-1b15-4d2c-b92d-252215ca352c",
-			"key": "scheduled_broadcast_link",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "a7649a7c-b4e7-48d5-9105-81d648018cbf",
-			"key": "draft_broadcast_link",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "6dbbf07a-bdfd-490e-b2ad-06dbfd9cb737",
-			"key": "sent_broadcast_link",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "5b6dc3cd-a73b-4186-8eca-4a71cf95bd94",
+			"id": "d843daab-31cf-4a98-8441-8f9d1b77d1e5",
 			"key": "base_url",
 			"value": "https://api.aweber.com/1.0",
 			"type": "string"

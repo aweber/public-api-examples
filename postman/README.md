@@ -6,7 +6,7 @@ This directory contains examples for use with Postman
 |--------|------|
 | Create and Schedule Broadcast|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/210e1bbb183a8ed3faf3)|
 | Find Subscribers Across Lists|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/bffa24a4a56d16e06c6e)|
-| Get Broadcast Details|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4d06c99751ff266027f7)|
+| Get Broadcast Details|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f25026cdae001240ae83)|
 | Get Broadcast Links|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9d9d8c7374972720f5b8)|
 | Get Broadcast Stats|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/b633ef6c2c7c6a4f7b59)|
 | Get Clicks|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f6b5b792b4554ba0b10e)|
