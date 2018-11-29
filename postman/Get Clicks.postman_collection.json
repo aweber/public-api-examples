@@ -1,49 +1,43 @@
 {
 	"info": {
-		"_postman_id": "19df6551-2116-45fc-babd-7fed73ea63f5",
+		"_postman_id": "d9aa16e7-2f01-448c-8467-374dac7717d8",
 		"name": "Get Clicks",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"item": [
-		{
+	"item": [{
 			"name": "Get Details",
-			"item": [
-				{
+			"item": [{
 					"name": "Get Account",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
-								"exec": [
-									"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-									"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-									"});",
-									"",
-									"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-									"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-									"});",
-									"",
-									"pm.test(\"Check access_token is defined and not empty\", function(){",
-									"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-									"});",
-									"",
-									"pm.test(\"Check token_secret is defined and not empty\", function(){",
-									"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
-									"});",
-									"",
-									"pm.test(\"Successfully get an account Id\", function(){",
-									"    pm.response.to.have.status(200);",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.entries.length).to.be.above(0);",
-									"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
+							"exec": [
+								"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+								"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+								"});",
+								"",
+								"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+								"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+								"});",
+								"",
+								"pm.test(\"Check access_token is defined and not empty\", function(){",
+								"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+								"});",
+								"",
+								"pm.test(\"Check token_secret is defined and not empty\", function(){",
+								"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+								"});",
+								"",
+								"pm.test(\"Successfully get an account Id\", function(){",
+								"    var jsonData = pm.response.json();",
+								"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+								"});",
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -65,26 +59,22 @@
 				},
 				{
 					"name": "Get Lists on Account",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Successfully got a  random list\", function() {",
-									"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
-									"        var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
-									"        pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
-									"    }",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
+							"exec": [
+								"var jsonData = pm.response.json();",
+								"",
+								"pm.test(\"Successfully got a  random list\", function() {",
+								"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
+								"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+								"});",
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -108,18 +98,16 @@
 				},
 				{
 					"name": "Get Random List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "b41770d3-1044-48f5-9536-6cf9ba89088a",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "b41770d3-1044-48f5-9536-6cf9ba89088a",
+							"exec": [
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -146,22 +134,19 @@
 		},
 		{
 			"name": "Get Broadcast Open Clicks",
-			"item": [
-				{
+			"item": [{
 					"name": "Get Total Sent Broadcasts",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "e238f70c-3010-41a2-ba60-6fd4e312850d",
-								"exec": [
-									"",
-									""
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "e238f70c-3010-41a2-ba60-6fd4e312850d",
+							"exec": [
+								"",
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -182,39 +167,33 @@
 								"broadcasts",
 								"total"
 							],
-							"query": [
-								{
-									"key": "status",
-									"value": "sent"
-								}
-							]
+							"query": [{
+								"key": "status",
+								"value": "sent"
+							}]
 						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get Sent Broadcasts",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "b58a49c0-44d7-40fc-95df-f5057c64086a",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"pm.globals.set(\"broadcast_self_link\", '');",
-									"",
-									"pm.test('Successfully retrieved sent broadcasts', function() {",
-									"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
-									"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
-									"        pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link);",
-									"    }",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "b58a49c0-44d7-40fc-95df-f5057c64086a",
+							"exec": [
+								"var jsonData = pm.response.json();",
+								"pm.globals.set(\"broadcast_self_link\", '');",
+								"",
+								"pm.test('Successfully retrieved sent broadcasts', function() {",
+								"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+								"        pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link);",
+								"});",
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -234,32 +213,28 @@
 								"{{listId}}",
 								"broadcasts"
 							],
-							"query": [
-								{
-									"key": "status",
-									"value": "sent"
-								}
-							]
+							"query": [{
+								"key": "status",
+								"value": "sent"
+							}]
 						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get a Broadcast",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "c8c9f482-117c-4cc9-87c7-04dbb1e65bfb",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"pm.globals.set(\"broadcastId\", jsonData.broadcast_id);",
-									""
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "c8c9f482-117c-4cc9-87c7-04dbb1e65bfb",
+							"exec": [
+								"var jsonData = pm.response.json();",
+								"pm.globals.set(\"broadcastId\", jsonData.broadcast_id);",
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -278,19 +253,17 @@
 				},
 				{
 					"name": "Get Campaign",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "5ee2b5ae-dea0-457f-8ac3-55015cb78cec",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"pm.globals.set(\"messages_collection_link\", jsonData.messages_collection_link);"
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "5ee2b5ae-dea0-457f-8ac3-55015cb78cec",
+							"exec": [
+								"var jsonData = pm.response.json();",
+								"pm.globals.set(\"messages_collection_link\", jsonData.messages_collection_link);"
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -317,18 +290,16 @@
 				},
 				{
 					"name": "Get Messages in Broadcast",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "0826d611-cf14-4a5c-a835-ac43669d9fca",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "0826d611-cf14-4a5c-a835-ac43669d9fca",
+							"exec": [
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -349,25 +320,18 @@
 		},
 		{
 			"name": "Get Followup Email Clicks",
-			"item": [
-				{
+			"item": [{
 					"name": "Get Number of Followups on List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
-								"exec": [
-									"pm.test(\"Successfully got number of followups in list\", function() {",
-									"    pm.expect(parseInt(responseBody)).to.be.a('number');",
-									"    var followup_entry = Math.floor((Math.random() * parseInt(responseBody) ))",
-									"    pm.globals.set(\"followup_entry\",followup_entry )",
-									"});"
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
+							"exec": [
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -387,8 +351,7 @@
 								"{{listId}}",
 								"campaigns"
 							],
-							"query": [
-								{
+							"query": [{
 									"key": "campaign_type",
 									"value": "f"
 								},
@@ -407,22 +370,22 @@
 				},
 				{
 					"name": "Get Random Followup",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
-								"exec": [
-									"pm.test(\"Successfully got a followup email\", function() {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.entries[pm.globals.get(\"followup_entry\")].id).to.be.a('number');",
-									"    pm.globals.set(\"followupId\", jsonData.entries[pm.globals.get(\"followup_entry\")].id);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
+							"exec": [
+								"var jsonData = pm.response.json();",
+								"",
+								"pm.test(\"Successfully got a followup email\", function() {",
+								"    var followup_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+								"    pm.globals.set(\"followupId\", jsonData.entries[followup_entry].id);",
+								"});",
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -431,7 +394,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=b",
+							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=f",
 							"host": [
 								"{{base_url}}"
 							],
@@ -442,14 +405,13 @@
 								"{{listId}}",
 								"campaigns"
 							],
-							"query": [
-								{
+							"query": [{
 									"key": "ws.op",
 									"value": "find"
 								},
 								{
 									"key": "campaign_type",
-									"value": "b"
+									"value": "f"
 								}
 							]
 						}
@@ -458,21 +420,16 @@
 				},
 				{
 					"name": "Get Links for Followup",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
-								"exec": [
-									"pm.test(\"Sucessfully retreived links in followup\", function(){",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.total_size).to.be.a('number')",
-									"})"
-								],
-								"type": "text/javascript"
-							}
+					"event": [{
+						"listen": "test",
+						"script": {
+							"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
+							"exec": [
+								""
+							],
+							"type": "text/javascript"
 						}
-					],
+					}],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -481,7 +438,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/links",
+							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/f{{followupId}}/links",
 							"host": [
 								"{{base_url}}"
 							],
@@ -491,7 +448,7 @@
 								"lists",
 								"{{listId}}",
 								"campaigns",
-								"b{{broadcastId}}",
+								"f{{followupId}}",
 								"links"
 							]
 						}
@@ -503,8 +460,7 @@
 	],
 	"auth": {
 		"type": "oauth1",
-		"oauth1": [
-			{
+		"oauth1": [{
 				"key": "addParamsToHeader",
 				"value": true,
 				"type": "boolean"
@@ -546,8 +502,7 @@
 			}
 		]
 	},
-	"event": [
-		{
+	"event": [{
 			"listen": "prerequest",
 			"script": {
 				"id": "0394b8bf-c7a3-4c21-a86d-53b2b6790e9b",
@@ -571,12 +526,10 @@
 			}
 		}
 	],
-	"variable": [
-		{
-			"id": "9438b5fc-cb2d-47e7-8fe5-9e2709805e5b",
-			"key": "base_url",
-			"value": "https://api.aweber.com/1.0",
-			"type": "string"
-		}
-	]
+	"variable": [{
+		"id": "9438b5fc-cb2d-47e7-8fe5-9e2709805e5b",
+		"key": "base_url",
+		"value": "https://api.aweber.com/1.0",
+		"type": "string"
+	}]
 }

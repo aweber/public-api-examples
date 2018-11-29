@@ -1,46 +1,43 @@
 {
 	"info": {
-		"_postman_id": "2da0a379-ad39-41a9-8189-7d9c3bd3c456",
+		"_postman_id": "e5b333c9-c0c2-4d60-a948-bb64e0e9fae3",
 		"name": "Get Broadcast Links",
 		"description": "This collection will return a list of links in a randomly selected broadcast",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"item": [
-		{
+	"item": [{
 			"name": "Get Account",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
-						"exec": [
-							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Check access_token is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Check token_secret is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Successfully get an account Id\", function(){",
-							"    pm.response.to.have.status(200);",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.entries.length).to.be.above(0);",
-							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+			"event": [{
+				"listen": "test",
+				"script": {
+					"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
+					"exec": [
+						"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+						"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+						"});",
+						"",
+						"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+						"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+						"});",
+						"",
+						"pm.test(\"Check access_token is defined and not empty\", function(){",
+						"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+						"});",
+						"",
+						"pm.test(\"Check token_secret is defined and not empty\", function(){",
+						"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+						"});",
+						"",
+						"pm.test(\"Successfully get an account Id\", function(){",
+						"    pm.response.to.have.status(200);",
+						"    var jsonData = pm.response.json();",
+						"    pm.expect(jsonData.entries.length).to.be.above(0);",
+						"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+						"});"
+					],
+					"type": "text/javascript"
 				}
-			],
+			}],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -62,24 +59,22 @@
 		},
 		{
 			"name": "Get Lists on Account",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"",
-							"pm.test(\"Successfully selected a random listId\", function() {",
-							"    var list_entry = Math.floor((Math.random() * jsonData.entries.length) );",
-							"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
+			"event": [{
+				"listen": "test",
+				"script": {
+					"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
+					"exec": [
+						"var jsonData = pm.response.json();",
+						"",
+						"pm.test(\"Successfully selected a random listId\", function() {",
+						"    var list_entry = Math.floor((Math.random() * jsonData.entries.length) );",
+						"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+						"});",
+						""
+					],
+					"type": "text/javascript"
 				}
-			],
+			}],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -103,18 +98,16 @@
 		},
 		{
 			"name": "Get Number of Broadcasts on List",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
+			"event": [{
+				"listen": "test",
+				"script": {
+					"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
+					"exec": [
+						""
+					],
+					"type": "text/javascript"
 				}
-			],
+			}],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -135,35 +128,32 @@
 						"broadcasts",
 						"total"
 					],
-					"query": [
-						{
-							"key": "status",
-							"value": "sent"
-						}
-					]
+					"query": [{
+						"key": "status",
+						"value": "sent"
+					}]
 				}
 			},
 			"response": []
 		},
 		{
 			"name": "Get Random Broadcast",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"",
-							"pm.test(\"Successfully selected a random broadcast Id from list\", function() {",
-							"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
-							"        pm.globals.set(\"broadcastId\", jsonData.entries[broadcast_entry].id );",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+			"event": [{
+				"listen": "test",
+				"script": {
+					"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
+					"exec": [
+						"var jsonData = pm.response.json();",
+						"",
+						"pm.test(\"Successfully selected a random broadcast Id from list\", function() {",
+						"    var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+						"    pm.globals.set(\"broadcastId\", jsonData.entries[broadcast_entry].id );",
+						"});",
+						""
+					],
+					"type": "text/javascript"
 				}
-			],
+			}],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -183,8 +173,7 @@
 						"{{listId}}",
 						"campaigns"
 					],
-					"query": [
-						{
+					"query": [{
 							"key": "ws.op",
 							"value": "find"
 						},
@@ -199,22 +188,20 @@
 		},
 		{
 			"name": "Get Links for Broadcast",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"",
-							"pm.test('Sucessfully retrieved links for broadcast', function(){",
-							"   pm.expect(jsonData.resource_type_link).to.eql('https://api.aweber.com/1.0/#link-page-resource');",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+			"event": [{
+				"listen": "test",
+				"script": {
+					"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
+					"exec": [
+						"var jsonData = pm.response.json();",
+						"",
+						"pm.test('Sucessfully retrieved links for broadcast', function(){",
+						"   pm.expect(jsonData.resource_type_link).to.eql('https://api.aweber.com/1.0/#link-page-resource');",
+						"});"
+					],
+					"type": "text/javascript"
 				}
-			],
+			}],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -243,8 +230,7 @@
 	],
 	"auth": {
 		"type": "oauth1",
-		"oauth1": [
-			{
+		"oauth1": [{
 				"key": "addEmptyParamsToSign",
 				"value": true,
 				"type": "boolean"
@@ -286,8 +272,7 @@
 			}
 		]
 	},
-	"event": [
-		{
+	"event": [{
 			"listen": "prerequest",
 			"script": {
 				"id": "00ba3184-049b-4f7c-8fe5-05aba9341f03",
@@ -311,12 +296,10 @@
 			}
 		}
 	],
-	"variable": [
-		{
-			"id": "a1ce6662-b8b1-4a6f-b202-de1d618156d3",
-			"key": "base_url",
-			"value": "https://api.aweber.com/1.0",
-			"type": "string"
-		}
-	]
+	"variable": [{
+		"id": "a1ce6662-b8b1-4a6f-b202-de1d618156d3",
+		"key": "base_url",
+		"value": "https://api.aweber.com/1.0",
+		"type": "string"
+	}]
 }
