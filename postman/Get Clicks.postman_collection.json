@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "19df6551-2116-45fc-babd-7fed73ea63f5",
+		"_postman_id": "d9aa16e7-2f01-448c-8467-374dac7717d8",
 		"name": "Get Clicks",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -33,9 +33,7 @@
 									"});",
 									"",
 									"pm.test(\"Successfully get an account Id\", function(){",
-									"    pm.response.to.have.status(200);",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.entries.length).to.be.above(0);",
 									"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
 									"});",
 									""
@@ -204,10 +202,8 @@
 									"pm.globals.set(\"broadcast_self_link\", '');",
 									"",
 									"pm.test('Successfully retrieved sent broadcasts', function() {",
-									"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
 									"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
 									"        pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link);",
-									"    }",
 									"});",
 									""
 								],
@@ -358,11 +354,7 @@
 							"script": {
 								"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
 								"exec": [
-									"pm.test(\"Successfully got number of followups in list\", function() {",
-									"    pm.expect(parseInt(responseBody)).to.be.a('number');",
-									"    var followup_entry = Math.floor((Math.random() * parseInt(responseBody) ))",
-									"    pm.globals.set(\"followup_entry\",followup_entry )",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -413,9 +405,10 @@
 							"script": {
 								"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
 								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
 									"pm.test(\"Successfully got a followup email\", function() {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.entries[pm.globals.get(\"followup_entry\")].id).to.be.a('number');",
+									"    var followup_entry = Math.floor((Math.random() * jsonData.entries.length ));",
 									"    pm.globals.set(\"followupId\", jsonData.entries[pm.globals.get(\"followup_entry\")].id);",
 									"});"
 								],
@@ -431,7 +424,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=b",
+							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=f",
 							"host": [
 								"{{base_url}}"
 							],
@@ -449,7 +442,7 @@
 								},
 								{
 									"key": "campaign_type",
-									"value": "b"
+									"value": "f"
 								}
 							]
 						}
@@ -464,10 +457,7 @@
 							"script": {
 								"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
 								"exec": [
-									"pm.test(\"Sucessfully retreived links in followup\", function(){",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.total_size).to.be.a('number')",
-									"})"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -481,7 +471,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/links",
+							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/f{{followupId}}/links",
 							"host": [
 								"{{base_url}}"
 							],
@@ -491,7 +481,7 @@
 								"lists",
 								"{{listId}}",
 								"campaigns",
-								"b{{broadcastId}}",
+								"f{{followupId}}",
 								"links"
 							]
 						}

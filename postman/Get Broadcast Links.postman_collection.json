@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2da0a379-ad39-41a9-8189-7d9c3bd3c456",
+		"_postman_id": "e5b333c9-c0c2-4d60-a948-bb64e0e9fae3",
 		"name": "Get Broadcast Links",
 		"description": "This collection will return a list of links in a randomly selected broadcast",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -156,9 +156,10 @@
 							"var jsonData = pm.response.json();",
 							"",
 							"pm.test(\"Successfully selected a random broadcast Id from list\", function() {",
-							"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
-							"        pm.globals.set(\"broadcastId\", jsonData.entries[broadcast_entry].id );",
-							"});"
+							"    var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"    pm.globals.set(\"broadcastId\", jsonData.entries[broadcast_entry].id );",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
