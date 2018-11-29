@@ -71,7 +71,7 @@
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"",
-							"pm.test(\"Successfully get a  random list\", function() {",
+							"pm.test(\"Successfully get a random list\", function() {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",

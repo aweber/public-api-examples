@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d9bea8ab-1168-4ee1-9cdb-c27b4c86011c",
+		"_postman_id": "40a7d21d-d7bf-486c-8448-b966466663ed",
 		"name": "Move Subscriber",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -198,7 +198,8 @@
 							" pm.globals.set(\"new_subscriber_url\", '');",
 							" ",
 							" pm.test(\"Successfully moved subscriber\", function(){",
-							"        pm.globals.set(\"new_subscriber_url\", postman.getResponseHeader(\"Location\"));",
+							"    pm.expect(pm.response.to.have.status(201))",
+							"    pm.globals.set(\"new_subscriber_url\", postman.getResponseHeader(\"Location\"));",
 							"});",
 							""
 						],

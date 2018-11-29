@@ -60,317 +60,319 @@
 				{
 					"name": "Get Lists on Account",
 					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
-							"exec": [
-								"var jsonData = pm.response.json();",
-								"",
-								"pm.test(\"Successfully got a  random list\", function() {",
-								"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
-								"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
-								"});",
-								""
-							],
-							"type": "text/javascript"
+							"listen": "test",
+							"script": {
+								"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Successfully got a  random list\", function() {",
+									"    pm.expect(jsonData.entries.length).to.be.above(0);",
+									"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
+									"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
 					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists"
-							]
-						}
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
 					},
-					"response": []
+					"url": {
+						"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+						"host": [
+							"{{base_url}}"
+						],
+						"path": [
+							"accounts",
+							"{{accountId}}",
+							"lists"
+						]
+					}
 				},
-				{
-					"name": "Get Random List",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "b41770d3-1044-48f5-9536-6cf9ba89088a",
-							"exec": [
-								""
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists",
-								"{{listId}}"
-							]
-						}
+				"response": []
+			},
+			{
+				"name": "Get Random List",
+				"event": [{
+					"listen": "test",
+					"script": {
+						"id": "b41770d3-1044-48f5-9536-6cf9ba89088a",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}],
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
 					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Get Broadcast Open Clicks",
-			"item": [{
-					"name": "Get Total Sent Broadcasts",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "e238f70c-3010-41a2-ba60-6fd4e312850d",
-							"exec": [
-								"",
-								""
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts/total?status=sent",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists",
-								"{{listId}}",
-								"broadcasts",
-								"total"
-							],
-							"query": [{
-								"key": "status",
-								"value": "sent"
-							}]
-						}
-					},
-					"response": []
+					"url": {
+						"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
+						"host": [
+							"{{base_url}}"
+						],
+						"path": [
+							"accounts",
+							"{{accountId}}",
+							"lists",
+							"{{listId}}"
+						]
+					}
 				},
-				{
-					"name": "Get Sent Broadcasts",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "b58a49c0-44d7-40fc-95df-f5057c64086a",
-							"exec": [
-								"var jsonData = pm.response.json();",
-								"pm.globals.set(\"broadcast_self_link\", '');",
-								"",
-								"pm.test('Successfully retrieved sent broadcasts', function() {",
-								"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
-								"        pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link);",
-								"});",
-								""
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts?status=sent",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists",
-								"{{listId}}",
-								"broadcasts"
-							],
-							"query": [{
-								"key": "status",
-								"value": "sent"
-							}]
-						}
+				"response": []
+			}
+		]
+	},
+	{
+		"name": "Get Broadcast Open Clicks",
+		"item": [{
+				"name": "Get Total Sent Broadcasts",
+				"event": [{
+					"listen": "test",
+					"script": {
+						"id": "e238f70c-3010-41a2-ba60-6fd4e312850d",
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}],
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
 					},
-					"response": []
+					"url": {
+						"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts/total?status=sent",
+						"host": [
+							"{{base_url}}"
+						],
+						"path": [
+							"accounts",
+							"{{accountId}}",
+							"lists",
+							"{{listId}}",
+							"broadcasts",
+							"total"
+						],
+						"query": [{
+							"key": "status",
+							"value": "sent"
+						}]
+					}
 				},
-				{
-					"name": "Get a Broadcast",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "c8c9f482-117c-4cc9-87c7-04dbb1e65bfb",
-							"exec": [
-								"var jsonData = pm.response.json();",
-								"pm.globals.set(\"broadcastId\", jsonData.broadcast_id);",
-								""
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{broadcast_self_link}}",
-							"host": [
-								"{{broadcast_self_link}}"
-							]
-						}
+				"response": []
+			},
+			{
+				"name": "Get Sent Broadcasts",
+				"event": [{
+					"listen": "test",
+					"script": {
+						"id": "b58a49c0-44d7-40fc-95df-f5057c64086a",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"broadcast_self_link\", '');",
+							"",
+							"pm.test('Successfully retrieved sent broadcasts', function() {",
+							"        var broadcast_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"        pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}],
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
 					},
-					"response": []
+					"url": {
+						"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/broadcasts?status=sent",
+						"host": [
+							"{{base_url}}"
+						],
+						"path": [
+							"accounts",
+							"{{accountId}}",
+							"lists",
+							"{{listId}}",
+							"broadcasts"
+						],
+						"query": [{
+							"key": "status",
+							"value": "sent"
+						}]
+					}
 				},
-				{
-					"name": "Get Campaign",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "5ee2b5ae-dea0-457f-8ac3-55015cb78cec",
-							"exec": [
-								"var jsonData = pm.response.json();",
-								"pm.globals.set(\"messages_collection_link\", jsonData.messages_collection_link);"
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists",
-								"{{listId}}",
-								"campaigns",
-								"b{{broadcastId}}"
-							]
-						}
+				"response": []
+			},
+			{
+				"name": "Get a Broadcast",
+				"event": [{
+					"listen": "test",
+					"script": {
+						"id": "c8c9f482-117c-4cc9-87c7-04dbb1e65bfb",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"broadcastId\", jsonData.broadcast_id);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}],
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
 					},
-					"response": []
+					"url": {
+						"raw": "{{broadcast_self_link}}",
+						"host": [
+							"{{broadcast_self_link}}"
+						]
+					}
 				},
-				{
-					"name": "Get Messages in Broadcast",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "0826d611-cf14-4a5c-a835-ac43669d9fca",
-							"exec": [
-								""
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{messages_collection_link}}",
-							"host": [
-								"{{messages_collection_link}}"
-							]
-						}
+				"response": []
+			},
+			{
+				"name": "Get Campaign",
+				"event": [{
+					"listen": "test",
+					"script": {
+						"id": "5ee2b5ae-dea0-457f-8ac3-55015cb78cec",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"messages_collection_link\", jsonData.messages_collection_link);"
+						],
+						"type": "text/javascript"
+					}
+				}],
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
 					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Get Followup Email Clicks",
-			"item": [{
-					"name": "Get Number of Followups on List",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
-							"exec": [
-								""
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?campaign_type=f&ws.op=find&ws.show=total_size",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists",
-								"{{listId}}",
-								"campaigns"
-							],
-							"query": [{
-									"key": "campaign_type",
-									"value": "f"
-								},
-								{
-									"key": "ws.op",
-									"value": "find"
-								},
-								{
-									"key": "ws.show",
-									"value": "total_size"
-								}
-							]
-						}
-					},
-					"response": []
+					"url": {
+						"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}",
+						"host": [
+							"{{base_url}}"
+						],
+						"path": [
+							"accounts",
+							"{{accountId}}",
+							"lists",
+							"{{listId}}",
+							"campaigns",
+							"b{{broadcastId}}"
+						]
+					}
 				},
-				{
-					"name": "Get Random Followup",
-					"event": [{
+				"response": []
+			},
+			{
+				"name": "Get Messages in Broadcast",
+				"event": [{
+					"listen": "test",
+					"script": {
+						"id": "0826d611-cf14-4a5c-a835-ac43669d9fca",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}],
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
+					},
+					"url": {
+						"raw": "{{messages_collection_link}}",
+						"host": [
+							"{{messages_collection_link}}"
+						]
+					}
+				},
+				"response": []
+			}
+		]
+	},
+	{
+		"name": "Get Followup Email Clicks",
+		"item": [{
+				"name": "Get Number of Followups on List",
+				"event": [{
+					"listen": "test",
+					"script": {
+						"id": "1bac9b8a-de19-4264-9c19-bdc1ea154a5c",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}],
+				"request": {
+					"method": "GET",
+					"header": [],
+					"body": {
+						"mode": "raw",
+						"raw": ""
+					},
+					"url": {
+						"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?campaign_type=f&ws.op=find&ws.show=total_size",
+						"host": [
+							"{{base_url}}"
+						],
+						"path": [
+							"accounts",
+							"{{accountId}}",
+							"lists",
+							"{{listId}}",
+							"campaigns"
+						],
+						"query": [{
+								"key": "campaign_type",
+								"value": "f"
+							},
+							{
+								"key": "ws.op",
+								"value": "find"
+							},
+							{
+								"key": "ws.show",
+								"value": "total_size"
+							}
+						]
+					}
+				},
+				"response": []
+			},
+			{
+				"name": "Get Random Followup",
+				"event": [{
 						"listen": "test",
 						"script": {
 							"id": "d2b1b30c-3aec-48cc-9f35-c1ab0683ee45",
@@ -378,6 +380,7 @@
 								"var jsonData = pm.response.json();",
 								"",
 								"pm.test(\"Successfully got a followup email\", function() {",
+								"    pm.expect(jsonData.entries.length).to.be.above(0);",
 								"    var followup_entry = Math.floor((Math.random() * jsonData.entries.length ));",
 								"    pm.globals.set(\"followupId\", jsonData.entries[followup_entry].id);",
 								"});",
@@ -385,151 +388,151 @@
 							],
 							"type": "text/javascript"
 						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=f",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists",
-								"{{listId}}",
-								"campaigns"
-							],
-							"query": [{
-									"key": "ws.op",
-									"value": "find"
-								},
-								{
-									"key": "campaign_type",
-									"value": "f"
-								}
-							]
-						}
-					},
-					"response": []
+					}
+				}],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
 				},
-				{
-					"name": "Get Links for Followup",
-					"event": [{
-						"listen": "test",
-						"script": {
-							"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
-							"exec": [
-								""
-							],
-							"type": "text/javascript"
-						}
-					}],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns?ws.op=find&campaign_type=f",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns"
+					],
+					"query": [{
+							"key": "ws.op",
+							"value": "find"
 						},
-						"url": {
-							"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/f{{followupId}}/links",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountId}}",
-								"lists",
-								"{{listId}}",
-								"campaigns",
-								"f{{followupId}}",
-								"links"
-							]
+						{
+							"key": "campaign_type",
+							"value": "f"
 						}
-					},
-					"response": []
+					]
 				}
-			]
-		}
-	],
-	"auth": {
-		"type": "oauth1",
-		"oauth1": [{
-				"key": "addParamsToHeader",
-				"value": true,
-				"type": "boolean"
 			},
-			{
-				"key": "addEmptyParamsToSign",
-				"value": true,
-				"type": "boolean"
-			},
-			{
-				"key": "tokenSecret",
-				"value": "{{token_secret}}",
-				"type": "string"
-			},
-			{
-				"key": "token",
-				"value": "{{access_token}}",
-				"type": "string"
-			},
-			{
-				"key": "consumerSecret",
-				"value": "{{consumer_secret}}",
-				"type": "string"
-			},
-			{
-				"key": "consumerKey",
-				"value": "{{consumer_key}}",
-				"type": "string"
-			},
-			{
-				"key": "signatureMethod",
-				"value": "HMAC-SHA1",
-				"type": "string"
-			},
-			{
-				"key": "version",
-				"value": "1.0",
-				"type": "string"
-			}
-		]
-	},
-	"event": [{
-			"listen": "prerequest",
-			"script": {
-				"id": "0394b8bf-c7a3-4c21-a86d-53b2b6790e9b",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
+			"response": []
 		},
 		{
-			"listen": "test",
-			"script": {
-				"id": "2557f738-8408-4450-b641-ad6f96a30505",
-				"type": "text/javascript",
-				"exec": [
-					"pm.test(\"Successfully submitted request\", function(){",
-					"    pm.response.to.have.status(200);",
-					"});",
-					""
-				]
-			}
+			"name": "Get Links for Followup",
+			"event": [{
+				"listen": "test",
+				"script": {
+					"id": "1d403310-9a4e-4b13-ad95-9724883bd352",
+					"exec": [
+						""
+					],
+					"type": "text/javascript"
+				}
+			}],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/f{{followupId}}/links",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"f{{followupId}}",
+						"links"
+					]
+				}
+			},
+			"response": []
 		}
-	],
-	"variable": [{
-		"id": "9438b5fc-cb2d-47e7-8fe5-9e2709805e5b",
-		"key": "base_url",
-		"value": "https://api.aweber.com/1.0",
-		"type": "string"
-	}]
+	]
+}],
+"auth": {
+	"type": "oauth1",
+	"oauth1": [{
+			"key": "addParamsToHeader",
+			"value": true,
+			"type": "boolean"
+		},
+		{
+			"key": "addEmptyParamsToSign",
+			"value": true,
+			"type": "boolean"
+		},
+		{
+			"key": "tokenSecret",
+			"value": "{{token_secret}}",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "{{access_token}}",
+			"type": "string"
+		},
+		{
+			"key": "consumerSecret",
+			"value": "{{consumer_secret}}",
+			"type": "string"
+		},
+		{
+			"key": "consumerKey",
+			"value": "{{consumer_key}}",
+			"type": "string"
+		},
+		{
+			"key": "signatureMethod",
+			"value": "HMAC-SHA1",
+			"type": "string"
+		},
+		{
+			"key": "version",
+			"value": "1.0",
+			"type": "string"
+		}
+	]
+},
+"event": [{
+		"listen": "prerequest",
+		"script": {
+			"id": "0394b8bf-c7a3-4c21-a86d-53b2b6790e9b",
+			"type": "text/javascript",
+			"exec": [
+				""
+			]
+		}
+	},
+	{
+		"listen": "test",
+		"script": {
+			"id": "2557f738-8408-4450-b641-ad6f96a30505",
+			"type": "text/javascript",
+			"exec": [
+				"pm.test(\"Successfully submitted request\", function(){",
+				"    pm.response.to.have.status(200);",
+				"});",
+				""
+			]
+		}
+	}
+],
+"variable": [{
+	"id": "9438b5fc-cb2d-47e7-8fe5-9e2709805e5b",
+	"key": "base_url",
+	"value": "https://api.aweber.com/1.0",
+	"type": "string"
+}]
 }
