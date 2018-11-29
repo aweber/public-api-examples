@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bc508ba7-0419-42cf-b30e-b78bf8fa98a1",
+		"_postman_id": "91855f69-2452-4ef2-a0e2-0f24238dee4e",
 		"name": "Get Broadcast Stats",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -167,10 +167,8 @@
 							"pm.globals.set(\"broadcast_self_link\", '');",
 							"",
 							"pm.test(\"Successfully retreived sent broadcasts from list\", function() {",
-							"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
-							"        var broadcast_entry =  Math.floor((Math.random() * jsonData.entries.length ));",
-							"        pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link );",
-							"    }",
+							"    var broadcast_entry =  Math.floor((Math.random() * jsonData.entries.length ));",
+							"    pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link );",
 							"});",
 							"",
 							"pm.test(\"Successfully submitted request\", function(){",

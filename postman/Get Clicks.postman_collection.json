@@ -72,10 +72,8 @@
 									"var jsonData = pm.response.json();",
 									"",
 									"pm.test(\"Successfully got a  random list\", function() {",
-									"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
-									"        var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
-									"        pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
-									"    }",
+									"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
+									"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
 									"});",
 									""
 								],
@@ -409,8 +407,9 @@
 									"",
 									"pm.test(\"Successfully got a followup email\", function() {",
 									"    var followup_entry = Math.floor((Math.random() * jsonData.entries.length ));",
-									"    pm.globals.set(\"followupId\", jsonData.entries[pm.globals.get(\"followup_entry\")].id);",
-									"});"
+									"    pm.globals.set(\"followupId\", jsonData.entries[followup_entry].id);",
+									"});",
+									""
 								],
 								"type": "text/javascript"
 							}
