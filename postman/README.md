@@ -6,9 +6,9 @@ This directory contains examples for use with Postman
 |--------|------|
 | Create and Schedule Broadcast|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/210e1bbb183a8ed3faf3)|
 | Find Subscribers Across Lists|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/bffa24a4a56d16e06c6e)|
-| Get Broadcast Details|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/32ab56e1f66cae6271d6)|
+| Get Broadcast Details|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f202fe7818233cfcae70)|
 | Get Broadcast Links|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1463b4cc1855e97c4ee8)|
-| Get Broadcast Stats|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/43707bf38252f8611a13)|
+| Get Broadcast Stats|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9d990c1b7964a6cda4c2)|
 | Get Clicks|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f66b2f4a196a6e7a051c)|
 | Get Integrations|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1818ac6da02bdf32e5da)|
 | Get Tags|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c3ce503da22f60621cfa)|
