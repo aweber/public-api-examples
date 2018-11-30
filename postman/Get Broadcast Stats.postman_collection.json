@@ -1,0 +1,569 @@
+{
+	"info": {
+		"_postman_id": "5046677b-4a68-4664-a8d8-ec47e3ca4f4d",
+		"name": "Get Broadcast Stats",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
+						"exec": [
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists on Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d22c8fa-8695-4098-a275-10658e8aaea5",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully selected a random listId\", function() {",
+							"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));",
+							"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Random List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b41770d3-1044-48f5-9536-6cf9ba89088a",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"sent_broadcasts_link\", '');",
+							"",
+							"pm.test(\"Successfully retrieved sent_broadcast_link from random list\", function() {",
+							"    pm.globals.set(\"sent_broadcasts_link\", jsonData.sent_broadcasts_link);",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Total Sent Broadcasts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e238f70c-3010-41a2-ba60-6fd4e312850d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"broadcast_self_link\", '');",
+							"",
+							"pm.test(\"Successfully retreived sent broadcasts from list\", function() {",
+							"    pm.expect(jsonData.entries.length).to.be.above(0)",
+							"    var broadcast_entry =  Math.floor((Math.random() * jsonData.entries.length ));",
+							"    pm.globals.set(\"broadcast_self_link\", jsonData.entries[broadcast_entry].self_link );",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{sent_broadcasts_link}}",
+					"host": [
+						"{{sent_broadcasts_link}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Broadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c8c9f482-117c-4cc9-87c7-04dbb1e65bfb",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    pm.globals.set('broadcastId', jsonData.broadcast_id);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{broadcast_self_link}}",
+					"host": [
+						"{{broadcast_self_link}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Stats Entries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c51162ab-dfa9-42e5-82da-3acf6ca35bd1",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Clicks by Link",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fab4e0ec-20ee-4a6a-b622-7f71b114178a",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/clicks_by_link",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"clicks_by_link"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Unique and Total Clicks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b57c6a1-61fd-423c-b846-9b085b650b06",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_clicks",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_clicks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Unique and Total Opens",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b1ef8431-fceb-4f2a-86bb-e5576618249c",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_opens",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_opens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Sales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "794a36eb-ba4a-4952-b09b-36c6d0ede82f",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"   pm.expect(pm.response.code).to.be.oneOf([200,404]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_sales",
+					"host": [
+						"{{base_url}}accounts"
+					],
+					"path": [
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_sales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Daily Unsubscribed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "26689c6f-f1a9-4957-b2fb-836a8a322553",
+						"exec": [
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/campaigns/b{{broadcastId}}/stats/daily_unsubscribed",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"campaigns",
+						"b{{broadcastId}}",
+						"stats",
+						"daily_unsubscribed"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "addEmptyParamsToSign",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			},
+			{
+				"key": "addParamsToHeader",
+				"value": true,
+				"type": "boolean"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "00ba3184-049b-4f7c-8fe5-05aba9341f03",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f260ba97-0427-43a5-9a77-3eae909bc925",
+				"type": "text/javascript",
+				"exec": [
+					"",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "2dbf7cfa-1e74-4180-a000-8d01f7e6d40d",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		}
+	]
+}
