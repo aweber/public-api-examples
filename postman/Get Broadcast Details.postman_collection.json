@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c446d854-fba0-4d9e-adba-995c4b35c6f2",
+		"_postman_id": "0fc84e95-b3c1-4bef-8776-ee2aa3980fcb",
 		"name": "Get Broadcast Details",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -243,7 +243,8 @@
 							"var jsonData = pm.response.json();",
 							"pm.globals.set(\"draft_broadcast_link\", '');",
 							"",
-							"pm.test(\"Successfully retrieved the first draft brodcast\", function() {",
+							"pm.test(\"Found draft broadcasts on the selected list\", function() {",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
 							"    pm.globals.set(\"draft_broadcast_link\", jsonData.entries[0].self_link);",
 							"});",
 							"",
@@ -311,7 +312,8 @@
 							"var jsonData = pm.response.json();",
 							"pm.globals.set(\"scheduled_broadcast_link\", '');",
 							"",
-							"pm.test(\"Successfully retrieved the first scheduled brodcast\", function() {",
+							"pm.test(\"Found scheduled broadcasts on the selected list\", function() {",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
 							"    pm.globals.set(\"scheduled_broadcast_link\", jsonData.entries[0].self_link);",
 							"});",
 							""
@@ -378,7 +380,8 @@
 							"var jsonData = pm.response.json();",
 							"pm.globals.set(\"sent_broadcast_link\", '');",
 							"",
-							"pm.test(\"Successfully retrieved the first sent brodcast\", function() {",
+							"pm.test(\"Found sent broadcasts on the selected list\", function() {",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
 							"    pm.globals.set(\"sent_broadcast_link\", jsonData.entries[0].self_link);",
 							"});",
 							""

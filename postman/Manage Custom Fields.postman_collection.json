@@ -1,0 +1,434 @@
+{
+	"info": {
+		"_postman_id": "4385fbd1-1c97-4fb6-82fc-2d6c78108655",
+		"name": "Manage Custom Fields",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check token_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Successfully get a random list\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"At least one list returned\", function() {",
+							"    pm.gloabls.set(\"listId\",jsonData.entries[0].id );",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get the First List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
+						"exec": [
+							"pm.test(\"Successfully get a list\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Custom Fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"var jsonData =  pm.response.json();",
+							"",
+							"pm.test(\"Get custom fields in list\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"One or more custom fields found\", function() {",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"});",
+							"",
+							"pm.test(\"custom_field is not empty and not null\", function() {",
+							"    pm.expect(pm.variables.get(\"custom_field\")).not.empty;",
+							"});",
+							"",
+							"pm.test(\"updated_custom_field  variable exists and is not null\", function() {",
+							"    pm.expect(pm.variables.get(\"updated_custom_field\")).not.empty;",
+							"});",
+							"",
+							"pm.test(\"custom_field and updated_custom_field should not have the same value\", function(){",
+							"   pm.expect(pm.variables.get(\"custom_field\")).not.eql(pm.variables.get(\"updated_custom_field\"));",
+							"});",
+							"",
+							"pm.test(\"New custom field is unique\", function() {",
+							"    for ( i = 0; i < jsonData.entries.length; i++ ){",
+							"        pm.expect(jsonData.entries[i].name).to.not.include(pm.variables.get(\"custom_field\") );",
+							"    } ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/custom_fields",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"custom_fields"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Custom Field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"pm.test(\"Create custom field\", function(){",
+							"    pm.response.to.have.status(201);",
+							"    pm.variables.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "{{custom_field}}",
+							"type": "text"
+						},
+						{
+							"key": "ws.op",
+							"value": "create",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/custom_fields",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"custom_fields"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Custom Field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"pm.test(\"Update custom field\", function(){",
+							"    pm.response.to.have.status(209);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\t\"name\": \"{{updated_custom_field}}\",\t\"is_subscriber_updateable\": true}"
+				},
+				"url": {
+					"raw": "{{custom_field_url}}",
+					"host": [
+						"{{custom_field_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Custom Field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5a97102-9d21-4722-a899-3444de45eb5b",
+						"exec": [
+							"pm.test(\"Delete custom field\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    pm.globals.set(\"custom_field_url\", \"\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ws.op",
+							"value": "delete",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{custom_field_url}}",
+					"host": [
+						"{{custom_field_url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth1",
+		"oauth1": [
+			{
+				"key": "addParamsToHeader",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "addEmptyParamsToSign",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "tokenSecret",
+				"value": "{{token_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerSecret",
+				"value": "{{consumer_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "consumerKey",
+				"value": "{{consumer_key}}",
+				"type": "string"
+			},
+			{
+				"key": "signatureMethod",
+				"value": "HMAC-SHA1",
+				"type": "string"
+			},
+			{
+				"key": "version",
+				"value": "1.0",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6450ab20-d1e5-4c86-a7da-ee2006aa0142",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0d0e8432-9dcd-4f24-a050-f94b01ab49d2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ce795667-8a60-42f3-96a3-d651fc9f291d",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		}
+	]
+}
