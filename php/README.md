@@ -16,10 +16,10 @@ The requirements are in *composer.json*. Install them using composer:
 If you already have a consumer key/secret pair and access token/secret pair, you can create *credentials.ini* in
 this directory:
 
-    consumerKey = ****
-    consumerSecret = ****
-    accessKey = ****
-    accessSecret = ****
+    consumerKey = '****'
+    consumerSecret = '****'
+    accessKey = '****'
+    accessSecret = '****'
 
 You can also create the *credentials.ini* file using your existing consumer key and secret from the
 [My Apps page](https://labs.aweber.com/apps):
