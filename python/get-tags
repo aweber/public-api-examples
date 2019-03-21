@@ -63,7 +63,7 @@ account_url = 'https://api.aweber.com/1.0/accounts'
 accounts = get_collection(account_url)
 
 lists_url = accounts[0]['lists_collection_link']  # choose the first account
-list_name = 'abc'
+list_name = 'my list'
 params = urlencode({'ws.op': 'find', 'name': list_name})
 find_list_url = '{}?{}'.format(lists_url, params)
 lists = get_collection(find_list_url)
