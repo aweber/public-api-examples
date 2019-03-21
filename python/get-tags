@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import json
+import os
 
-from requests_oauthlib import OAuth1Session
+from requests_oauthlib import OAuth2Session
 
 try:
     from urllib.parse import urlencode
@@ -12,11 +13,36 @@ except ImportError:
 with open('credentials.json', 'rt') as f:
     credentials = json.load(f)
 
-session = OAuth1Session(
-    credentials['consumer_key'],
-    client_secret=credentials['consumer_secret'],
-    resource_owner_key=credentials['access_token'],
-    resource_owner_secret=credentials['token_secret'])
+TOKEN_URL = "https://auth.aweber.com/oauth2/token"
+
+client_id = credentials['client_id']
+client_secret = credentials['client_secret']
+token = credentials['token']
+
+extra = {
+    'client_id': client_id,
+    'client_secret': client_secret,
+    'token': token
+}
+
+def token_updater(token):
+    with open('credentials.json', 'wt') as creds_file:
+        json.dump({
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'token': token
+        }, creds_file)
+    os.chmod('credentials.json', 0o600)
+    print('Token was refreshed.\n'
+          'Updated credentials.json with your new credentials')
+
+session = OAuth2Session(
+    client_id=credentials['client_id'],
+    token=credentials['token'],
+    auto_refresh_url=TOKEN_URL,
+    auto_refresh_kwargs=extra,
+    token_updater=token_updater
+)
 
 
 def get_collection(url):
@@ -37,7 +63,7 @@ account_url = 'https://api.aweber.com/1.0/accounts'
 accounts = get_collection(account_url)
 
 lists_url = accounts[0]['lists_collection_link']  # choose the first account
-list_name = 'my list'
+list_name = 'abc'
 params = urlencode({'ws.op': 'find', 'name': list_name})
 find_list_url = '{}?{}'.format(lists_url, params)
 lists = get_collection(find_list_url)
