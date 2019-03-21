@@ -4,46 +4,62 @@ import getpass
 import json
 import os
 
-from requests_oauthlib import OAuth1Session
+from requests_oauthlib import OAuth2Session
 
 try:
     input = raw_input  # use raw_input in python2
 except NameError:
     pass
 
-OAUTH_URL = 'https://auth.aweber.com/1.0/oauth/{}'
+OAUTH_URL = 'https://auth.aweber.com/oauth2/{}'
 
-consumer_key = input('Enter your consumer key: ')
-consumer_secret = getpass.getpass('Enter your consumer secret: ')
+client_id = input('Enter your client id: ')
+client_secret = getpass.getpass('Enter your client secret: ')
 
-# Use your consumer key and secret to get a request token and secret.
+# Use your client id and secret to get an access token.
 #
-# Use "oob" as the callback_uri to display the verifier so it can be copied.
 # See the Getting Started guide to redirect to a callback URL:
 # https://api.aweber.com/#tag/Getting-Started
-oauth = OAuth1Session(
-    consumer_key, client_secret=consumer_secret, callback_uri='oob')
-oauth.fetch_request_token(OAUTH_URL.format('request_token'))
 
-# Log in to receive a verifier code for the request token
-href = oauth.authorization_url(OAUTH_URL.format('authorize'))
-print('Go to this url: ' + href)
-verifier = input('Log in and paste the returned verifier code here: ')
-try:
-    verifier = verifier.decode()  # decode byte string in python2
-except AttributeError:
-    pass
+# Redirect URI must be https and must be one of the redirects specified
+# for your integration
+redirect_uri = 'https://localhost'
 
-# Trade the request token/secret and verifier for an access token/secret
-credentials = oauth.fetch_access_token(
-    OAUTH_URL.format('access_token'), verifier)
+# Set the scopes you wish to allow
+scope = [
+    'account.read',
+    'list.read',
+    'list.write',
+    'subscriber.read',
+    'subscriber.write',
+    'email.read',
+    'email.write',
+    'subscriber.read-extended'
+]
+oauth = OAuth2Session(
+    client_id,
+    redirect_uri=redirect_uri,
+    scope=scope
+)
+authorization_url, state = oauth.authorization_url(
+    OAUTH_URL.format('authorize'))
+
+# Log in to receive a redirect url
+print('Go to this URL: ' + authorization_url)
+authorization_response = input('Log in and paste the returned URL here: ')
+
+# Use the authorization response to get a token
+token = oauth.fetch_token(
+    OAUTH_URL.format('token'),
+    authorization_response=authorization_response,
+    client_secret=client_secret
+)
 
 with open('credentials.json', 'wt') as creds_file:
     json.dump({
-        'consumer_key': consumer_key,
-        'consumer_secret': consumer_secret,
-        'access_token': credentials['oauth_token'],
-        'token_secret': credentials['oauth_token_secret']
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'token': token
     }, creds_file)
 os.chmod('credentials.json', 0o600)
 print('Updated credentials.json with your new credentials')
