@@ -1,5 +1,9 @@
 Python code examples
 ====================
+
+*NOTE: THIS IS A WORK IN PROGRESS. OAuth2 is not publically available. If you
+try to access resources using this guide it will not work.*
+
 This directory contains executable examples of how to use
 https://api.aweber.com from within Python code.  If you haven't read
 `CONTRIBUTING`_, please take a moment to read it now.  It describes the
@@ -55,20 +59,25 @@ and access token/secret pair, you can create *credentials.json* in this
 directory::
 
    {
-     "consumer_key": "****",
-     "consumer_secret": "****",
-     "access_token": "****",
-     "token_secret": "****"
+     "client_id": "****",
+     "client_secret": "****",
+     "token": {
+          "access_token": "****",
+          "refresh_token": "****"
+          "token_type": "bearer", 
+          "expires_in": 7200, 
+          "expires_at": 1553268614.907632
+     }
    }
 
 You can also create the *credentials.json* file using your existing consumer
 key and secret from the `My Apps page`_::
 
    prompt (env)$ ./get-access-token
-   Enter your consumer key: ****
-   Enter your consumer secret:
-   Go to this url: https://auth.aweber.com/1.0/oauth/authorize?oauth_token=****
-   Log in and paste the returned verifier code here: ****
+   Enter your client id: ****
+   Enter your client secret:
+   Go to this url: https://auth.aweber.com/oauth2/authorize?oauth_token=****
+   Log in and paste the returned URL here: ****
    Updated credentials.json with your new credentials
 
 You can now can run any example directly::

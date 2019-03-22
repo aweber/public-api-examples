@@ -2,16 +2,41 @@
 from __future__ import print_function
 import json
 
-from requests_oauthlib import OAuth1Session
+from requests_oauthlib import OAuth2Session
 
 with open('credentials.json', 'rt') as f:
     credentials = json.load(f)
 
-session = OAuth1Session(
-    credentials['consumer_key'],
-    client_secret=credentials['consumer_secret'],
-    resource_owner_key=credentials['access_token'],
-    resource_owner_secret=credentials['token_secret'])
+TOKEN_URL = "https://auth.aweber.com/oauth2/token"
+
+client_id = credentials['client_id']
+client_secret = credentials['client_secret']
+token = credentials['token']
+
+extra = {
+    'client_id': client_id,
+    'client_secret': client_secret,
+    'token': token
+}
+
+def token_updater(token):
+    with open('credentials.json', 'wt') as creds_file:
+        json.dump({
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'token': token
+        }, creds_file)
+    os.chmod('credentials.json', 0o600)
+    print('Token was refreshed.\n'
+          'Updated credentials.json with your new credentials')
+
+session = OAuth2Session(
+    client_id=credentials['client_id'],
+    token=credentials['token'],
+    auto_refresh_url=TOKEN_URL,
+    auto_refresh_kwargs=extra,
+    token_updater=token_updater
+)
 
 
 def get_collection(url):
