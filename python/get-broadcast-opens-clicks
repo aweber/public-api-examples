@@ -38,7 +38,6 @@ def token_updater(token):
             'client_secret': client_secret,
             'token': token
         }, creds_file)
-    os.chmod('credentials.json', 0o600)
     print('Token was refreshed.\n'
           'Updated credentials.json with your new credentials')
 
