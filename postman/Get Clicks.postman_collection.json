@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d9aa16e7-2f01-448c-8467-374dac7717d8",
+		"_postman_id": "521d8de1-2b05-410f-8b77-db2219bcba02",
 		"name": "Get Clicks",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -16,20 +16,8 @@
 							"script": {
 								"id": "5d0f8297-d924-4b24-b51f-f2c4af5ffd5f",
 								"exec": [
-									"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-									"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-									"});",
-									"",
-									"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-									"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-									"});",
-									"",
 									"pm.test(\"Check access_token is defined and not empty\", function(){",
 									"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-									"});",
-									"",
-									"pm.test(\"Check token_secret is defined and not empty\", function(){",
-									"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
 									"});",
 									"",
 									"pm.test(\"Successfully get an account Id\", function(){",
@@ -72,9 +60,10 @@
 									"var jsonData = pm.response.json();",
 									"",
 									"pm.test(\"Successfully got a  random list\", function() {",
-									"    pm.expect(jsonData.entries.length).to.be.above(0);",
-									"    var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
-									"    pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+									"    if (pm.expect(jsonData.entries.length).to.be.above(0)) {",
+									"        var list_entry = Math.floor((Math.random() * jsonData.entries.length ));    ",
+									"        pm.globals.set(\"listId\",jsonData.entries[list_entry].id );",
+									"    }",
 									"});",
 									""
 								],
@@ -407,11 +396,9 @@
 									"var jsonData = pm.response.json();",
 									"",
 									"pm.test(\"Successfully got a followup email\", function() {",
-									"    pm.expect(jsonData.entries.length).to.be.above(0);",
 									"    var followup_entry = Math.floor((Math.random() * jsonData.entries.length ));",
-									"    pm.globals.set(\"followupId\", jsonData.entries[followup_entry].id);",
-									"});",
-									""
+									"    pm.globals.set(\"followupId\", jsonData.entries[pm.globals.get(\"followup_entry\")].id);",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -493,46 +480,16 @@
 		}
 	],
 	"auth": {
-		"type": "oauth1",
-		"oauth1": [
+		"type": "oauth2",
+		"oauth2": [
 			{
-				"key": "addParamsToHeader",
-				"value": true,
-				"type": "boolean"
-			},
-			{
-				"key": "addEmptyParamsToSign",
-				"value": true,
-				"type": "boolean"
-			},
-			{
-				"key": "tokenSecret",
-				"value": "{{token_secret}}",
-				"type": "string"
-			},
-			{
-				"key": "token",
+				"key": "accessToken",
 				"value": "{{access_token}}",
 				"type": "string"
 			},
 			{
-				"key": "consumerSecret",
-				"value": "{{consumer_secret}}",
-				"type": "string"
-			},
-			{
-				"key": "consumerKey",
-				"value": "{{consumer_key}}",
-				"type": "string"
-			},
-			{
-				"key": "signatureMethod",
-				"value": "HMAC-SHA1",
-				"type": "string"
-			},
-			{
-				"key": "version",
-				"value": "1.0",
+				"key": "addTokenTo",
+				"value": "header",
 				"type": "string"
 			}
 		]
