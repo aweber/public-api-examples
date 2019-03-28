@@ -5,65 +5,102 @@ use League\Oauth2\Client\Provider\GenericProvider;
 
 
 const OAUTH_URL = 'https://auth.aweber.com/oauth2/';
+const TOKEN_URL = 'https://auth.aweber.com/oauth2/token';
 
-echo 'Enter your client id: ';
-$clientId = rtrim(fgets(STDIN), PHP_EOL);
-echo 'Enter your client secret: ';
-$clientSecret = rtrim(fgets(STDIN), PHP_EOL);
 
-$redirectUri = 'https://localhost';
+echo 'Do you wish to create(c) tokens or refresh(r) tokens? ';
+$createRefresh = rtrim(fgets(STDIN), PHP_EOL);
 
-$scopes = array(
-    'account.read',
-    'list.read',
-    'list.write',
-    'subscriber.read',
-    'subscriber.write',
-    'email.read',
-    'email.write',
-    'subscriber.read-extended'
-);
+if (strtoupper($createRefresh) == 'C') {
+    echo 'Enter your client id: ';
+    $clientId = rtrim(fgets(STDIN), PHP_EOL);
+    echo 'Enter your client secret: ';
+    $clientSecret = rtrim(fgets(STDIN), PHP_EOL);
 
-// Create a OAuth2 client configured to use OAuth for authentication
-$provider = new \League\OAuth2\Client\Provider\GenericProvider([
-    'clientId' => $clientId,
-    'clientSecret' => $clientSecret,
-    'redirectUri' => $redirectUri,
-    'scopes' => $scopes,
-    'scopeSeparator' => ' ',
-    'urlAuthorize' => OAUTH_URL . 'authorize',
-    'urlAccessToken' => OAUTH_URL . 'token',
-    'urlResourceOwnerDetails' => 'https://api.aweber.com/1.0/accounts'
-]);
+    $redirectUri = 'https://localhost';
 
-$authorizationUrl = $provider->getAuthorizationUrl();
+    $scopes = array(
+        'account.read',
+        'list.read',
+        'list.write',
+        'subscriber.read',
+        'subscriber.write',
+        'email.read',
+        'email.write',
+        'subscriber.read-extended'
+    );
 
-$_SESSION['oauth2state'] = $provider->getState();
+    // Create a OAuth2 client configured to use OAuth for authentication
+    $provider = new \League\OAuth2\Client\Provider\GenericProvider([
+        'clientId' => $clientId,
+        'clientSecret' => $clientSecret,
+        'redirectUri' => $redirectUri,
+        'scopes' => $scopes,
+        'scopeSeparator' => ' ',
+        'urlAuthorize' => OAUTH_URL . 'authorize',
+        'urlAccessToken' => OAUTH_URL . 'token',
+        'urlResourceOwnerDetails' => 'https://api.aweber.com/1.0/accounts'
+    ]);
 
-echo 'Go to this url: ' . $authorizationUrl;
-echo '
-Log in and paste the returned URL here: ';
-$authorizationResponse = rtrim(fgets(STDIN), PHP_EOL);
-$parsedUrl = parse_url($authorizationResponse, PHP_URL_QUERY);
-parse_str($parsedUrl, $parsedArray);
-$code = $parsedArray['code'];
-echo $code;
+    $authorizationUrl = $provider->getAuthorizationUrl();
 
-$accessToken = $provider->getAccessToken('authorization_code', [
-    'code' => $code
-]);
+    $_SESSION['oauth2state'] = $provider->getState();
 
-$jsonString = json_encode($accessToken);
+    echo "Go to this url: " . $authorizationUrl . "\n";
+    echo "Log in and paste the returned URL here: ";
+    $authorizationResponse = rtrim(fgets(STDIN), PHP_EOL);
+    $parsedUrl = parse_url($authorizationResponse, PHP_URL_QUERY);
+    parse_str($parsedUrl, $parsedArray);
+    $code = $parsedArray['code'];
 
+    $token = $provider->getAccessToken('authorization_code', [
+        'code' => $code
+    ]);
+
+    $accessToken = $token->getToken();
+    $refreshToken = $token->getRefreshToken();
+}
+elseif(strtoupper($createRefresh) == 'R') {
+    $credentials = parse_ini_file('credentials.ini', true);
+    if(sizeof($credentials) == 0 ||
+       !array_key_exists('clientId', $credentials) ||
+       !array_key_exists('clientSecret', $credentials) ||
+       !array_key_exists('accessToken', $credentials) ||
+       !array_key_exists('refreshToken', $credentials)) {
+        echo "No credentials.ini exists, or file is improperly formatted.\n";
+        echo "Please create new credentials.";
+        exit();
+    }
+    $client = new GuzzleHttp\Client();
+    $clientId = $credentials['clientId'];
+    $clientSecret = $credentials['clientSecret'];
+    $response = $client->post(
+        TOKEN_URL, [
+            'auth' => [
+                $clientId, $clientSecret
+            ],
+            'json' => [
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $credentials['refreshToken']
+            ]
+        ]
+    );
+    $body = $response->getBody();
+    $newCreds = json_decode($body, true);
+    $accessToken = $newCreds['access_token'];
+    $refreshToken = $newCreds['refresh_token'];
+}
+else {
+    echo 'Invalid entry. You must enter "c" or "r".';
+    exit();
+}
 
 $fp = fopen('credentials.ini', 'wt');
 fwrite($fp,
-"
-clientId = {$clientId}
+"clientId = {$clientId}
 clientSecret = {$clientSecret}
-accessToken = {$accessToken->getToken()}
-refreshToken = {$accessToken->getRefreshToken()}
-");
+accessToken = {$accessToken}
+refreshToken = {$refreshToken}");
 fclose($fp);
 chmod('credentials.ini', 0600);
 echo "Updated credentials.ini with your new credentials\n";

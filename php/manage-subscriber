@@ -2,38 +2,31 @@
 <?php
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
-// Create a Guzzle client configured to use OAuth for authentication
-$stack = HandlerStack::create();
-$client = new Client([
-    'base_uri' => 'https://api.aweber.com/1.0/',
-    'handler' => $stack,
-    'auth' => 'oauth'
-]);
+const BASE_URL = 'https://api.aweber.com/1.0/';
 
-// Load credentials into the Oauth client
+// Create a Guzzle client
+$client = new GuzzleHttp\Client();
+
+// Load credentials
 $credentials = parse_ini_file('credentials.ini');
-$requestMiddleware = new Oauth1([
-    'consumer_key' => $credentials['consumerKey'],
-    'consumer_secret' => $credentials['consumerSecret'],
-    'token' => $credentials['accessToken'],
-    'token_secret' => $credentials['tokenSecret'],
-]);
-$stack->push($requestMiddleware);
+$accessToken = $credentials['accessToken'];
 
 /**
  * Get all of the entries for a collection
  *
  * @param Client $client HTTP Client used to make a GET request
- * @param string $url Relative path or full url to make the request
+ * @param string $accessToken Access token to pass in as an authorization header
+ * @param string $url Full url to make the request
  * @return array Every entry in the collection
  */
-function getCollection($client, $url) {
+function getCollection($client, $accessToken, $url) {
     $collection = array();
     while (isset($url)) {
-        $body = $client->get($url)->getBody();
+        $request = $client->get($url,
+            ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+        );
+        $body = $request->getBody();
         $page = json_decode($body, true);
         $collection = array_merge($page['entries'], $collection);
         $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
@@ -42,12 +35,12 @@ function getCollection($client, $url) {
 }
 
 // get all the accounts entries
-$accounts = getCollection($client, 'accounts');
+$accounts = getCollection($client, $accessToken, BASE_URL . 'accounts');
 $accountUrl = $accounts[0]['self_link'];
 
 // get all the list entries for the first account
 $listsUrl = $accounts[0]['lists_collection_link'];
-$lists = getCollection($client, $listsUrl);
+$lists = getCollection($client, $accessToken, $listsUrl);
 
 // find out if a subscriber exists on the first list
 $email = 'example@example.com';
@@ -57,7 +50,7 @@ $params = array(
 );
 $subsUrl = $lists[0]['subscribers_collection_link'];
 $findUrl = $subsUrl . '?' . http_build_query($params);
-$foundSubscribers = getCollection($client, $findUrl);
+$foundSubscribers = getCollection($client, $accessToken, $findUrl);
 echo 'Found subscribers: ';
 print_r($foundSubscribers);
 
@@ -68,7 +61,10 @@ if (isset($foundSubscribers[0]['self_link'])) {
         'tags' => array('add' => array('prospect'))
     );
     $subscriberUrl = $foundSubscribers[0]['self_link'];
-    $subscriberResponse = $client->patch($subscriberUrl, ['json' => $data])->getBody();
+    $subscriberResponse = $client->patch($subscriberUrl, [
+            'json' => $data, 
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken]
+        ])->getBody();
     $subscriber = json_decode($subscriberResponse, true);
     echo 'Updated Subscriber: ';
 } else {
@@ -78,11 +74,15 @@ if (isset($foundSubscribers[0]['self_link'])) {
         'custom_fields' => array('awesomeness' => 'somewhat'),
         'tags' => array('prospect')
     );
-    $body = $client->post($subsUrl, ['json' => $data]);
+    $body = $client->post($subsUrl, [
+            'json' => $data, 
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken]
+        ]);
 
     // get the subscriber entry using the Location header from the post request
     $subscriberUrl = $body->getHeader('Location')[0];
-    $subscriberResponse = $client->get($subscriberUrl)->getBody();
+    $subscriberResponse = $client->get($subscriberUrl,
+        ['headers' => ['Authorization' => 'Bearer ' . $accessToken]])->getBody();
     $subscriber = json_decode($subscriberResponse, true);
     echo 'Created Subscriber: ';
 }
@@ -91,13 +91,15 @@ print_r($subscriber);
 // get the activity for the subscriber
 $params = array('ws.op' => 'getActivity');
 $activityUrl = $subscriberUrl . '?' . http_build_query($params);
-$activity = $client->get($activityUrl)->getBody();
+$activity = $client->get($activityUrl,
+    ['headers' => ['Authorization' => 'Bearer ' . $accessToken]])->getBody();
 echo 'Subscriber Activity: ';
 print_r(json_decode($activity, true));
 
 // delete the subscriber; this can only be performed on confirmed subscribers
 // or a 405 Method Not Allowed will be returned
 if ($subscriber['status'] == 'subscribed') {
-    $client->delete($subscriberUrl);
+    $client->delete($subscriberUrl, 
+        ['headers' => ['Authorization' => 'Bearer ' . $accessToken]])->getBody();
     echo 'Deleted subscriber with email: ' . $email;
 }
