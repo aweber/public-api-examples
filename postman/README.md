@@ -6,6 +6,7 @@ This directory contains examples for use with Postman
 
 | Script | Link |
 |--------|------|
+| Refresh Token|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/02e9dee995da1faa5246)|
 | Create and Schedule Broadcast|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ba6d8b345c3af5ea818f)|
 | Find Subscribers Across Lists|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/a4cdc5084c8754be743a)|
 | Get Broadcast Details|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/663a1a3592eca815d67f)|
