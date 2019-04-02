@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "8372d845-98de-4aeb-ae78-5715669eda2e",
+		"name": "Refresh Token",
+		"description": "This will refresh your OAuth2 token. \n\n*Make sure you have global variables for `client_id`, `client_secret`, and `refresh_token` defined.*\n\nWhen executing, ensure `Keep Variable Values` is checked.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6cf668da-ba79-48ee-a729-de1a42cedb74",
+						"exec": [
+							"pm.test(\"Check client_id is defined and not empty\", function(){",
+							"   pm.expect(pm.globals.has(\"client_id\")).to.eql(true) && pm.expect(pm.globals.get(\"client_id\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check client_secret is defined and not empty\", function(){",
+							"   pm.expect(pm.globals.has(\"client_secret\")).to.eql(true) && pm.expect(pm.globals.get(\"client_secret\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Check refresh_token is defined and not empty\", function(){",
+							"   pm.expect(pm.globals.has(\"refresh_token\")).to.eql(true) && pm.expect(pm.globals.get(\"refresh_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an updated token\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.globals.set(\"refresh_token\", jsonData.refresh_token) ;",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"type": "text"
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{refresh_token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://auth.aweber.com/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"auth",
+						"aweber",
+						"com"
+					],
+					"path": [
+						"oauth2",
+						"token"
+					]
+				},
+				"description": "Refresh Token"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{client_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{client_id}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "d17789a5-31a7-4711-979b-b678118fcef3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4d2bc757-f3f8-4f30-acf8-a635cd0c63af",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4385fbd1-1c97-4fb6-82fc-2d6c78108655",
+		"_postman_id": "48d22473-407b-4498-99a4-ffd9552deb0e",
 		"name": "Manage Custom Fields",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,20 +13,8 @@
 					"script": {
 						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
 						"exec": [
-							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-							"});",
-							"",
 							"pm.test(\"Check access_token is defined and not empty\", function(){",
 							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Check token_secret is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
 							"});",
 							"",
 							"pm.test(\"Successfully get an account Id\", function(){",
@@ -71,14 +59,13 @@
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"",
-							"pm.test(\"Successfully get a random list\", function() {",
+							"pm.test(\"Successfully get a  random list\", function() {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
 							"pm.test(\"At least one list returned\", function() {",
-							"    pm.gloabls.set(\"listId\",jsonData.entries[0].id );",
-							"});",
-							""
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -176,7 +163,7 @@
 							"",
 							"pm.test(\"New custom field is unique\", function() {",
 							"    for ( i = 0; i < jsonData.entries.length; i++ ){",
-							"        pm.expect(jsonData.entries[i].name).to.not.include(pm.variables.get(\"custom_field\") );",
+							"        pm.expect(jsonData.entries[i].name).to.not.include(pm.globals.get(\"custom_field\") );",
 							"    } ",
 							"});",
 							""
@@ -218,7 +205,7 @@
 						"exec": [
 							"pm.test(\"Create custom field\", function(){",
 							"    pm.response.to.have.status(201);",
-							"    pm.variables.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
+							"    pm.globals.set(\"custom_field_url\", postman.getResponseHeader(\"Location\"));",
 							"});"
 						],
 						"type": "text/javascript"
@@ -357,46 +344,16 @@
 		}
 	],
 	"auth": {
-		"type": "oauth1",
-		"oauth1": [
+		"type": "oauth2",
+		"oauth2": [
 			{
-				"key": "addParamsToHeader",
-				"value": true,
-				"type": "boolean"
-			},
-			{
-				"key": "addEmptyParamsToSign",
-				"value": true,
-				"type": "boolean"
-			},
-			{
-				"key": "tokenSecret",
-				"value": "{{token_secret}}",
-				"type": "string"
-			},
-			{
-				"key": "token",
+				"key": "accessToken",
 				"value": "{{access_token}}",
 				"type": "string"
 			},
 			{
-				"key": "consumerSecret",
-				"value": "{{consumer_secret}}",
-				"type": "string"
-			},
-			{
-				"key": "consumerKey",
-				"value": "{{consumer_key}}",
-				"type": "string"
-			},
-			{
-				"key": "signatureMethod",
-				"value": "HMAC-SHA1",
-				"type": "string"
-			},
-			{
-				"key": "version",
-				"value": "1.0",
+				"key": "addTokenTo",
+				"value": "header",
 				"type": "string"
 			}
 		]
