@@ -1,4 +1,7 @@
 # PHP code examples
+
+NOTE: THIS IS A WORK IN PROGRESS. OAuth2 is not publically available. If you try to access resources using this guide it will not work.
+
 This directory contains executable examples of how to use https://api.aweber.com/ from within PHP code.
 
 If you haven't read [CONTRIBUTING], please take a moment to read it now.  It describes the basic configuration and process and this document picks up where it leaves off.
@@ -16,22 +19,30 @@ The requirements are in *composer.json*. Install them using composer:
 If you already have a consumer key/secret pair and access token/secret pair, you can create *credentials.ini* in
 this directory:
 
-    consumerKey = '****'
-    consumerSecret = '****'
-    accessKey = '****'
-    accessSecret = '****'
+    clientId = '****'
+    clientSecret = '****'
+    accessToken = '****'
+    refreshToken = '****'
 
-You can also create the *credentials.ini* file using your existing consumer key and secret from the
+You can also create the *credentials.ini* file using your existing client ID and secret from the
 [My Apps page](https://labs.aweber.com/apps):
 
     prompt$ php get-access-token
-    Enter your consumer key: ****
-    Enter your consumer secret: ****
-    Go to this url: https://auth.aweber.com/1.0/oauth/authorize?oauth_token=****
-    Log in and paste the returned verifier code here: ****
+    Do you wish to create(c) tokens or refresh(r) tokens? c
+    Enter your client ID: ****
+    Enter your client secret: ****
+    Go to this url: https://auth.aweber.com/oauth2/authorize?******
+    Log in and paste the returned URL here: ****
     Updated credentials.ini with your new credentials
     
 The rest of the scripts will use this file for authentication. 
+
+## Refreshing tokens
+If your access token is expired, you can use the `get-access-token` script to refresh it.
+
+    prompt$ php get-access-token
+    Do you wish to create(c) tokens or refresh(r) tokens? r
+    Updated credentials.ini with your new credentials
 
 [CONTRIBUTING]: https://github.com/aweber/public-api-examples/blob/master/CONTRIBUTING.md
 
