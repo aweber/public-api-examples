@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ad3630ae-2917-4443-ba66-e53fb0ffceb2",
+		"_postman_id": "feb90b42-63b9-4776-8266-ceccf83aa4fa",
 		"name": "Get Webforms Detail",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,20 +13,8 @@
 					"script": {
 						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
 						"exec": [
-							"pm.test(\"Check consumer_key is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"consumer_key\")).to.equal(true) && pm.expect(pm.environment.get(\"consumer_key\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Check consumer_secret is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"consumer_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"consumer_secret\")).not.eql('');",
-							"});",
-							"",
 							"pm.test(\"Check access_token is defined and not empty\", function(){",
 							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
-							"});",
-							"",
-							"pm.test(\"Check token_secret is defined and not empty\", function(){",
-							"   pm.expect(pm.environment.has(\"token_secret\")).to.eql(true) && pm.expect(pm.environment.get(\"token_secret\")).not.eql('');",
 							"});",
 							"",
 							"pm.test(\"Successfully get an account Id\", function(){",
@@ -175,47 +163,17 @@
 		}
 	],
 	"auth": {
-		"type": "oauth1",
-		"oauth1": [
+		"type": "oauth2",
+		"oauth2": [
 			{
-				"key": "tokenSecret",
-				"value": "{{token_secret}}",
-				"type": "string"
-			},
-			{
-				"key": "token",
+				"key": "accessToken",
 				"value": "{{access_token}}",
 				"type": "string"
 			},
 			{
-				"key": "consumerSecret",
-				"value": "{{consumer_secret}}",
+				"key": "addTokenTo",
+				"value": "header",
 				"type": "string"
-			},
-			{
-				"key": "consumerKey",
-				"value": "{{consumer_key}}",
-				"type": "string"
-			},
-			{
-				"key": "signatureMethod",
-				"value": "HMAC-SHA1",
-				"type": "string"
-			},
-			{
-				"key": "version",
-				"value": "1.0",
-				"type": "string"
-			},
-			{
-				"key": "addParamsToHeader",
-				"value": true,
-				"type": "boolean"
-			},
-			{
-				"key": "addEmptyParamsToSign",
-				"value": false,
-				"type": "boolean"
 			}
 		]
 	},

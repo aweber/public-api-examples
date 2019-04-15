@@ -2,43 +2,35 @@
 <?php
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
+const BASE_URL = 'https://api.aweber.com/1.0/';
 
-// Create a Guzzle client configured to use OAuth for authentication
-$stack = HandlerStack::create();
-$client = new Client([
-    'base_uri' => 'https://api.aweber.com/1.0/',
-    'handler' => $stack,
-    'auth' => 'oauth'
-]);
+// Create a Guzzle client
+$client = new GuzzleHttp\Client();
 
-// Load credentials into the Oauth client
+// Load credentials
 $credentials = parse_ini_file('credentials.ini');
-$requestMiddleware = new Oauth1([
-    'consumer_key' => $credentials['consumerKey'],
-    'consumer_secret' => $credentials['consumerSecret'],
-    'token' => $credentials['accessToken'],
-    'token_secret' => $credentials['tokenSecret'],
-]);
-$stack->push($requestMiddleware);
+$accessToken = $credentials['accessToken'];
 
 /**
- * Get all the entries for a collection by paginating
+ * Get all of the entries for a collection
  *
- * @param Client $client guzzle client instance
- * @param string $url URL to get
- * @return array
+ * @param Client $client HTTP Client used to make a GET request
+ * @param string $accessToken Access token to pass in as an authorization header
+ * @param string $url Full url to make the request
+ * @return array Every entry in the collection
  */
-function getCollection($client, $url) {
+function getCollection($client, $accessToken, $url) {
     $collection = array();
-    do {
-        $body = $client->get($url)->getBody();
+    while (isset($url)) {
+        $request = $client->get($url,
+            ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+        );
+        $body = $request->getBody();
         $page = json_decode($body, true);
         $collection = array_merge($page['entries'], $collection);
         $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
-    } while (isset($url));
+    }
     return $collection;
 }
 
@@ -59,16 +51,16 @@ function campaignTypeName($campaignType) {
 }
 
 // Get an account to search on
-$accounts = getCollection($client, 'accounts');
+$accounts = getCollection($client, $accessToken, BASE_URL . 'accounts');
 $account = $accounts[0];  // choose the first account
 
 // Get a list to find messages on
-$lists = getCollection($client, $account['lists_collection_link']);
+$lists = getCollection($client, $accessToken, $account['lists_collection_link']);
 $list = $lists[0];  // choose the first list
 
 // Get a followup or broadcast to get links for
 $campaignsUrl = $list['campaigns_collection_link'];
-$campaigns = getCollection($client, $campaignsUrl);
+$campaigns = getCollection($client, $accessToken, $campaignsUrl);
 $campaign = $campaigns[0];  // choose the first campaign
 $type = campaignTypeName($campaign['campaign_type']);
 echo "Clicks for {$type} \"{$campaign['subject']}\" by link:\n";
@@ -78,12 +70,12 @@ $subscriberEmails = array();
 
 // Get all the links included in the message
 $linksUrl = $campaign['links_collection_link'];
-$links = getCollection($client, $linksUrl);
+$links = getCollection($client, $accessToken, $linksUrl);
 foreach ($links as $link) {
     echo "{$link['url']}\n";
     // Get all the clicks for each link
     $clicksUrl = $link['clicks_collection_link'];
-    $clicks = getCollection($client, $clicksUrl);
+    $clicks = getCollection($client, $accessToken, $clicksUrl);
     foreach ($clicks as $click) {
         // Look up the email address of each subscriber who clicked
         $subscriberUrl = $click['subscriber_link'];

@@ -5,7 +5,7 @@ programming language.
 
 ## Pre-requisites
 You need an **AWeber Developer account** as well as an **AWeber Customer
-account** in order to run the examples. The AWeber API uses OAuth 1.0a to
+account** in order to run the examples. The AWeber API uses OAuth 2.0 to
 control and secure access to our system. Each sub-directory contains a script
 that will generate the necessary OAuth credentials but you need access to
 **both** the AWeber Developer and Customer accounts to generate a credential
@@ -24,11 +24,9 @@ You can get a *trial customer* account at <https://www.aweber.com/order.htm>.
 ## Sample scripts
 Once you have an *AWeber Developer account* and access to an *AWeber Customer
 account*, you need to create an **application** in the *AWeber Developer
-account*.  The *application* is simply a name for a pair of OAuth tokens
-along with the access that the tokens require.  Applications are easy to
-create so you can simply create one to run examples with.  Log in to your
-Developer account and go to <https://labs.aweber.com/apps> to create a new
-application.  You will need the **Consumer Key** and **Consumer Secret**
+account*.  Applications are easy to create so you can simply create one to run 
+examples with.  Log in to your Developer account and go to <https://labs.aweber.com/apps> 
+to create a new application.  You will need the **Client ID** and **Client Secret**
 that are displayed for the application to run the examples.
 
 ### Retrieving access tokens
@@ -39,22 +37,21 @@ to run this script *before* you can run the other scripts.  The following
 transcript is an example of running this script:
 
     prompt$ ./get-access-token
-    Enter your consumer key: pT9ObgUOU8E8jbDzSiejjEFC
-    Enter your consumer secret: *******
-    Go to this url: https://auth.aweber.com/1.0/oauth/authorize?oauth_token=...
-    Log in and paste the returned verifier code here: RZx7nX
+    Enter your client ID: pT9ObgUOU8E8jbDzSiejjEFC
+    Enter your secret secret: *******
+    Go to this url: https://auth.aweber.com/oauth2/authorize?oauth_token=...
+    Log in and paste the returned URL here: https://localhost?code=iowejf2...
     Updated credentials.json with your new credentials
 
-You enter the **Consumer Key** and **Consumer Secret** associated with your
-application.  The Consumer Key is shown as `pT9ObgUOU8E8jbDzSiejjEFC` in the
+You enter the **Client ID** and **Client Secret** associated with your
+application.  The Client ID is shown as `pT9ObgUOU8E8jbDzSiejjEFC` in the
 example.  The script will initiate the OAuth handshake and generate a URL to
 complete the connection.  Open the URL in a web browser to connect your
 application to an *AWeber Customer account*.  After logging in you will be
-directed to a page containing a **verifier code** that you will copy and
-paste when running the *get-access-tokens* script.  This is shown as `RZx7nX`
-in the example.  Once this process is completed, the OAuth tokens are stored
-in a file that is read in by the other scripts so that you do not need to
-paste the access tokens into each script.
+directed to a page containing a **authorization code**. you will copy and
+paste the URL when running the *get-access-tokens* script.  Once this process 
+is completed, the OAuth tokens are stored in a file that is read in by the 
+other scripts so that you do not need to paste the access tokens into each script.
 
 ### Running the examples
 Once you have retrieved the access tokens, you can run any of the scripts

@@ -2,30 +2,37 @@
 <?php
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
-const MAX_RETRIES = 6;
+const BASE_URL = 'https://api.aweber.com/1.0/';
 
+// Create a Guzzle client
+$client = new GuzzleHttp\Client();
 
-// Create a Guzzle client configured to use OAuth for authentication
-$stack = HandlerStack::create();
-$client = new Client([
-    'base_uri' => 'https://api.aweber.com/1.0/',
-    'handler' => $stack,
-    'auth' => 'oauth'
-]);
-
-// Load credentials into the Oauth client
+// Load credentials
 $credentials = parse_ini_file('credentials.ini');
-$requestMiddleware = new Oauth1([
-    'consumer_key' => $credentials['consumerKey'],
-    'consumer_secret' => $credentials['consumerSecret'],
-    'token' => $credentials['accessToken'],
-    'token_secret' => $credentials['tokenSecret'],
-]);
-$stack->push($requestMiddleware);
+$accessToken = $credentials['accessToken'];
+
+/**
+ * Get all of the entries for a collection
+ *
+ * @param Client $client HTTP Client used to make a GET request
+ * @param string $accessToken Access token to pass in as an authorization header
+ * @param string $url Full url to make the request
+ * @return array Every entry in the collection
+ */
+function getCollection($client, $accessToken, $url) {
+    $collection = array();
+    while (isset($url)) {
+        $request = $client->get($url,
+            ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+        );
+        $body = $request->getBody();
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    }
+    return $collection;
+}
 
 /**
  * Get a URL, retrying on rate limit errors
@@ -34,11 +41,13 @@ $stack->push($requestMiddleware);
  * @param string $url URL to get
  * @return \Psr\Http\Message\ResponseInterface
  */
-function getWithRetry($client, $url) {
+function getWithRetry($client, $accessToken, $url) {
     foreach (range(1, MAX_RETRIES) as $i) {
         try {
-            $response = $client->get($url);
-        } catch(RequestException $e) {
+            $response = $client->get($url,
+                ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+            );
+        } catch(GuzzleHttp\Exception\RequestException $e) {
             // Only retry on a 403 (forbidden) status code with a rate limit error
             if (!$e->hasResponse() || $e->getResponse()->getStatusCode() != 403) {
                 throw $e;
@@ -62,36 +71,18 @@ function getWithRetry($client, $url) {
     throw $e;
 }
 
-/**
- * Get all the entries for a collection by paginating
- *
- * @param Client $client guzzle client instance
- * @param string $url URL to get
- * @return array
- */
-function getCollection($client, $url) {
-    $collection = array();
-    do {
-        $response = getWithRetry($client, $url);
-        $page = json_decode($response->getBody(), true);
-        $collection = array_merge($page['entries'], $collection);
-        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
-    } while (isset($url));
-    return $collection;
-}
-
 // Get an account to search on
-$accounts = getCollection($client, 'accounts');
+$accounts = getCollection($client, $accessToken, BASE_URL . 'accounts');
 $account = $accounts[0];  // choose the first account
 
 // Get a list to find broadcasts on
-$lists = getCollection($client, $account['lists_collection_link']);
+$lists = getCollection($client, $accessToken, $account['lists_collection_link']);
 $listUrl = $lists[0]['self_link'];  // choose the first list
 
 // Get broadcast totals
 foreach (['draft', 'scheduled', 'sent'] as $status) {
     $totalUrl = "{$listUrl}/broadcasts/total?status={$status}";
-    $totalResponse = getWithRetry($client, $totalUrl);
+    $totalResponse = getWithRetry($client, $accessToken, $totalUrl);
     $totalBody = json_decode($totalResponse->getBody(), true);
     $total = $totalBody['total_size'];
     echo "Total {$status} broadcasts: {$total}\n";
@@ -100,7 +91,7 @@ foreach (['draft', 'scheduled', 'sent'] as $status) {
 // Get the first broadcast in each category
 foreach (['draft', 'scheduled', 'sent'] as $status) {
     $linkKey = "{$status}_broadcasts_link";
-    $broadcasts = getCollection($client, $lists[0][$linkKey]);
+    $broadcasts = getCollection($client, $accessToken, $lists[0][$linkKey]);
     $subject = $broadcasts ? $broadcasts[0]['subject'] : 'N/A';
     echo "First {$status} broadcast subject: ${subject}\n";
 }

@@ -1,39 +1,34 @@
 #!/usr/bin/env php
 <?php
 require 'vendor/autoload.php';
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7;
 
-// Create a Guzzle client configured to use OAuth for authentication
-$stack = HandlerStack::create();
-$client = new Client([
-    'base_uri' => 'https://api.aweber.com/1.0/',
-    'handler' => $stack,
-    'auth' => 'oauth'
-]);
+const TOKEN_URL = 'https://auth.aweber.com/oauth2/token';
+const BASE_URI = 'https://api.aweber.com/1.0/';
 
-// Load credentials into the Oauth client
-$credentials = parse_ini_file('credentials.ini');
-$requestMiddleware = new Oauth1([
-    'consumer_key' => $credentials['consumerKey'],
-    'consumer_secret' => $credentials['consumerSecret'],
-    'token' => $credentials['accessToken'],
-    'token_secret' => $credentials['tokenSecret'],
-]);
-$stack->push($requestMiddleware);
+
+// Load credentials
+$credentials = parse_ini_file('credentials.ini', true);
+$accessToken = $credentials['accessToken'];
+
+$client = new GuzzleHttp\Client();
 
 /**
  * Get all of the entries for a collection
  *
  * @param Client $client HTTP Client used to make a GET request
- * @param string $url Relative path or full url to make the request
+ * @param string $accessToken Access token to pass in as an authorization header
+ * @param string $url Full url to make the request
  * @return array Every entry in the collection
  */
-function getCollection($client, $url) {
+function getCollection($client, $accessToken, $url) {
     $collection = array();
     while (isset($url)) {
-        $body = $client->get($url)->getBody();
+        $request = $client->get($url,
+            ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+        );
+        $body = $request->getBody();
         $page = json_decode($body, true);
         $collection = array_merge($page['entries'], $collection);
         $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
@@ -41,19 +36,22 @@ function getCollection($client, $url) {
     return $collection;
 }
 
-$accounts = getCollection($client, 'accounts');
+$accounts = getCollection($client, $accessToken, BASE_URI .'accounts');
 $listsUrl = $accounts[0]['lists_collection_link'];  // choose the first account
-$listName = 'my list';
+$listName = 'abc';
 $params = array(
     'ws.op' => 'find',
     'name' => $listName
 );
 $findListUrl = $listsUrl . '?' . http_build_query($params);
-$lists = getCollection($client, $findListUrl);
+$lists = getCollection($client, $accessToken, $findListUrl);
 
 if (isset($lists[0]['self_link'])) {
     $tagUrl = $lists[0]['self_link'] . '/tags';  // choose the first list
-    $tags = $client->get($tagUrl)->getBody();
+    $request = $client->get($tagUrl, 
+            ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+    );
+    $tags = $request->getBody();
     print_r(json_decode($tags, true));
 } else {
     echo 'Could not find a list with name: ' . $listName;

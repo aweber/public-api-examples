@@ -2,36 +2,31 @@
 <?php
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
-// Create a Guzzle client configured to use OAuth for authentication
-$stack = HandlerStack::create();
-$client = new Client([
-    'base_uri' => 'https://api.aweber.com/1.0/',
-    'handler' => $stack,
-    'auth' => 'oauth'
-]);
-// Load credentials into the Oauth client
+const BASE_URL = 'https://api.aweber.com/1.0/';
+
+// Create a Guzzle client
+$client = new GuzzleHttp\Client();
+
+// Load credentials
 $credentials = parse_ini_file('credentials.ini');
-$requestMiddleware = new Oauth1([
-    'consumer_key' => $credentials['consumerKey'],
-    'consumer_secret' => $credentials['consumerSecret'],
-    'token' => $credentials['accessToken'],
-    'token_secret' => $credentials['tokenSecret'],
-]);
-$stack->push($requestMiddleware);
+$accessToken = $credentials['accessToken'];
+
 /**
  * Get all of the entries for a collection
  *
  * @param Client $client HTTP Client used to make a GET request
- * @param string $url Relative path or full url to make the request
+ * @param string $accessToken Access token to pass in as an authorization header
+ * @param string $url Full url to make the request
  * @return array Every entry in the collection
  */
-function getCollection($client, $url) {
+function getCollection($client, $accessToken, $url) {
     $collection = array();
     while (isset($url)) {
-        $body = $client->get($url)->getBody();
+        $request = $client->get($url,
+            ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+        );
+        $body = $request->getBody();
         $page = json_decode($body, true);
         $collection = array_merge($page['entries'], $collection);
         $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
@@ -39,12 +34,12 @@ function getCollection($client, $url) {
     return $collection;
 }
 
-// get all the accounts entries
-$accounts = getCollection($client, 'accounts');
+// Get an account to manage custom fields on
+$accounts = getCollection($client, $accessToken, BASE_URL . 'accounts');
 $accountUrl = $accounts[0]['self_link'];
 // get all the list entries for the first account
 $listsUrl = $accounts[0]['lists_collection_link'];
-$lists = getCollection($client, $listsUrl);
+$lists = getCollection($client, $accessToken, $listsUrl);
 // get a sent broadcast
 $params = array(
     'ws.op' => 'find',
@@ -52,13 +47,13 @@ $params = array(
 );
 $campaignsUrl = $lists[0]['campaigns_collection_link'];
 $broadcastsUrl = $campaignsUrl . '?' . http_build_query($params);
-$sentBroadcasts = getCollection($client, $broadcastsUrl);
+$sentBroadcasts = getCollection($client, $accessToken, $broadcastsUrl);
 $broadcast = $sentBroadcasts[0];  // get the first broadcast to retrieve stats
 
 echo "Broadcast id: {$broadcast['id']} Subject: {$broadcast['subject']} Sent At: {$broadcast['sent_at']}\n";
 
 // get the stats for the first broadcast
-$stats = getCollection($client, $broadcast['stats_collection_link']);
+$stats = getCollection($client, $accessToken, $broadcast['stats_collection_link']);
 
 // look at every stat for the first broadcast
 foreach ($stats as $stat) {
