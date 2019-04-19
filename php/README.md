@@ -1,7 +1,5 @@
 # PHP code examples
 
-NOTE: THIS IS A WORK IN PROGRESS. OAuth2 is not publically available. If you try to access resources using this guide it will not work.
-
 This directory contains executable examples of how to use https://api.aweber.com/ from within PHP code.
 
 If you haven't read [CONTRIBUTING], please take a moment to read it now.  It describes the basic configuration and process and this document picks up where it leaves off.
