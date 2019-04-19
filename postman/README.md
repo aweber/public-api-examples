@@ -1,7 +1,5 @@
 # Postman code examples
 
-*NOTE: THIS IS A WORK IN PROGRESS. OAuth2 is not publically available. If you try to access resources using this guide it will not work.*
-
 This directory contains examples for use with Postman
 
 | Script | Link |
@@ -26,10 +24,7 @@ Please follow this tutorial to import this [Postman Collection](https://www.getp
 
 ### For all requests
 
-- consumer_key
-- consumer_secret
 - access_token
-- token_secret
 
 ### To search for a subscriber by email across all lists OR add a new subscriber in Manage Subscriber
 

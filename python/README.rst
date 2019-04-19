@@ -1,9 +1,6 @@
 Python code examples
 ====================
 
-*NOTE: THIS IS A WORK IN PROGRESS. OAuth2 is not publically available. If you
-try to access resources using this guide it will not work.*
-
 This directory contains executable examples of how to use
 https://api.aweber.com from within Python code.  If you haven't read
 `CONTRIBUTING`_, please take a moment to read it now.  It describes the
@@ -64,8 +61,8 @@ directory::
      "token": {
           "access_token": "****",
           "refresh_token": "****"
-          "token_type": "bearer", 
-          "expires_in": 7200, 
+          "token_type": "bearer",
+          "expires_in": 7200,
           "expires_at": 1553268614.907632
      }
    }
