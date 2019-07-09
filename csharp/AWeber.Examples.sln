@@ -1,0 +1,103 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples", "AWeber.Examples\AWeber.Examples.csproj", "{0F030F74-C121-4A29-A9BD-277BDF24B076}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.GetAccessToken", "AWeber.Examples.GetAccessToken\AWeber.Examples.GetAccessToken.csproj", "{675ED625-8925-4785-AB10-89A9BE3A4F5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.CreateScheduleBroadcast", "AWeber.Examples.CreateScheduleBroadcast\AWeber.Examples.CreateScheduleBroadcast.csproj", "{39D583D0-FCA4-4818-A86F-0B39D0130CDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.GetIntegrations", "AWeber.Examples.GetIntegrations\AWeber.Examples.GetIntegrations.csproj", "{7BB81089-0776-4715-B2D9-59535C1C42F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.GetTags", "AWeber.Examples.GetTags\AWeber.Examples.GetTags.csproj", "{8B0B80E2-F317-47B9-BBF2-A80529BC9C21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.GetClicks", "AWeber.Examples.GetClicks\AWeber.Examples.GetClicks.csproj", "{92FE18CA-D2E2-4599-868F-2125D18CED88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.FindSubscribersAcrossLists", "AWeber.Examples.FindSubscribersAcrossLists\AWeber.Examples.FindSubscribersAcrossLists.csproj", "{BE0414F1-CDA3-4B08-8DC5-3E4BC2D9C1FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.ManageSubscriber", "AWeber.Examples.ManageSubscriber\AWeber.Examples.ManageSubscriber.csproj", "{A92D436F-BD8F-4963-95C8-5C47EB7BC706}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.MoveSubscriber", "AWeber.Examples.MoveSubscriber\AWeber.Examples.MoveSubscriber.csproj", "{469C2FFC-D966-49DA-A2A0-641F6F052F91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.GetBroadcastStats", "AWeber.Examples.GetBroadcastStats\AWeber.Examples.GetBroadcastStats.csproj", "{28910EA7-D91D-488B-8C77-F8FE92264A42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.GetBroadcastOpensClicks", "AWeber.Examples.GetBroadcastOpensClicks\AWeber.Examples.GetBroadcastOpensClicks.csproj", "{BD89B462-C0FF-4D5B-9544-E04EBD1FAEBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.GetBroadcastDetails", "AWeber.Examples.GetBroadcastDetails\AWeber.Examples.GetBroadcastDetails.csproj", "{02EEAC91-DE30-4FAE-B4DE-71B0445BA4E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Examples.ManageCustomFields", "AWeber.Examples.ManageCustomFields\AWeber.Examples.ManageCustomFields.csproj", "{7DD3AC59-838E-4854-BA9E-7BAC78BD445C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWeber.Example.GetWebformsDetail", "AWeber.Example.GetWebformsDetail\AWeber.Example.GetWebformsDetail.csproj", "{E916453A-6584-4AE1-BEE9-0515AB9D1CB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F030F74-C121-4A29-A9BD-277BDF24B076}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F030F74-C121-4A29-A9BD-277BDF24B076}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F030F74-C121-4A29-A9BD-277BDF24B076}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F030F74-C121-4A29-A9BD-277BDF24B076}.Release|Any CPU.Build.0 = Release|Any CPU
+		{675ED625-8925-4785-AB10-89A9BE3A4F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675ED625-8925-4785-AB10-89A9BE3A4F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675ED625-8925-4785-AB10-89A9BE3A4F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675ED625-8925-4785-AB10-89A9BE3A4F5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39D583D0-FCA4-4818-A86F-0B39D0130CDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39D583D0-FCA4-4818-A86F-0B39D0130CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39D583D0-FCA4-4818-A86F-0B39D0130CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39D583D0-FCA4-4818-A86F-0B39D0130CDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BB81089-0776-4715-B2D9-59535C1C42F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BB81089-0776-4715-B2D9-59535C1C42F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BB81089-0776-4715-B2D9-59535C1C42F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BB81089-0776-4715-B2D9-59535C1C42F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B0B80E2-F317-47B9-BBF2-A80529BC9C21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B0B80E2-F317-47B9-BBF2-A80529BC9C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B0B80E2-F317-47B9-BBF2-A80529BC9C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B0B80E2-F317-47B9-BBF2-A80529BC9C21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92FE18CA-D2E2-4599-868F-2125D18CED88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92FE18CA-D2E2-4599-868F-2125D18CED88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92FE18CA-D2E2-4599-868F-2125D18CED88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92FE18CA-D2E2-4599-868F-2125D18CED88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE0414F1-CDA3-4B08-8DC5-3E4BC2D9C1FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE0414F1-CDA3-4B08-8DC5-3E4BC2D9C1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE0414F1-CDA3-4B08-8DC5-3E4BC2D9C1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE0414F1-CDA3-4B08-8DC5-3E4BC2D9C1FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A92D436F-BD8F-4963-95C8-5C47EB7BC706}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A92D436F-BD8F-4963-95C8-5C47EB7BC706}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A92D436F-BD8F-4963-95C8-5C47EB7BC706}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A92D436F-BD8F-4963-95C8-5C47EB7BC706}.Release|Any CPU.Build.0 = Release|Any CPU
+		{469C2FFC-D966-49DA-A2A0-641F6F052F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{469C2FFC-D966-49DA-A2A0-641F6F052F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{469C2FFC-D966-49DA-A2A0-641F6F052F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{469C2FFC-D966-49DA-A2A0-641F6F052F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28910EA7-D91D-488B-8C77-F8FE92264A42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28910EA7-D91D-488B-8C77-F8FE92264A42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28910EA7-D91D-488B-8C77-F8FE92264A42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28910EA7-D91D-488B-8C77-F8FE92264A42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD89B462-C0FF-4D5B-9544-E04EBD1FAEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD89B462-C0FF-4D5B-9544-E04EBD1FAEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD89B462-C0FF-4D5B-9544-E04EBD1FAEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD89B462-C0FF-4D5B-9544-E04EBD1FAEBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02EEAC91-DE30-4FAE-B4DE-71B0445BA4E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02EEAC91-DE30-4FAE-B4DE-71B0445BA4E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02EEAC91-DE30-4FAE-B4DE-71B0445BA4E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02EEAC91-DE30-4FAE-B4DE-71B0445BA4E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DD3AC59-838E-4854-BA9E-7BAC78BD445C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DD3AC59-838E-4854-BA9E-7BAC78BD445C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DD3AC59-838E-4854-BA9E-7BAC78BD445C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DD3AC59-838E-4854-BA9E-7BAC78BD445C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E916453A-6584-4AE1-BEE9-0515AB9D1CB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E916453A-6584-4AE1-BEE9-0515AB9D1CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E916453A-6584-4AE1-BEE9-0515AB9D1CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E916453A-6584-4AE1-BEE9-0515AB9D1CB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C683E3E-5179-475B-B7A3-3CCAA07C3D04}
+	EndGlobalSection
+EndGlobal
