@@ -12,6 +12,5 @@ namespace AWeber.Examples
         public string TokenType { get; set; }
         [JsonProperty("expires_in")]
         public int ExpiresIn { get; set; } // Time in seconds when access token will expire
-        
     }
 }

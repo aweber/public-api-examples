@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using Microsoft.Extensions.Configuration;
 
 namespace AWeber.Examples.GetAccessToken
 {
@@ -19,10 +19,14 @@ namespace AWeber.Examples.GetAccessToken
         {
             var httpClient = new HttpClient();
             var console = PhysicalConsole.Singleton;
+            var configurationRoot = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             try
             {
-                ExecuteAsync(httpClient, console).GetAwaiter().GetResult();
+                ExecuteAsync(httpClient, console, configurationRoot).GetAwaiter().GetResult();
             }
             catch (Exception e)
             {
@@ -36,10 +40,10 @@ namespace AWeber.Examples.GetAccessToken
             }
         }
 
-        private static async Task ExecuteAsync(HttpClient httpClient, IConsole console)
+        private static async Task ExecuteAsync(HttpClient httpClient, IConsole console, IConfiguration config)
         {
             var authenticationHelper = new AuthenticationHelper(httpClient, OAuthUri, RedirectUri);
-            var clientId = ConfigurationManager.AppSettings["AWeberClientId"];
+            var clientId = config["AWeberClientId"];
             if (string.IsNullOrWhiteSpace(clientId))
             {
                 clientId = Prompt.GetString("Enter your client id:", promptColor: ConsoleColor.Yellow,
@@ -50,7 +54,7 @@ namespace AWeber.Examples.GetAccessToken
                 console.WriteResponse(ConsoleColor.Green, "Client id retrieved from config.");
             }
 
-            var clientSecret = ConfigurationManager.AppSettings["AWeberClientSecret"];
+            var clientSecret = config["AWeberClientSecret"];
             if (string.IsNullOrWhiteSpace(clientSecret))
             {
                 clientSecret = Prompt.GetPassword("Enter your client secret:", promptColor: ConsoleColor.Yellow,
