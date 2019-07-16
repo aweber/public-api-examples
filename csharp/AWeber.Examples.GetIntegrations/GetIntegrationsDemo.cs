@@ -26,7 +26,7 @@ namespace AWeber.Examples.GetIntegrations
 
             // get all sharing integration uri's for twitter and facebook
             // these are used to create a broadcast that will post to twitter or facebook
-            // see broadcast example here: <NEED TO ADD URL>
+            // see broadcast example here: https://github.com/aweber/public-api-examples/tree/master/csharp/AWeber.Examples.CreateScheduleBroadcast
             var integrations = await GetCollectionAsync<Integration>(accessToken, accounts.First().IntegrationsCollectionLink);
             Console.WriteResponse(ConsoleColor.Green, "Integrations:");
             foreach (var integration in integrations)
