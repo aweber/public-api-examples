@@ -1,0 +1,88 @@
+#!/usr/bin/env php
+<?php
+require "vendor/autoload.php";
+use GuzzleHttp\Client;
+
+const AUTHORIZE_URL = "https://auth.aweber.com/oauth2/authorize";
+const TOKEN_URL = "https://auth.aweber.com/oauth2/token";
+
+// Collect the client ID and set the out of band redirect.
+// Alternatively, for a browser based flow you could ask for the 
+// redirect URI here instead, or enter your own.
+echo "Enter your client ID: ";
+$client_id = rtrim(fgets(STDIN), PHP_EOL);
+$redirect_uri = "urn:ietf:wg:oauth:2.0:oob";
+
+// Generate the code challenge using the OS / cryptographic random function
+$verifier_bytes = random_bytes(64);
+$code_verifier = rtrim(strtr(base64_encode($verifier_bytes), "+/", "-_"), "=");
+
+// Very important, "raw_output" must be set to true or the challenge
+// will not match the verifier.
+$challenge_bytes = hash("sha256", $code_verifier, true);
+$code_challenge = rtrim(strtr(base64_encode($challenge_bytes), "+/", "-_"), "=");
+
+// State token, a uuid is fine here
+$state = uniqid();
+
+// Create a new GuzzleHTTP Client and define scopes
+// If you need different scopes, modify them here.
+$client = new GuzzleHttp\Client();
+
+$scopes = array(
+    "account.read",
+    "list.read",
+    "list.write",
+    "subscriber.read",
+    "subscriber.write",
+    "email.read",
+    "email.write",
+    "subscriber.read-extended"
+);
+
+// Assemble the authorize URL and direct the user to a browser
+// to sign in to their AWeber customer account
+$authorize_query = array(
+    "response_type" => "code",
+    "client_id" => $client_id,
+    "redirect_uri" => $redirect_uri,
+    "scope" => implode(" ",$scopes),
+    "state" => $state,
+    "code_challenge" => $code_challenge,
+    "code_challenge_method" => "S256"
+);
+
+echo "Go to this URL in a browser:\n";
+echo AUTHORIZE_URL . "?" . http_build_query($authorize_query) . "\n";
+
+// Get the authorization code from the redirect to the out of band page
+// If you used your own redirect URI here, the authorization code
+// is in the query string of the redirect URI
+echo "Enter your authorization code: ";
+$authorization_code = rtrim(fgets(STDIN), PHP_EOL);
+
+// Use the authorization code to fetch an access token
+$token_query = array(
+    "grant_type" => "authorization_code",
+    "code" => $authorization_code,
+    "client_id" => $client_id,
+    "code_verifier" => $code_verifier,
+);
+
+$token_url = TOKEN_URL . "?" . http_build_query($token_query);
+$response = $client -> post($token_url);
+
+// Save the credentials to the credentials.ini file
+$body = $response -> getBody();
+$creds = json_decode($body, true);
+$access_token = $creds['access_token'];
+$refresh_token = $creds['refresh_token'];
+
+$fp = fopen('credentials.ini', 'wt');
+fwrite($fp,
+"clientId = {$client_id}
+accessToken = {$access_token}
+refreshToken = {$refresh_token}");
+fclose($fp);
+chmod('credentials.ini', 0600);
+echo "Updated credentials.ini with your new credentials\n";
