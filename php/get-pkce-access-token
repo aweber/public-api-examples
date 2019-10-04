@@ -1,0 +1,125 @@
+#!/usr/bin/env php
+<?php
+require "vendor/autoload.php";
+use GuzzleHttp\Client;
+
+const AUTHORIZE_URL = "https://auth.aweber.com/oauth2/authorize";
+const TOKEN_URL = "https://auth.aweber.com/oauth2/token";
+
+
+echo 'Do you wish to create(c) tokens or refresh(r) tokens? ';
+$createRefresh = rtrim(fgets(STDIN), PHP_EOL);
+
+if (strtoupper($createRefresh) == 'C') {
+    // Collect the client ID and set the out of band redirect.
+    // Alternatively, for a browser based flow you could ask for the 
+    // redirect URI here instead, or enter your own.
+    echo "Enter your client ID: ";
+    $clientId = rtrim(fgets(STDIN), PHP_EOL);
+    $redirectUri = "urn:ietf:wg:oauth:2.0:oob";
+
+    // Generate the code challenge using the OS / cryptographic random function
+    $verifierBytes = random_bytes(64);
+    $codeVerifier = rtrim(strtr(base64_encode($verifierBytes), "+/", "-_"), "=");
+
+    // Very important, "raw_output" must be set to true or the challenge
+    // will not match the verifier.
+    $challengeBytes = hash("sha256", $codeVerifier, true);
+    $codeChallenge = rtrim(strtr(base64_encode($challengeBytes), "+/", "-_"), "=");
+
+    // State token, a uuid is fine here
+    $state = uniqid();
+
+    // Create a new GuzzleHTTP Client and define scopes
+    // If you need different scopes, modify them here.
+    $client = new GuzzleHttp\Client();
+
+    $scopes = array(
+        "account.read",
+        "list.read",
+        "list.write",
+        "subscriber.read",
+        "subscriber.write",
+        "email.read",
+        "email.write",
+        "subscriber.read-extended"
+    );
+
+    // Assemble the authorize URL and direct the user to a browser
+    // to sign in to their AWeber customer account
+    $authorizeQuery = array(
+        "response_type" => "code",
+        "client_id" => $clientId,
+        "redirect_uri" => $redirectUri,
+        "scope" => implode(" ",$scopes),
+        "state" => $state,
+        "code_challenge" => $codeChallenge,
+        "code_challenge_method" => "S256"
+    );
+
+    echo "Go to this URL in a browser:\n";
+    echo AUTHORIZE_URL . "?" . http_build_query($authorizeQuery) . "\n";
+
+    // Get the authorization code from the redirect to the out of band page
+    // If you used your own redirect URI here, the authorization code
+    // is in the query string of the redirect URI
+    echo "Enter your authorization code: ";
+    $authorizationCode = rtrim(fgets(STDIN), PHP_EOL);
+
+    // Use the authorization code to fetch an access token
+    $tokenQuery = array(
+        "grant_type" => "authorization_code",
+        "code" => $authorizationCode,
+        "client_id" => $clientId,
+        "code_verifier" => $codeVerifier,
+    );
+
+    $tokenUrl = TOKEN_URL . "?" . http_build_query($tokenQuery);
+    $response = $client -> post($tokenUrl);
+
+    // Save the credentials to the credentials.ini file
+    $body = $response -> getBody();
+    $creds = json_decode($body, true);
+    $accessToken = $creds['access_token'];
+    $refreshToken = $creds['refresh_token'];
+}
+elseif(strtoupper($createRefresh) == 'R') {
+    $credentials = parse_ini_file('credentials.ini', true);
+    if(sizeof($credentials) == 0 ||
+       !array_key_exists('clientId', $credentials) ||
+       !array_key_exists('accessToken', $credentials) ||
+       !array_key_exists('refreshToken', $credentials)) {
+        echo "No credentials.ini exists, or file is improperly formatted.\n";
+        echo "Please create new credentials.";
+        exit();
+    }
+    $client = new GuzzleHttp\Client();
+    $clientId = $credentials['clientId'];
+    $refreshToken = $credentials['refreshToken'];
+    $response = $client->post(
+        TOKEN_URL, [
+            'form_params' => [
+                'client_id' => $clientId,
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $refreshToken,
+            ]
+        ]
+    );
+    $body = $response->getBody();
+    $newCreds = json_decode($body, true);
+    $accessToken = $newCreds['access_token'];
+    $refreshToken = $newCreds['refresh_token'];
+}
+else {
+    echo 'Invalid entry. You must enter "c" or "r".';
+    exit();
+}
+
+$fp = fopen('credentials.ini', 'wt');
+fwrite($fp,
+"clientId = {$clientId}
+accessToken = {$accessToken}
+refreshToken = {$refreshToken}");
+fclose($fp);
+chmod('credentials.ini', 0600);
+echo "Updated credentials.ini with your new credentials\n";
