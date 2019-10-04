@@ -25,23 +25,24 @@ extra = {
     'token': token
 }
 
+
 def token_updater(token):
     with open('credentials.json', 'wt') as creds_file:
-        json.dump({
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'token': token
-        }, creds_file)
+        json.dump(
+            {
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'token': token
+            }, creds_file)
     print('Token was refreshed.\n'
           'Updated credentials.json with your new credentials')
 
-session = OAuth2Session(
-    client_id=credentials['client_id'],
-    token=credentials['token'],
-    auto_refresh_url=TOKEN_URL,
-    auto_refresh_kwargs=extra,
-    token_updater=token_updater
-)
+
+session = OAuth2Session(client_id=credentials['client_id'],
+                        token=credentials['token'],
+                        auto_refresh_url=TOKEN_URL,
+                        auto_refresh_kwargs=extra,
+                        token_updater=token_updater)
 
 
 def get_collection(url):
@@ -88,7 +89,8 @@ print('Created new custom field at', field_url)
 update_params = {'name': 'Renamed', 'is_subscriber_updateable': True}
 update_response = session.patch(field_url, json=update_params)
 update_response.raise_for_status()
-print('Updated the custom field:', json.dumps(update_response.json(), indent=4))
+print('Updated the custom field:', json.dumps(update_response.json(),
+                                              indent=4))
 
 # delete the custom field
 delete_response = session.delete(field_url)

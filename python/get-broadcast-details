@@ -22,23 +22,24 @@ extra = {
     'token': token
 }
 
+
 def token_updater(token):
     with open('credentials.json', 'wt') as creds_file:
-        json.dump({
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'token': token
-        }, creds_file)
+        json.dump(
+            {
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'token': token
+            }, creds_file)
     print('Token was refreshed.\n'
           'Updated credentials.json with your new credentials')
 
-session = OAuth2Session(
-    client_id=credentials['client_id'],
-    token=credentials['token'],
-    auto_refresh_url=TOKEN_URL,
-    auto_refresh_kwargs=extra,
-    token_updater=token_updater
-)
+
+session = OAuth2Session(client_id=credentials['client_id'],
+                        token=credentials['token'],
+                        auto_refresh_url=TOKEN_URL,
+                        auto_refresh_kwargs=extra,
+                        token_updater=token_updater)
 
 
 def get_with_retry(url):

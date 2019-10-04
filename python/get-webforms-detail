@@ -20,23 +20,24 @@ extra = {
     'token': token
 }
 
+
 def token_updater(token):
     with open('credentials.json', 'wt') as creds_file:
-        json.dump({
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'token': token
-        }, creds_file)
+        json.dump(
+            {
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'token': token
+            }, creds_file)
     print('Token was refreshed.\n'
           'Updated credentials.json with your new credentials')
 
-session = OAuth2Session(
-    client_id=credentials['client_id'],
-    token=credentials['token'],
-    auto_refresh_url=TOKEN_URL,
-    auto_refresh_kwargs=extra,
-    token_updater=token_updater
-)
+
+session = OAuth2Session(client_id=credentials['client_id'],
+                        token=credentials['token'],
+                        auto_refresh_url=TOKEN_URL,
+                        auto_refresh_kwargs=extra,
+                        token_updater=token_updater)
 
 
 def get_collection(url):
@@ -58,11 +59,15 @@ def print_webform_info(data, indent=8):
     print(prefix, 'Type:', data['type'])
     print(prefix, 'HTML source:', data['html_source_link'])
     print(prefix, 'JS source:', data['javascript_source_link'])
-    print(prefix, 'Displays: {} ({} unique)'.format(
-        data['total_displays'], data['total_unique_displays']))
+    print(
+        prefix,
+        'Displays: {} ({} unique)'.format(data['total_displays'],
+                                          data['total_unique_displays']))
     print(prefix, 'Submissions:', data['total_submissions'])
-    print(prefix, 'Conversion: {:.1f}% ({:.1f}% unique)'.format(
-        data['conversion_percentage'], data['unique_conversion_percentage']))
+    print(
+        prefix, 'Conversion: {:.1f}% ({:.1f}% unique)'.format(
+            data['conversion_percentage'],
+            data['unique_conversion_percentage']))
 
 
 # get an account to get webforms for
