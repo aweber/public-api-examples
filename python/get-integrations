@@ -19,23 +19,24 @@ extra = {
     'token': token
 }
 
+
 def token_updater(token):
     with open('credentials.json', 'wt') as creds_file:
-        json.dump({
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'token': token
-        }, creds_file)
+        json.dump(
+            {
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'token': token
+            }, creds_file)
     print('Token was refreshed.\n'
           'Updated credentials.json with your new credentials')
 
-session = OAuth2Session(
-    client_id=credentials['client_id'],
-    token=credentials['token'],
-    auto_refresh_url=TOKEN_URL,
-    auto_refresh_kwargs=extra,
-    token_updater=token_updater
-)
+
+session = OAuth2Session(client_id=credentials['client_id'],
+                        token=credentials['token'],
+                        auto_refresh_url=TOKEN_URL,
+                        auto_refresh_kwargs=extra,
+                        token_updater=token_updater)
 
 
 def get_collection(url):
@@ -57,7 +58,8 @@ accounts = get_collection(account_url)
 
 # get all sharing integration uri's for twitter and facebook
 # these are used to create a broadcast that will post to twitter or facebook
-# see broadcast example here: https://github.com/aweber/public-api-examples/blob/master/python/create-schedule-broadcast
+# see broadcast example here: https://github.com/aweber/public-api-examples/
+# blob/master/python/create-schedule-broadcast
 integrations = get_collection(accounts[0]['integrations_collection_link'])
 print('Integrations:')
 for integration in integrations:
