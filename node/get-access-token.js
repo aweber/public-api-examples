@@ -35,11 +35,12 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
 
     let createRefresh = await question("Do you wish to create(c) tokens or refresh(r) tokens?:");
     let user;
+    let credentials, clientId, clientSecret;
 
     if(createRefresh.toUpperCase() === "C") {
 
-        const clientId = await question("clientId:");
-        const clientSecret = await question("clientSecret:");
+        clientId = await question("clientId:");
+        clientSecret = await question("clientSecret:");
 
         const aWebberAuth = new ClientOAuth2({
             clientId, clientSecret,
@@ -58,7 +59,9 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
 
     } else if(createRefresh.toUpperCase() === "R") {
 
-        let credentials = require("./credentials.json");
+        credentials = require("./credentials.json");
+        clientId = credentials.clientId;
+        clientSecret = credentials.clientSecret;
 
 
         if(!credentials.accessToken ||
@@ -87,8 +90,8 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
     }
 
     await writeFile(Path.join(__dirname,"credentials.json"),JSON.stringify({
-        clientSecret:credentials.clientSecret,
-        clientId:credentials.clientId,
+        clientSecret:clientSecret,
+        clientId:clientId,
         accessToken:user.accessToken,
         refreshToken:user.refreshToken
     }))
