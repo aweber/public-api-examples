@@ -1,0 +1,15 @@
+{
+  "name": "awebber-node-examples",
+  "version": "1.0.0",
+  "description": "This directory contains executable examples of how to use https://api.aweber.com/ from within PHP code.",
+  "main": "get-access-token.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "client-oauth2": "^4.2.5",
+    "node-fetch": "^2.6.0"
+  }
+}
