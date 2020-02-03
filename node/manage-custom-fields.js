@@ -69,12 +69,13 @@ async function getCollection(accessToken, url) {
     // Update the custom field
     const updateResponse = await fetch(fieldUrl, {
         method:"patch",
-        'json' : JSON.stringify({
+        data : JSON.stringify({
             'name' : 'Renamed',
             'is_subscriber_updateable' : true
         }),
         'headers' :{
-            'Authorization' : 'Bearer ' + accessToken
+            'Authorization' : 'Bearer ' + accessToken,
+            "Content-Type":"application/json"
         }
     });
     const updatedField = await updateResponse.json();
@@ -82,7 +83,7 @@ async function getCollection(accessToken, url) {
     console.log(updatedField);
 
     // Delete the custom field
-    fetch(fieldUrl, {
+    await fetch(fieldUrl, {
         'headers' :{
             'Authorization' : 'Bearer ' + accessToken
         } 
