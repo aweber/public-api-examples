@@ -90,17 +90,21 @@ async function getCollection(accessToken,url) {
             'tags'  :['prospect']
         };
         const body = await fetch(subsUrl, {
-            method:"post",
+            method:"POST",
             data:JSON.stringify(data),
             headers:{
 
                 "Access-Control-Expose-Headers": "Location",
+                "Content-type":"application/json",
                 'Authorization' : 'Bearer ' + accessToken
             }
         });
 
         // get the subscriber entry using the Location header from the post request
-        subscriberUrl = body.headers.get('Location');
+        console.log(await body.json())
+        subscriberUrl = body.headers.get('location');
+        console.log(body.headers)
+        console.log("getting",subscriberUrl)
          subscriberResponse = await fetch(subscriberUrl, {
             'headers' :{
                 'Authorization' : 'Bearer ' + accessToken
