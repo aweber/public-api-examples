@@ -1,5 +1,4 @@
 const fetch = require("node-fetch"),
-      credentials = require("./credentials.json"),
       ClientOAuth2 = require("client-oauth2"),
       util = require("util"),
       readline = require("readline"),
@@ -58,6 +57,10 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
         user = await aWebberAuth.code.getToken(authorizationResponse);
 
     } else if(createRefresh.toUpperCase() === "R") {
+
+        let credentials = require("./credentials.json");
+
+
         if(!credentials.accessToken ||
            !credentials.refreshToken ||
            !credentials.clientId ||
