@@ -59,7 +59,7 @@ async function getCollection(accessToken,url) {
     let subscriber;
     let subscriberUrl;
     let subscriberResponse;
-    if (foundSubscribers[0]['self_link']) {
+    if (foundSubscribers[0] && foundSubscribers[0]['self_link']) {
         // update the subscriber if they are on the first list
         const data = {
             'custom_fields' : {
