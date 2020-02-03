@@ -34,7 +34,7 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
 
 (async () => {
 
-    let createRefresh = await question("Do you wish to create(c) tokens or refresh(r) tokens?");
+    let createRefresh = await question("Do you wish to create(c) tokens or refresh(r) tokens?:");
     let user;
 
     if(createRefresh.toUpperCase() === "C") {
