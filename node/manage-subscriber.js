@@ -100,7 +100,7 @@ async function getCollection(accessToken,url) {
         });
 
         // get the subscriber entry using the Location header from the post request
-        subscriberUrl = body.header.get('Location');
+        subscriberUrl = body.headers.get('Location');
          subscriberResponse = await fetch(subscriberUrl, {
             'headers' :{
                 'Authorization' : 'Bearer ' + accessToken
