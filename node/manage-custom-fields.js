@@ -67,7 +67,7 @@ async function getCollection(accessToken, url) {
     console.log (`Create new custom field at ${fieldUrl}`);
 
     // Update the custom field
-    const updateResponse = fetch(fieldUrl, {
+    const updateResponse = await fetch(fieldUrl, {
         method:"patch",
         'json' : JSON.stringify({
             'name' : 'Renamed',
