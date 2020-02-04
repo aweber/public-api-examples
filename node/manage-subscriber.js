@@ -89,13 +89,14 @@ async function getCollection(accessToken,url) {
             },
             'tags'  :['prospect']
         };
+        console.log({data})
+        console.log({subsUrl})
         const body = await fetch(subsUrl, {
             method:"POST",
-            data:JSON.stringify(data),
+            body:JSON.stringify(data),
             headers:{
-
                 "Access-Control-Expose-Headers": "Location",
-                "Content-type":"application/json",
+                "Content-Type":"application/json",
                 'Authorization' : 'Bearer ' + accessToken
             }
         });
