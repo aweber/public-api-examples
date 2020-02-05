@@ -53,6 +53,7 @@ async function getCollection(accessToken,url) {
 
     // get all the list entries for the first account
     const lists = await getCollection(accessToken, accounts[0]['lists_collection_link']);
+    console.log({lists})
 
     // pick the list to move the subscriber from and to
     const originList = lists[0];
@@ -85,13 +86,15 @@ async function getCollection(accessToken,url) {
             method:"POST",
             body:JSON.stringify(data),
             headers:{
-                "authorization":`Bearer ${accessToken}`
+                "authorization":`Bearer ${accessToken}`,
+                "content-type":"application/json"
             }
         });
         console.log(`Moved subscriber ${subscriber['email']} from list: ${originList['name']} to list: ${destinationList['name']}`) ;
     } catch (e) {
 
         // For more info see: https://api.aweber.com/#tag/Troubleshooting
+        console.log(await e.response.json());
         console.log (`Could not move subscriber!\n${e.message}`);
     }
 })();
