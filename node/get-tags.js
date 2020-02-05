@@ -56,7 +56,7 @@ async function getCollection(accessToken, url) {
     const lists = await getCollection(accessToken, findListUrl);
     console.log({lists});
 
-    if (lists[0]['self_link']) {
+    if (lists[0] && lists[0]['self_link']) {
         const tagUrl = lists[0]['self_link'] + '/tags';  // choose the first list
         const request = await request(tagUrl, {
             'headers' : {
