@@ -11,6 +11,10 @@ These examples use npm for dependency management, it comes installed with node.j
 ## Installing requirements
 
 Dependencies are in `package.json`. `npm install`
+build them your self by running:
+`npm install client-oauth2`
+and 
+`npm install node-fetch`
 
 
 ## Running examples
