@@ -8,6 +8,20 @@ const accessToken = credentials['accessToken'];
 
 const qs = require("querystring");
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            console.log("error on",url,options)
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
 /**
  * Get all of the entries for a collection
  *
@@ -21,7 +35,7 @@ async function getCollection(accessToken,url) {
     const collection = [];
     console.log({accessToken})
     while(url) {
-        res = await fetch(url,{
+        res = await request(url,{
             headers:{
                 "Authorization":`Bearer ${accessToken}`
             }
@@ -45,7 +59,7 @@ async function getCollection(accessToken,url) {
     const lists = await getCollection( accessToken, listsUrl);
 
     // find out if a subscriber exists on the first list
-    const email = 'example@example.com';
+    const email = 'zacg@aweber.net';
     let params = {
         'ws.op' : 'find',
         'email' : email
@@ -70,10 +84,11 @@ async function getCollection(accessToken,url) {
             }
         };
         subscriberUrl = foundSubscribers[0]['self_link'];
-         subscriberResponse = await fetch(subscriberUrl, {
+         subscriberResponse = await request(subscriberUrl, {
             method:"patch",
             body:JSON.stringify(data),
             headers:{
+                "Content-Type":"application/json",
                 'Authorization' : 'Bearer ' + accessToken
             },
         });
@@ -91,7 +106,7 @@ async function getCollection(accessToken,url) {
         };
         console.log({data})
         console.log({subsUrl})
-        const body = await fetch(subsUrl, {
+        const body = await request(subsUrl, {
             method:"POST",
             body:JSON.stringify(data),
             headers:{
@@ -106,7 +121,7 @@ async function getCollection(accessToken,url) {
         subscriberUrl = body.headers.get('location');
         console.log(body.headers)
         console.log("getting",subscriberUrl)
-         subscriberResponse = await fetch(subscriberUrl, {
+         subscriberResponse = await request(subscriberUrl, {
             'headers' :{
                 'Authorization' : 'Bearer ' + accessToken
             }
@@ -121,7 +136,7 @@ async function getCollection(accessToken,url) {
         'ws.op' : 'getActivity'
     };
     const activityUrl = subscriberUrl + '?' + qs.stringify(params);
-    const activity = await fetch(activityUrl, {
+    const activity = await request(activityUrl, {
         'headers':{
             'Authorization' : 'Bearer ' + accessToken
         }
@@ -133,7 +148,8 @@ async function getCollection(accessToken,url) {
     // delete the subscriber; this can only be performed on confirmed subscribers
     // or a 405 Method Not Allowed will be returned
     if (subscriber['status'] === 'subscribed') {
-        await fetch (subscriberUrl,{
+        await request (subscriberUrl,{
+            method:"delete",
             'headers' :{
                 'Authorization'  :'Bearer ' + accessToken
             }

@@ -7,12 +7,25 @@ const accessToken = credentials['accessToken'];
 
 const qs = require(`querystring`);
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
 
 async function getCollection(accessToken, url) {
     let res;
     const collection = [];
     while (url) {
-        res = await fetch(url, {
+        res = await request(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -37,7 +50,7 @@ function printWebformInfo(data, indent = 8) {
     console.log(`${prefix} Type: ${data['type']}`);
     console.log(`${prefix} HTML source: ${data['html_source_link']}`);
     console.log(`${prefix} JS source: ${data['javascript_source_link']}`) ;
-    console.log(`${prefix} Displays: ${data['total_displays']} ({$data['total_unique_displays']} unique)`);
+    console.log(`${prefix} Displays: ${data['total_displays']} (${data['total_unique_displays']} unique)`);
     console.log(`${prefix} Submissions: ${data['total_submissions']}`);
     console.log(`${prefix} Conversion: ${data['conversion_percentage'].toFixed(1)}% `);
     console.log(`(${data['unique_conversion_percentage'].toFixed(1)}% unique)`);
@@ -61,9 +74,9 @@ function printWebformInfo(data, indent = 8) {
         process.exit();
     }
 
-    console.log( `Webforms for {$list['name']}:`);
+    console.log( `Webforms for ${list['name']}:`);
     for (let webform of webforms) {
-        console.log (`    {$webform['name']}:`);
+        console.log (`    ${webform['name']}:`);
         printWebformInfo(webform);
     }
 
@@ -76,9 +89,9 @@ function printWebformInfo(data, indent = 8) {
         process.exit();
     }
 
-    console.log(`Webform split tests for {$list['name']}:`) ;
+    console.log(`Webform split tests for ${list['name']}:`) ;
     for (let splitTest of splitTests) {
-        console.log(`    {$splitTest['name']}: {$splitTest['javascript_source_link']}`) ;
+        console.log(`    ${splitTest['name']}: ${splitTest['javascript_source_link']}`) ;
         const components = await getCollection(accessToken, splitTest['components_collection_link']);
         for (let component of components) {
             console.log(`        ${component['name']} (${component['weight']}%)`) ;

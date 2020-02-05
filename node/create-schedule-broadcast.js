@@ -7,12 +7,26 @@ const accessToken = credentials['accessToken'];
 
 const qs = require("querystring");
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
+
 
 async function getCollection(accessToken,url) {
     let res;
     const collection = [];
     while(url) {
-        res = await fetch(url,{
+        res = await request(url,{
             headers:{
                 "Authorization":`Bearer ${accessToken}`
             }
@@ -75,7 +89,7 @@ const data = {
         }
     }
     // make the broadcast on the first list
-    const broadcastResponse = await fetch(`${lists[0]['self_link']}/broadcasts`,{
+    const broadcastResponse = await request(`${lists[0]['self_link']}/broadcasts`,{
         // this may need to be form encoded.
         method:"POST",
         body:qs.stringify(data),
@@ -94,7 +108,7 @@ const data = {
     console.log({scheduledFor});
     console.log("self link",broadcast['self_link']);
 
-    const scheduleResponse = await fetch(`${broadcast['self_link']}/schedule`, {
+    const scheduleResponse = await request(`${broadcast['self_link']}/schedule`, {
         method:"POST",
         body:qs.stringify({'scheduled_for' : scheduledFor}),
         'headers' :{
@@ -104,7 +118,7 @@ const data = {
     });
 
     // retrieve the scheduled broadcast to see the updated scheduled_for
-    const scheduledResponse = await fetch(broadcast['self_link'], {
+    const scheduledResponse = await request(broadcast['self_link'], {
         headers:{
             'Authorization' : 'Bearer ' + accessToken
         }

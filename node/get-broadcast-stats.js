@@ -7,13 +7,28 @@ const accessToken = credentials['accessToken'];
 
 const qs = require("querystring");
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(async function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            console.log("error on",{url,options});
+            console.log(await response.json())
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
 
 async function getCollection(accessToken,url) {
     let res;
     const collection = [];
     console.log({accessToken})
     while(url) {
-        res = await fetch(url,{
+        res = await request(url,{
             headers:{
                 "Authorization":`Bearer ${accessToken}`
             }
@@ -63,18 +78,26 @@ async function getCollection(accessToken,url) {
         // some stats show the top 10 (e.g. webhits_by_link)
         // some stats show total counts (e.g. total_clicks)
         console.log({values})
-        // if (Array.isArray(values) && values.length > 0) {
-        //     console.log `${stat['description']}:`;
-        //     for ($values as $key => $value) {
-        //         echo "\n";  // add an extra newline between each item
-        //         foreach ($value as $itemKey => $itemValue) {
-        //             echo "    {$itemKey}: $itemValue\n";
-        //         }
-        //     }
-        // } elseif (!is_array($values) && isset($values)) {
-        //     echo "\n{$stat['description']}: {$values}\n";
-        // } else {
-        //     echo "\n{$stat['description']}: N/A\n";
-        // }
+
+        let keys = Object.keys(values)
+        if (keys.length > 0) {
+            console.log `${stat['description']}:`;
+
+            let value;
+            for (let key of keys) {
+                value = values[key];
+                console.log("");
+                let itemKeys = Object.keys(value);
+                let itemValue;
+                for (let itemKey of itemKeys) {
+                    itemValue = value[itemKey];
+                    console.log (`    ${itemKey}: ${itemValue}`);
+                }
+            }
+        } else if (values) {
+            console.log (`${stat['description']}: ${values}\n`);
+        } else {
+            console.log(`${stat['description']}: N/A\n`) ;
+        }
     }
 })();

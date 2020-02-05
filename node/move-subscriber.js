@@ -7,6 +7,20 @@ const accessToken = credentials['accessToken'];
 
 const qs = require("querystring");
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
+
 /**
  * Get all of the entries for a collection
  *
@@ -20,7 +34,7 @@ async function getCollection(accessToken,url) {
     const collection = [];
     console.log({accessToken})
     while(url) {
-        res = await fetch(url,{
+        res = await request(url,{
             headers:{
                 "Authorization":`Bearer ${accessToken}`
             }
@@ -67,7 +81,7 @@ async function getCollection(accessToken,url) {
     try {
         // attempt to move the subscriber to the second list
         // $moveResponse = $client->post($subscriber['self_link'], ['json' => $data]);
-        const moveResponse = await fetch(subscriber['self_link'], {
+        const moveResponse = await request(subscriber['self_link'], {
             method:"POST",
             body:JSON.stringify(data),
             headers:{

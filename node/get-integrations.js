@@ -8,6 +8,19 @@ const accessToken = credentials['accessToken'];
 
 const qs = require("querystring");
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
 
 async function getCollection(accessToken, url) {
     let res;
@@ -16,7 +29,7 @@ async function getCollection(accessToken, url) {
         accessToken
     })
     while (url) {
-        res = await fetch(url, {
+        res = await request(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }

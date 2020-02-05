@@ -1,5 +1,4 @@
-const fetch = require("node-fetch"),
-      ClientOAuth2 = require("client-oauth2"),
+const ClientOAuth2 = require("client-oauth2"),
       util = require("util"),
       readline = require("readline"),
       fs = require("fs"),

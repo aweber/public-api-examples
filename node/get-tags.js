@@ -9,11 +9,24 @@ const accessToken = credentials['accessToken'];
 const qs = require("querystring");
 
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
 async function getCollection(accessToken, url) {
     let res;
     const collection = [];
     while (url) {
-        res = await fetch(url, {
+        res = await request(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -45,7 +58,7 @@ async function getCollection(accessToken, url) {
 
     if (lists[0]['self_link']) {
         const tagUrl = lists[0]['self_link'] + '/tags';  // choose the first list
-        const request = await fetch(tagUrl, {
+        const request = await request(tagUrl, {
             'headers' : {
                 'Authorization' : 'Bearer ' + accessToken
             }

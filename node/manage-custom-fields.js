@@ -8,12 +8,25 @@ const accessToken = credentials['accessToken'];
 
 const qs = require(`querystring`);
 
+async function request(url,options) {
+    if (options == null) options = {};
+    if (options.credentials == null) options.credentials = 'same-origin';
+    return fetch(url, options).then(function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response);
+        } else {
+            var error = new Error(response.statusText || response.status);
+            error.response = response;
+            return Promise.reject(error);
+        }
+    });
+}
 
 async function getCollection(accessToken, url) {
     let res;
     const collection = [];
     while (url) {
-        res = await fetch(url, {
+        res = await request(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -43,18 +56,18 @@ async function getCollection(accessToken, url) {
     const customFieldsUrl = list['custom_fields_collection_link'];
     const customFields = await getCollection(accessToken, customFieldsUrl);
     for (let entry of customFields) {
-        if (['Test', 'Renamed'].includes (entry['name'])) {
+        if (['Test2', 'Renamed2'].includes (entry['name'])) {
             console.log (`A custom field called ${entry['name']} already exists on ${list['name']}`);
             process.exit();
         }
     }
 
     // Create a custom field called Test
-    const createResponse = await fetch(customFieldsUrl, {
+    const createResponse = await request(customFieldsUrl, {
         method:"POST",
         'body' :qs.stringify({
             'ws.op' : 'create',
-            'name' : 'Test'
+            'name' : 'Test2'
         }),
         'headers' : {
             "Access-Control-Expose-Headers": "Location",
@@ -67,10 +80,10 @@ async function getCollection(accessToken, url) {
     console.log (`Create new custom field at ${fieldUrl}`);
 
     // Update the custom field
-    const updateResponse = await fetch(fieldUrl, {
+    const updateResponse = await request(fieldUrl, {
         method:"patch",
-        data : JSON.stringify({
-            'name' : 'Renamed',
+        body : JSON.stringify({
+            'name' : 'Renamed2',
             'is_subscriber_updateable' : true
         }),
         'headers' :{
@@ -83,10 +96,13 @@ async function getCollection(accessToken, url) {
     console.log(updatedField);
 
     // Delete the custom field
-    await fetch(fieldUrl, {
+    let fieldUrlResponse = await request(fieldUrl, {
+        method:"delete",
         'headers' :{
             'Authorization' : 'Bearer ' + accessToken
         } 
     });
+    console.log({deleteResponse:await fieldUrlResponse.json()})
+
     console.log ("Deleted the custom field");
 })();
