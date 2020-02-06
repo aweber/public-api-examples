@@ -58,12 +58,12 @@ async function getCollection(accessToken, url) {
 
     if (lists[0] && lists[0]['self_link']) {
         const tagUrl = lists[0]['self_link'] + '/tags';  // choose the first list
-        const request = await request(tagUrl, {
+        const response = await request(tagUrl, {
             'headers' : {
                 'Authorization' : 'Bearer ' + accessToken
             }
         });
-        const tags = await request.json();
+        const tags = await response.json();
         console.log(tags);
     } else {
         console.log('Could not find a list with name: '+ listName);
