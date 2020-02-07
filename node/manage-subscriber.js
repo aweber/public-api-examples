@@ -59,7 +59,7 @@ async function getCollection(accessToken,url) {
     const lists = await getCollection( accessToken, listsUrl);
 
     // find out if a subscriber exists on the first list
-    const email = 'zacg@aweber.net';
+    const email = 'example@example.com';
     let params = {
         'ws.op' : 'find',
         'email' : email
