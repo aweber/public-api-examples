@@ -41,20 +41,20 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
         clientId = await question("clientId:");
         clientSecret = await question("clientSecret:");
 
-        const aWebberAuth = new ClientOAuth2({
+        const aweberAuth = new ClientOAuth2({
             clientId, clientSecret,
             accessTokenUri:TOKEN_URL,
             authorizationUri:`${OAUTH_URL}/authorize`,
             redirectUri:"http://localhost:3000/callback",
             scopes
         });
-        const authorizationUrl = aWebberAuth.code.getUri({state});
+        const authorizationUrl = aweberAuth.code.getUri({state});
         console.log("Go to this url",authorizationUrl);
 
         const authorizationResponse = await question("Login and paste the returned URL here:");
 
         console.log("authorization response",authorizationResponse);
-        user = await aWebberAuth.code.getToken(authorizationResponse);
+        user = await aweberAuth.code.getToken(authorizationResponse);
 
     } else if(createRefresh.toUpperCase() === "R") {
 
@@ -70,7 +70,7 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
             throw new Error("credentials.json is missing fields");
         }
 
-        const aWebberAuth = new ClientOAuth2({
+        const aweberAuth = new ClientOAuth2({
             clientId:credentials.clientId,
             clientSecret:credentials.clientSecret,
             accessTokenUri:TOKEN_URL,
@@ -78,7 +78,7 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
             redirectUri:"http://localhost:3000/callback",
             scopes
         });
-        user = await aWebberAuth.createToken(
+        user = await aweberAuth.createToken(
             credentials.accessToken,
             credentials.refreshToken,
             "bearer"
