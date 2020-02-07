@@ -1,5 +1,5 @@
 {
-  "name": "awebber-node-examples",
+  "name": "aweber-node-examples",
   "version": "1.0.0",
   "description": "This directory contains executable examples of how to use https://api.aweber.com/ from within PHP code.",
   "main": "get-access-token.js",
