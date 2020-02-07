@@ -1,7 +1,7 @@
 {
   "name": "aweber-node-examples",
   "version": "1.0.0",
-  "description": "This directory contains executable examples of how to use https://api.aweber.com/ from within PHP code.",
+  "description": "This directory contains executable examples of how to use https://api.aweber.com/ from within node code.",
   "main": "get-access-token.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
