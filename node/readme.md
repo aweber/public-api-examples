@@ -1,6 +1,6 @@
 # Node.js code examples
 
-This directory contains executable examples of how to use https://api.aweber.com/ from within PHP code.
+This directory contains executable examples of how to use https://api.aweber.com/ from within Node.js code.
 
 If you haven't read [CONTRIBUTING], please take a moment to read it now.  It describes the basic configuration and process and this document picks up where it leaves off.
 
@@ -35,3 +35,5 @@ you can also create this file by running `node get-access-token.js`
 
 ## Refreshing tokens
 If your access token is expired, you can use the `node get-access-token.js` script to refresh it.
+
+[CONTRIBUTING]: https://github.com/aweber/public-api-examples/blob/master/CONTRIBUTING.md
