@@ -12,7 +12,7 @@ conn = Faraday.new(
     Authorization: "Bearer #{credentials['access_token']}"
   }
 ) do |f|
-  f.response :raise_error
+  # f.response :raise_error
 end
 
 def get_collection(conn, url)
@@ -69,15 +69,14 @@ else
   }
   puts "subs_url #{subs_url}"
   puts "json data #{data.to_json}"
-  body = conn.post(subs_url) do |req|
+  body = conn.post(subs_url, JSON.generate(data)) do |req|
     req.headers['Access-Control-Expose-Headers'] = 'Location'
     req.headers['Content-Type'] = 'application/json'
-    req.body = data.to_json
   end
   subscriber_url = body.headers['location']
   subscriber_response = conn.get(subscriber_url)
   subscriber = JSON.parse(subscriber_response.body)
-  puts "Created Subscriber:"
+  puts 'Created Subscriber:'
 end
 puts subscriber
 

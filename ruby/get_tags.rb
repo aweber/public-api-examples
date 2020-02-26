@@ -27,7 +27,7 @@ end
 
 
 # Get an account to search on
-accounts = get_collection(conn, 'accounts')
+accounts = get_collection(conn, "#{BASE_URL}accounts")
 
 
 lists_url = accounts[0]['lists_collection_link']  # choose the first account

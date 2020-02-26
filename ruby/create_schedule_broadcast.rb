@@ -73,7 +73,7 @@ end
 # make the broadcast on the first list
 broadcast_response = conn.post(
   "#{lists[0]['self_link']}/broadcasts",
-  data
+  URI.encode_www_form(data)
 ) do |req|
   req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 end
@@ -87,7 +87,7 @@ scheduled_for = timestamp.utc.iso8601 # must be iso8601 compliant
 puts scheduled_for
 puts "self link #{broadcast['self_link']}"
 
-conn.post("#{broadcast['self_link']}/schedule", scheduled_for: scheduled_for) do |req|
+conn.post("#{broadcast['self_link']}/schedule", URI.encode_www_form({scheduled_for: scheduled_for})) do |req|
   req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 end
 

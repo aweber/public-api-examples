@@ -29,6 +29,16 @@ def get_collection(conn, url)
   collection
 end
 
+def campaign_type_name(campaign_type)
+  if campaign_type == 'b'
+    'broadcast'
+  elsif campaign_type == 'f'
+    'followup'
+  else
+    "'#{campaign_type}' type campaign"
+  end
+end
+
 def get_with_retry(url,credentials)
   Faraday.new(
     headers: {
@@ -58,8 +68,10 @@ puts "Clicks for #{type} #{campaign['subject']} by link:"
 subscriber_emails = {}
 
 links_url = campaign['links_collection_link']
+links = get_collection(conn, links_url)
 
 links.each do |link|
+  puts "LINK: #{link}" 
   puts link['url']
   clicks_url = link['clicks_collection_link']
   clicks = get_collection(conn, clicks_url)
