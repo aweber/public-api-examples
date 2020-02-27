@@ -7,7 +7,7 @@ If you haven't read [CONTRIBUTING], please take a moment to read it now.  It des
 
 ## Quickstart 
 
-These examples use npm for dependency management, it comes installed with node.js.
+These examples use gem for dependency management, it comes installed with ruby.
 
 ## Installing requirements
 
