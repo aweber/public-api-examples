@@ -1,5 +1,4 @@
 require 'oauth2'
-require "erb"
 require "uri"
 require "tty-prompt"
 
