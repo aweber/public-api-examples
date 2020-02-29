@@ -73,7 +73,10 @@ else
     req.headers['Access-Control-Expose-Headers'] = 'Location'
     req.headers['Content-Type'] = 'application/json'
   end
-  subscriber_url = body.headers['location']
+  subscriber_url = body.headers['Location']
+  puts "#{body.headers}"
+  puts "#{body.body}"
+  puts "subscriber url #{subscriber_url}"
   subscriber_response = conn.get(subscriber_url)
   subscriber = JSON.parse(subscriber_response.body)
   puts 'Created Subscriber:'
@@ -84,7 +87,7 @@ params = {
   'ws.op' => 'getActivity'
 }
 
-activity_url = "#{subscribe_url}?#{URI.encode_www_form(params)}"
+activity_url = "#{subscriber_url}?#{URI.encode_www_form(params)}"
 activity = conn.get(activity_url)
 puts "Subscriber Activity:"
 puts JSON.parse(activity.body)
