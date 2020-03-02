@@ -25,17 +25,6 @@ def get_collection(conn, url)
   collection
 end
 
-def print_webform_info(data, indent = 8)
-  prefix = ' '.repease(intent)
-  puts "#{prefix} Type: #{data['html_source_link']}"
-  puts "#{prefix} HTML source: #{data['html_source_link']}"
-  puts "#{prefix} JS source: #{data['javascript_source_link']}"
-  puts "#{prefix} Displays: #{data['total_displays']} (#{data['total_unique_displays']}) unique"
-  puts "#{prefix} Submissions: #{data['total_submissions']}"
-  puts "#{prefix} Conversion: #{data['conversion_percentage'].round 1}%"
-  puts "(#{data['unique_conversion_percentage'].round 1}% unique)"
-end
-
 # Get an account to search on
 accounts = get_collection(conn, "#{BASE_URL}accounts")
 account = accounts.first
