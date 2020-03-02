@@ -26,7 +26,7 @@ def get_collection(conn, url)
 end
 
 def print_webform_info(data, indent = 8)
-  prefix = ' '.repease(intent)
+  prefix = ' ' * indent
   puts "#{prefix} Type: #{data['html_source_link']}"
   puts "#{prefix} HTML source: #{data['html_source_link']}"
   puts "#{prefix} JS source: #{data['javascript_source_link']}"
@@ -40,7 +40,7 @@ end
 accounts = get_collection(conn, "#{BASE_URL}accounts")
 account = accounts.first
 
-lists = get_collection(conn, account['list_collection_link'])
+lists = get_collection(conn, account['lists_collection_link'])
 
 
 if lists.empty?
