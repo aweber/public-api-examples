@@ -21,7 +21,7 @@ gem install tty-prompt
 
 ## Running examples
 
-If you already have a consumer key/secret pair, and acces token/secret pair, you can create a *credentials.json* in this directory:
+If you already have a consumer key/secret pair, and access token/secret pair, you can create a *credentials.json* in this directory:
 
 ```
 {
