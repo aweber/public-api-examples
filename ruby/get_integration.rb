@@ -29,10 +29,6 @@ end
 accounts = get_collection(conn, "#{BASE_URL}accounts")
 account = accounts.first
 
-
-# list_url = account['lists_collection_link']  # choose the first account
-# lists = get_collection(conn, list_url)
-
 integrations = get_collection(conn, account['integrations_collection_link'])
 puts "integrations #{integrations}"
 
