@@ -25,12 +25,10 @@ puts SCOPE
 class Encoder
 
   def self.encode(hash)
-    puts "encoding #{hash}"
     URI.encode_www_form(hash)
   end
 
   def self.decode(string)
-    puts "decoding #{string}"
     URI.decode_www_form(hash)
   end
 end
@@ -66,19 +64,17 @@ if createRefresh.upcase == "C"
     puts code
 
     token = client.auth_code.get_token(
-        code, 
+        code,
         :redirect_uri => REDIRECT_URI
     )
     credentials[:access_token] = token.token
     credentials[:refresh_token] = token.refresh_token
-    # response = token.get('/api/resource', :params => { 'query_foo' => 'bar' })
-    # response.class.name
 else
     credentials = JSON.parse(File.read("./credentials.json"))
 
     client = OAuth2::Client.new(
-        credentials["client_id"], 
-        credentials["client_secret"], 
+        credentials["client_id"],
+        credentials["client_secret"],
         :site => SITE_URL,
         :authorize_url => AUTH_URL,
         :token_url => TOKEN_URL,
