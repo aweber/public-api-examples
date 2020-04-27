@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "e6066ae0-c5d6-412b-a7cd-0de4713f3706",
+		"name": "Get Segments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f6163948-14a0-48e5-ad18-ee37ab1a3c0d",
+						"exec": [
+							"pm.test(\"Successfully get a list Id\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.above(0);",
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get the First List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75df1ad8-7a66-40eb-b8e7-2991fcd51619",
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Segments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "74e7dce1-167a-4675-8431-bdf2223fcd25",
+						"exec": [
+							"pm.test(\"Successfully foound associated segments\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.resource_type_link).to.eql('https://api.aweber.com/1.0/#segment-page-resource');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/segments",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"segments"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessToken",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6450ab20-d1e5-4c86-a7da-ee2006aa0142",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0d0e8432-9dcd-4f24-a050-f94b01ab49d2",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Successfully submitted request\", function(){",
+					"    pm.response.to.have.status(200);",
+					"});",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "a2c03e92-7ae1-47b8-8ba4-0cf752d16162",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		},
+		{
+			"id": "53b6f036-4a1f-49df-b4f9-0ff7c085c961",
+			"key": "access_token",
+			"value": "Ke4asUYWOOyEhoFAXfLMVGW20r03kLEP",
+			"type": "string"
+		}
+	]
+}
