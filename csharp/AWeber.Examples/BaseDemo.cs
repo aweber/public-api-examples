@@ -100,6 +100,7 @@ namespace AWeber.Examples
                 var content = JsonConvert.DeserializeObject<CollectionResponse<T>>(contentString, _serializerSettings);
                 entries.AddRange(content.Entries);
                 hasNextLink = !string.IsNullOrWhiteSpace(content.NextCollectionLink);
+                url = content.NextCollectionLink;
             }
 
             return entries;
