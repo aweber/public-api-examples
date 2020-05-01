@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import json
+
+from requests_oauthlib import OAuth2Session
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+TOKEN_URL = "https://auth.aweber.com/oauth2/token"
+
+client_id = credentials['client_id']
+client_secret = credentials['client_secret']
+token = credentials['token']
+
+extra = {
+    'client_id': client_id,
+    'client_secret': client_secret,
+    'token': token
+}
+
+
+def token_updater(token):
+    with open('credentials.json', 'wt') as creds_file:
+        json.dump(
+            {
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'token': token
+            }, creds_file)
+    print('Token was refreshed.\n'
+          'Updated credentials.json with your new credentials')
+
+
+session = OAuth2Session(client_id=credentials['client_id'],
+                        token=credentials['token'],
+                        auto_refresh_url=TOKEN_URL,
+                        auto_refresh_kwargs=extra,
+                        token_updater=token_updater)
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        response.raise_for_status()
+        body = response.json()
+        collection.extend(body['entries'])
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+    return collection
+
+
+# get all the accounts entries
+account_url = 'https://api.aweber.com/1.0/accounts'
+accounts = get_collection(account_url)
+
+# get all the list entries for the first account
+lists_url = accounts[0]['lists_collection_link']
+lists = get_collection(lists_url)
+
+# get all segments that belong to a list.
+# these will be used to send a broadcast to a specified segment
+# of subscribers
+segments = get_collection(lists[0]['segments_collection_link'])
+print('Segments:')
+for segment in segments:
+    print(segment['name'], segment['self_link'])
