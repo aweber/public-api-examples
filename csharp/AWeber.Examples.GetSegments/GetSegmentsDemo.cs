@@ -31,7 +31,7 @@ namespace AWeber.Examples.GetSegments
             Console.WriteResponse(ConsoleColor.Green, "Segments:");
             foreach (var segment in segments)
             {
-                Console.WriteResponse(ConsoleColor.Green, string.Format("Service Name: {0}, Self Link: {1}", segment.Name, segment.SelfLink));
+                Console.WriteResponse(ConsoleColor.Green, string.Format("Segment Name: {0}, Self Link: {1}", segment.Name, segment.SelfLink));
             }
 
         }
