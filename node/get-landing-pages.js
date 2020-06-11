@@ -41,13 +41,13 @@ async function getCollection(accessToken, url) {
     // Get an account to search on
     const accounts = await getCollection(accessToken, BASE_URL + 'accounts');
 
-    // Get a list to find broadcasts on
+    // Get a list to find landing pages on
     const lists = await getCollection(accessToken, accounts[0]['lists_collection_link']);
 
     // get the landing pages associated with a list
-    const landing_pages = await getCollection(accessToken, lists[0]['landing_pages_collection_link']);
+    const landingPages = await getCollection(accessToken, lists[0]['landing_pages_collection_link']);
     console.log('Landing Pages:')
-    for (let page of landing_pages) {
+    for (let page of landingPages) {
         console.log(`${page['name']} ${page['self_link']}`);
     }
 })();

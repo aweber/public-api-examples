@@ -47,7 +47,7 @@ async function getCollection(accessToken, url) {
     // Get an account to search on
     const accounts = await getCollection(accessToken, BASE_URL + 'accounts');
 
-    // Get a list to find broadcasts on
+    // Get a list to find segments on
     const lists = await getCollection(accessToken, accounts[0]['lists_collection_link']);
 
     // get the segments associated with a list
