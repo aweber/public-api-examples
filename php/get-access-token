@@ -27,7 +27,8 @@ if (strtoupper($createRefresh) == 'C') {
         'subscriber.write',
         'email.read',
         'email.write',
-        'subscriber.read-extended'
+        'subscriber.read-extended',
+        'landing-page.read'
     );
 
     // Create a OAuth2 client configured to use OAuth for authentication

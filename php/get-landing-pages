@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+
+const BASE_URL = 'https://api.aweber.com/1.0/';
+
+// Create a Guzzle client
+$client = new GuzzleHttp\Client();
+
+// Load credentials
+$credentials = parse_ini_file('credentials.ini');
+$accessToken = $credentials['accessToken'];
+
+/**
+ * Get all of the entries for a collection
+ *
+ * @param Client $client HTTP Client used to make a GET request
+ * @param string $accessToken Access token to pass in as an authorization header
+ * @param string $url Full url to make the request
+ * @return array Every entry in the collection
+ */
+function getCollection($client, $accessToken, $url) {
+    $collection = array();
+    while (isset($url)) {
+        $request = $client->get($url,
+            ['headers' => ['Authorization' => 'Bearer ' . $accessToken]]
+        );
+        $body = $request->getBody();
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    }
+    return $collection;
+}
+
+// get all of the accounts
+$accounts = getCollection($client, $accessToken, BASE_URL . 'accounts');
+$accountUrl = $accounts[0]['self_link'];
+
+// get all the list entries for the first account
+$listsUrl = $accounts[0]['lists_collection_link'];
+$lists = getCollection($client, $accessToken, $listsUrl);
+
+// get all landing pages that belong to a list.
+$landingPages = getCollection($client, $accessToken, $lists[0]['landing_pages_collection_link']);
+echo("Landing Pages:\n");
+foreach ($landingPages as $page) {
+    echo "{$page['name']} {$page['self_link']}\n";
+}
