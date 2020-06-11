@@ -12,6 +12,7 @@ This directory contains examples for use with Postman
 | Get Broadcast Stats|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/de9b2e049f19a2d6321e)|
 | Get Clicks|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/04c90d95d82c858e41f0)|
 | Get Integrations|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9bd293676175f45a4e94)|
+| Get Landing Pages|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/8eb104f2f59001f64a7a)
 | Get Segments|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/e36669c2a8de81e9b1de)|
 | Get Tags|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/27e5919703657ae35371)|
 | Get Webforms Detail|[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ca5e3bbb2e9f66d01f3a)|
