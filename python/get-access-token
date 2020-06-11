@@ -28,7 +28,8 @@ redirect_uri = 'https://localhost'
 # Set the scopes you wish to allow
 scope = [
     'account.read', 'list.read', 'list.write', 'subscriber.read',
-    'subscriber.write', 'email.read', 'email.write', 'subscriber.read-extended'
+    'subscriber.write', 'email.read', 'email.write',
+    'subscriber.read-extended', 'landing-page.read'
 ]
 oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
 authorization_url, state = oauth.authorization_url(
