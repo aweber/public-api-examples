@@ -25,7 +25,8 @@ const OAUTH_URL = 'https://auth.aweber.com/oauth2',
           'subscriber.write',
           'email.read',
           'email.write',
-          'subscriber.read-extended'
+          'subscriber.read-extended',
+          'landing-page.read'
       ];
 
 

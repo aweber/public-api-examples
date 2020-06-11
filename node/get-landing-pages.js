@@ -24,9 +24,6 @@ async function request(url, options) {
 async function getCollection(accessToken, url) {
     let res;
     const collection = [];
-    console.log({
-        accessToken
-    })
     while (url) {
         res = await request(url, {
             headers: {
@@ -34,9 +31,6 @@ async function getCollection(accessToken, url) {
             }
         });
         let page = await res.json();
-        console.log("got page", {
-            page
-        })
         collection.push(...page.entries);
         url = page.next_collection_link;
     }
@@ -47,13 +41,13 @@ async function getCollection(accessToken, url) {
     // Get an account to search on
     const accounts = await getCollection(accessToken, BASE_URL + 'accounts');
 
-    // Get a list to find segments on
+    // Get a list to find landing pages on
     const lists = await getCollection(accessToken, accounts[0]['lists_collection_link']);
 
-    // get the segments associated with a list
-    const segments = await getCollection(accessToken, lists[0]['segments_collection_link']);
-    console.log("segments", segments)
-    for (let segment of segments) {
-        console.log(`${segment['name']} ${segment['self_link']}`);
+    // get the landing pages associated with a list
+    const landingPages = await getCollection(accessToken, lists[0]['landing_pages_collection_link']);
+    console.log('Landing Pages:')
+    for (let page of landingPages) {
+        console.log(`${page['name']} ${page['self_link']}`);
     }
 })();
