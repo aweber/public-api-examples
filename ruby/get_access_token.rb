@@ -18,7 +18,8 @@ scopes = [
     'subscriber.write',
     'email.read',
     'email.write',
-    'subscriber.read-extended'
+    'subscriber.read-extended',
+    'landing-page.read'
 ]
 SCOPE = scopes.join(" ")
 puts SCOPE
