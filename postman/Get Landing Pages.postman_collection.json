@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "bb65ff33-0313-42a4-b5bd-5c5d7a86594a",
+		"name": "Get Landing Pages",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4a96a424-d7f3-4db4-86e7-295dc3c54f74",
+						"exec": [
+							"pm.test(\"Check access_token is defined and not empty\", function(){",
+							"   pm.expect(pm.environment.has(\"access_token\")).to.eql(true) && pm.expect(pm.environment.get(\"access_token\")).not.eql('');",
+							"});",
+							"",
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.entries.length).to.be.above(0);",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62a05a92-9b75-4c33-acce-4e61af4134c0",
+						"exec": [
+							"pm.test(\"Successfully get a list Id\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_size).to.be.above(0);",
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get the First List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a93b8989-3698-447f-9fbc-a0cb4d7a5464",
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Landing Pages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2d9d0d14-90b1-48b9-a54b-6bfa298f67d8",
+						"exec": [
+							"pm.test(\"Successfully foound associated landing pages\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.resource_type_link).to.eql('https://api.aweber.com/1.0/#landing_page-page-resource');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists/{{listId}}/landing_pages",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists",
+						"{{listId}}",
+						"landing_pages"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessToken",
+				"value": "{{access_token}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "632db8a2-0734-4d4c-bfe4-e8e024d2b3dc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "daacc145-cdc9-4d12-9d97-2db4f51e2d42",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Successfully submitted request\", function(){",
+					"    pm.response.to.have.status(200);",
+					"});",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "dd97e479-0df2-42e8-aaa3-5eb6da3e941a",
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0",
+			"type": "string"
+		},
+		{
+			"id": "bf6b93d2-9a6d-40a0-9856-981e6b23a0a1",
+			"key": "access_token",
+			"value": "Ke4asUYWOOyEhoFAXfLMVGW20r03kLEP",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
