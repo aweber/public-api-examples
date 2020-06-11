@@ -10,5 +10,6 @@
         public const string EmailRead = "email.read";
         public const string EmailWrite = "email.write";
         public const string SubscriberReadExtended = "subscriber.read-extended";
+        public const string LandingPageRead = "landing-page.read";
     }
 }
