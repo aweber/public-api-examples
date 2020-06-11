@@ -43,8 +43,8 @@ $listsUrl = $accounts[0]['lists_collection_link'];
 $lists = getCollection($client, $accessToken, $listsUrl);
 
 // get all landing pages that belong to a list.
-$landing_pages = getCollection($client, $accessToken, $lists[0]['landing_pages_collection_link']);
-echo("Landing Pagess:\n");
-foreach ($landing_pages as $page) {
+$landingPages = getCollection($client, $accessToken, $lists[0]['landing_pages_collection_link']);
+echo("Landing Pages:\n");
+foreach ($landingPages as $page) {
     echo "{$page['name']} {$page['self_link']}\n";
 }
