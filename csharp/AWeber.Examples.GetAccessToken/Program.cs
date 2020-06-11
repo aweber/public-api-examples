@@ -79,7 +79,8 @@ namespace AWeber.Examples.GetAccessToken
                 Scopes.SubscriberWrite,
                 Scopes.EmailRead,
                 Scopes.EmailWrite,
-                Scopes.SubscriberReadExtended
+                Scopes.SubscriberReadExtended,
+                Scopes.LandingPageRead
             };
 
             // Log in to receive a redirect url

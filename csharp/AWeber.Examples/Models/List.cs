@@ -13,6 +13,7 @@ namespace AWeber.Examples.Models
         [JsonProperty("scheduled_broadcasts_link")] public string ScheduledBroadcastsLink { get; set; }
         [JsonProperty("sent_broadcasts_link")] public string SentBroadcastsLink { get; set; }
         [JsonProperty("resource_type_link")] public string ResourceTypeLink { get; set; }
+        [JsonProperty("landing_pages_collection_link")] public string LandingPagesCollectionLink { get; set; }
         [JsonProperty("segments_collection_link")] public string SegmentsCollectionLink { get; set; }
         [JsonProperty("self_link")] public string SelfLink { get; set; }
         [JsonProperty("subscribers_collection_link")] public string SubscribersCollectionLink { get; set; }
