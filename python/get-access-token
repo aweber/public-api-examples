@@ -11,7 +11,7 @@ try:
 except NameError:
     pass
 
-OAUTH_URL = 'https://auth.aweber.com/oauth2/{}'
+OAUTH_URL = 'https://auth.aweberstage.com/oauth2/{}'
 
 client_id = input('Enter your client id: ')
 client_secret = getpass.getpass('Enter your client secret: ')
