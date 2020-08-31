@@ -91,4 +91,28 @@ $broadcast = $sentBroadcasts[0];
 echo 'Broadcast: ';
 print_r($broadcast);
 
+// A broadcast is the receipt of sending email messages to a list.
+
+// mapping of subscriber url to email address
+$subscriberCache = array();
+
+$links = getCollection($client, $accessToken, $broadcast['links_collection_link']);
+
+echo "\nClicks for broadcast:\n";
+foreach ($links as $link) {
+    echo "{$link['url']}\n";
+    $clicksUrl = $link['clicks_collection_link'];
+    $clicks = getCollection($client, $accessToken, $clicksUrl);
+    foreach ($clicks as $click) {
+        $clickSubLink = $click['subscriber_link'];
+        $cachedSubscriber = $subscriberCache[$clickSubLink];
+        if (isset($cachedSubscriber)) {
+            $email = $cachedSubscriber['email'];
+        } else {
+            $clickSub = getWithRetry($client, $accessToken, $clickSubLink)->getBody();
+            $clickSubBody = json_decode($clickSub, true);
+            $email = $clickSubBody['email'];
+        }
+        echo "    {$click['event_time']}: {$email}\n";
+    }
 }
