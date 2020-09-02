@@ -99,3 +99,27 @@ broadcasts_url = '{}?{}'.format(lists[0]['campaigns_collection_link'], params)
 sent_broadcasts = get_collection(broadcasts_url)
 broadcast = sent_broadcasts[0]
 print('Broadcast: {}'.format(json.dumps(broadcast, indent=4)))
+
+# A broadcast is the receipt of sending email messages to a list.
+
+# mapping of subscriber url to email address
+subscriber_cache = {}
+
+links_url = broadcast['links_collection_link']
+links = get_collection(links_url)
+
+print('Clicks for broadcast:')
+for link in links:
+    print(link['url'])
+    clicks_url = link['clicks_collection_link']
+    for click in get_collection(clicks_url):
+        click_sub_link = click['subscriber_link']
+        email = subscriber_cache.get(click_sub_link)
+        if not email:
+            click_response = get_with_retry(click_sub_link)
+            click_response.raise_for_status()
+            click_body = click_response.json()
+            subscriber_cache[link] = click_body
+        print('    {}: {}'.format(click['event_time'],
+                                  subscriber_cache[click_sub_link]))
+
