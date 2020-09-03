@@ -115,28 +115,10 @@ async function getWithRetry(accessToken, url) {
     console.log(broadcast);
 
     // A broadcast is the receipt of sending email messages to a list.
-    // Messages are each email sent to a subscriber; they
-    // can be opened and clicked by each subscriber multiple times.
-    const messagesUrl = broadcast['messages_collection_link'];
-    const messages = await getCollection(accessToken, messagesUrl);
 
     // mapping of subscriber url to email address
     const subscriberCache = {};
 
-    console.log ("Opens for broadcast:");
-    for (let message of messages) {
-        if (message['total_opens'] > 0) {
-            // You could also paginate the opens collection of each message,
-            // but the open count and the last_opened timestamp are in the message entry
-            // so unless we need exact times of each non-unique open, we use the message entry.
-            const openSubLink = message['subscriber_link'];
-            const openSub = await getWithRetry( accessToken, openSubLink);
-            const openSubBody = await openSub.json();
-            console.log (`     ${message['last_opened']}: ${openSubBody['email']}`);
-            // First time looking up a subscriber; save them for next time
-            subscriberCache[openSubLink] = openSubBody['email'];
-        }
-    }
 
     const links = await getCollection(accessToken, broadcast['links_collection_link']);
 
