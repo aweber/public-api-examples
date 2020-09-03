@@ -101,27 +101,9 @@ broadcast = sent_broadcasts[0]
 print('Broadcast: {}'.format(json.dumps(broadcast, indent=4)))
 
 # A broadcast is the receipt of sending email messages to a list.
-# Messages are each email sent to a subscriber; they
-# can be opened and clicked by each subscriber multiple times.
-messages_url = broadcast['messages_collection_link']
-messages = get_collection(messages_url)
 
 # mapping of subscriber url to email address
 subscriber_cache = {}
-
-print('Opens for broadcast:')
-for message in messages:
-    if message['total_opens'] > 0:
-        # You could also paginate the opens collection of each message,
-        # but the open count and the last_opened timestamp are in the
-        # message entry so unless we need exact times of each non-unique open,
-        # we use the message entry.
-        open_sub_link = message['subscriber_link']
-        open_response = get_with_retry(open_sub_link)
-        open_response.raise_for_status()
-        open_body = open_response.json()
-        print('    {}: {}'.format(message['last_opened'], open_body['email']))
-        subscriber_cache[open_sub_link] = open_body['email']
 
 links_url = broadcast['links_collection_link']
 links = get_collection(links_url)
@@ -140,3 +122,4 @@ for link in links:
             subscriber_cache[link] = click_body
         print('    {}: {}'.format(click['event_time'],
                                   subscriber_cache[click_sub_link]))
+
