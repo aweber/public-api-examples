@@ -39,30 +39,9 @@ namespace AWeber.Examples.GetBroadcastOpensClicks
             var broadcast = sentBroadcasts.First();
             Console.WriteJson("Broadcast", broadcast);
 
-            // A broadcast is the receipt of sending email messages to a list.
-            // Messages are each email sent to a subscriber; they
-            // can be opened and clicked by each subscriber multiple times.
-            var messagesUrl = broadcast.MessagesCollectionLink;
-            var messages = await GetCollectionAsync<Message>(accessToken, messagesUrl);
 
             // mapping of subscriber url to email address
             var subscriberCache = new Dictionary<string, string>();
-
-            Console.WriteResponse(ConsoleColor.Green, "Opens for broadcast:");
-            foreach (var message in messages)
-            {
-                if (message.TotalOpens > 0)
-                {
-                    // You could also paginate the opens collection of each message,
-                    // but the open count and the last_opened timestamp are in the message entry
-                    // so unless we need exact times of each non-unique open, we use the message entry.
-                    var openSubLink = message.SubscriberLink;
-                    var openSub = await RetryAsync(GetAsync<Subscriber>(accessToken, openSubLink));
-                    Console.WriteResponse(ConsoleColor.Green, "\t{0}: {1}", message.LastOpened, openSub.Email);
-                    // First time looking up a subscriber; save them for next time
-                    subscriberCache[openSubLink] = openSub.Email;
-                }
-            }
 
             var links = await GetCollectionAsync<Link>(accessToken, broadcast.LinksCollectionLink);
 

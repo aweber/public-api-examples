@@ -14,7 +14,6 @@ namespace AWeber.Examples.Models
         [JsonProperty("links_collection_link")] public string LinksCollectionLink { get; set; }
         [JsonProperty("message_interval")] public int MessageInterval { get; set; }
         [JsonProperty("message_number")] public int MessageNumber { get; set; }
-        [JsonProperty("messages_collection_link")] public string MessagesCollectionLink { get; set; }
         [JsonProperty("resource_type_link")] public string ResourceTypeLink { get; set; }
         [JsonProperty("scheduled_at")] public DateTime ScheduledAt { get; set; }
         [JsonProperty("self_link")] public string SelfLink { get; set; }
