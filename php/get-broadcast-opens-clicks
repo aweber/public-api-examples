@@ -92,28 +92,9 @@ echo 'Broadcast: ';
 print_r($broadcast);
 
 // A broadcast is the receipt of sending email messages to a list.
-// Messages are each email sent to a subscriber; they
-// can be opened and clicked by each subscriber multiple times.
-$messagesUrl = $broadcast['messages_collection_link'];
-$messages = getCollection($client, $accessToken, $messagesUrl);
 
 // mapping of subscriber url to email address
 $subscriberCache = array();
-
-echo "\nOpens for broadcast:\n";
-foreach ($messages as $message) {
-    if ($message['total_opens'] > 0) {
-        // You could also paginate the opens collection of each message,
-        // but the open count and the last_opened timestamp are in the message entry
-        // so unless we need exact times of each non-unique open, we use the message entry.
-        $openSubLink = $message['subscriber_link'];
-        $openSub = getWithRetry($client, $accessToken, $openSubLink);
-        $openSubBody = json_decode($openSub->getBody(), true);
-        echo "    {$message['last_opened']}: {$openSubBody['email']}\n";
-        // First time looking up a subscriber; save them for next time
-        $subscriberCache[$subLink] = $openSubBody['email'];
-    }
-}
 
 $links = getCollection($client, $accessToken, $broadcast['links_collection_link']);
 
