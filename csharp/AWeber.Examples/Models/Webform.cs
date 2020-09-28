@@ -7,7 +7,7 @@ namespace AWeber.Examples.Models
         [JsonProperty("conversion_percentage")] public double ConversionPercentage { get; set; }
         [JsonProperty("html_source_link")] public string HtmlSourceLink { get; set; }
         [JsonProperty("http_etag")] public string HttpEtag { get; set; }
-        [JsonProperty("id")] public int Id { get; set; }
+        [JsonProperty("id")] public string Id { get; set; }
         [JsonProperty("is_active")] public bool IsActive { get; set; }
         [JsonProperty("javascript_source_link")] public string JavascriptSourceLink { get; set; }
         [JsonProperty("name")] public string Name { get; set; }
