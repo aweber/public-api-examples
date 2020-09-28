@@ -92,7 +92,9 @@ namespace AWeber.Examples
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 var response = await Client.SendAsync(request);
-                var contentString = await response.Content.ReadAsStringAsync();
+                var byteArray = await response.Content.ReadAsByteArrayAsync();
+                var contentString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     ThrowError(response.StatusCode, contentString);
@@ -111,7 +113,9 @@ namespace AWeber.Examples
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var response = await Client.SendAsync(request);
-            var contentString = await response.Content.ReadAsStringAsync();
+            var byteArray = await response.Content.ReadAsByteArrayAsync();
+            var contentString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+
             if (!response.IsSuccessStatusCode)
             {
                 ThrowError(response.StatusCode, contentString);
@@ -127,7 +131,9 @@ namespace AWeber.Examples
             request.Content = new StringContent(JsonConvert.SerializeObject(payload, _serializerSettings), Encoding.UTF8);
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var response = await Client.SendAsync(request);
-            var contentString = await response.Content.ReadAsStringAsync();
+            var byteArray = await response.Content.ReadAsByteArrayAsync();
+            var contentString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+
             if (!response.IsSuccessStatusCode)
             {
                 ThrowError(response.StatusCode, contentString);
@@ -144,7 +150,8 @@ namespace AWeber.Examples
             var response = await Client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var contentString = await response.Content.ReadAsStringAsync();
+                var byteArray = await response.Content.ReadAsByteArrayAsync();
+                var contentString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
                 ThrowError(response.StatusCode, contentString);
             }
             return response.Headers.Location;
@@ -158,7 +165,8 @@ namespace AWeber.Examples
             var response = await Client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var contentString = await response.Content.ReadAsStringAsync();
+                var byteArray = await response.Content.ReadAsByteArrayAsync();
+                var contentString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
                 ThrowError(response.StatusCode, contentString);
             }
             return response.Headers.Location;
@@ -170,7 +178,9 @@ namespace AWeber.Examples
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             request.Content = new FormUrlEncodedContent(payload);
             var response = await Client.SendAsync(request);
-            var contentString = await response.Content.ReadAsStringAsync();
+            var byteArray = await response.Content.ReadAsByteArrayAsync();
+            var contentString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+
             if (!response.IsSuccessStatusCode)
             {
                 ThrowError(response.StatusCode, contentString);
@@ -185,7 +195,8 @@ namespace AWeber.Examples
             var response = await Client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
-                var contentString = await response.Content.ReadAsStringAsync();
+                var byteArray = await response.Content.ReadAsByteArrayAsync();
+                var contentString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
                 ThrowError(response.StatusCode, contentString);
             }
         }
