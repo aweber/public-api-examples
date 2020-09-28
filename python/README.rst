@@ -22,22 +22,12 @@ how packaging works and what each command does.
 
 Python 3 environments
 ~~~~~~~~~~~~~~~~~~~~~
-The code examples are written to run under python 3.  Newer python 2.7
-releases should work as well (see the following section).  Python 3 includes
+The code examples are written to run under python 3.  Python 3 includes
 the `venv`_ module so creating an isolated environment does not require
 additional packages::
 
    prompt$ cd public-api-examples/python
    prompt$ python3 -m venv env
-
-Python 2.7 environments
-~~~~~~~~~~~~~~~~~~~~~~~
-If you are forced to use Python 2.7, then you will need to install
-`virtualenv`_ before you can create an isolated work environment::
-
-   prompt$ cd public-api-examples/python
-   prompt$ python2.7 -m pip install --user virtualenv
-   prompt$ python2.7 -m virtualenv env
 
 Installing requirements
 ~~~~~~~~~~~~~~~~~~~~~~~
