@@ -18,7 +18,7 @@ const qs = require("querystring");
 async function getCollection(accessToken,url) {
     let res;
     const collection = [];
-    console.log({accessToken})
+    console.log({accessToken});
     while(url) {
         res = await fetch(url,{
             headers:{
@@ -26,7 +26,7 @@ async function getCollection(accessToken,url) {
             }
         });
         let page = await res.json();
-        console.log("got page",{page})
+        console.log("got page",{page});
         collection.push(...page.entries);
         url = page.next_collection_link;
     }
@@ -94,12 +94,12 @@ async function getWithRetry(accessToken, url) {
 
     // get all the accounts entries
     const accounts = await getCollection(accessToken, BASE_URL + 'accounts');
-    console.log({accounts})
+    console.log({accounts});
     const accountUrl = accounts[0]['self_link'];
 
     // get all the list entries for the first account
     const listsUrl = accounts[0]['lists_collection_link'];
-    const lists = await getCollection( accessToken, listsUrl);
+    const lists = await getCollection(accessToken, listsUrl);
 
     const broadcastsUrl = lists[0]['sent_broadcasts_link'];
     console.log(broadcastsUrl);
