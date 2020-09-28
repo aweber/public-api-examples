@@ -80,39 +80,22 @@ $listsUrl = $accounts[0]['lists_collection_link'];
 $lists = getCollection($client, $accessToken, $listsUrl);
 
 // get a sent broadcast
-$params = array(
-    'ws.op' => 'find',
-    'campaign_type' => 'b'
-);
-$campaignsUrl = $lists[0]['campaigns_collection_link'];
-$broadcastsUrl = $campaignsUrl . '?' . http_build_query($params);
-$sentBroadcasts = getCollection($client, $accessToken, $broadcastsUrl);
-$broadcast = $sentBroadcasts[0];
+$sentBroadcasts = getCollection($client, $accessToken, $lists[0]['sent_broadcasts_link']);
+$broadcast_response = getWithRetry($client, $accessToken, $sentBroadcasts[0]['self_link']);
+$broadcast = json_decode($broadcast_response->getBody(), true);
 echo 'Broadcast: ';
 print_r($broadcast);
 
-// A broadcast is the receipt of sending email messages to a list.
-
-// mapping of subscriber url to email address
-$subscriberCache = array();
-
-$links = getCollection($client, $accessToken, $broadcast['links_collection_link']);
+echo "\nOpens for broadcast:\n";
+$opensUrl = $broadcast['opens_collection_link'];
+$opens = getCollection($client, $accessToken, $opensUrl);
+foreach ($opens as $open) {
+    echo "    [{$open['event_time']}]: {$open['email']}\n";
+}
 
 echo "\nClicks for broadcast:\n";
-foreach ($links as $link) {
-    echo "{$link['url']}\n";
-    $clicksUrl = $link['clicks_collection_link'];
-    $clicks = getCollection($client, $accessToken, $clicksUrl);
-    foreach ($clicks as $click) {
-        $clickSubLink = $click['subscriber_link'];
-        $cachedSubscriber = $subscriberCache[$clickSubLink];
-        if (isset($cachedSubscriber)) {
-            $email = $cachedSubscriber['email'];
-        } else {
-            $clickSub = getWithRetry($client, $accessToken, $clickSubLink)->getBody();
-            $clickSubBody = json_decode($clickSub, true);
-            $email = $clickSubBody['email'];
-        }
-        echo "    {$click['event_time']}: {$email}\n";
-    }
+$clicksUrl = $broadcast['clicks_collection_link'];
+$clicks = getCollection($client, $accessToken, $clicksUrl);
+foreach ($clicks as $click) {
+    echo "    [{$click['event_time']}]: {$open['email']}\n";
 }

@@ -101,44 +101,25 @@ async function getWithRetry(accessToken, url) {
     const listsUrl = accounts[0]['lists_collection_link'];
     const lists = await getCollection( accessToken, listsUrl);
 
-    // get a sent broadcast
-    const params =  {
-        'ws.op' : 'find',
-        'campaign_type':  'b'
-    }
-    const campaignsUrl = lists[0]['campaigns_collection_link'];
-    const broadcastsUrl = campaignsUrl + '?' + qs.stringify(params);
-    console.log(broadcastsUrl)
-    const sentBroadcasts = await getCollection( accessToken, broadcastsUrl);
-    const broadcast = sentBroadcasts[0];
+    const broadcastsUrl = lists[0]['sent_broadcasts_link'];
+    console.log(broadcastsUrl);
+
+    const sentBroadcasts = await getCollection(accessToken, broadcastsUrl);
+    const broadcastResponse = await getWithRetry(accessToken, sentBroadcasts[0]['self_link']);
+    const broadcast = await broadcastResponse.json();
+
     console.log ('Broadcast: ');
     console.log(broadcast);
 
-    // A broadcast is the receipt of sending email messages to a list.
-
-    // mapping of subscriber url to email address
-    const subscriberCache = {};
-
-
-    const links = await getCollection(accessToken, broadcast['links_collection_link']);
+    console.log ("Opens for broadcast:");
+    const opens = await getCollection(accessToken, broadcast['opens_collection_link']);
+    for (let open of opens) {
+        console.log(`    [${open['event_time']}]: ${open['email']}`);
+    }
 
     console.log ("Clicks for broadcast:");
-    for (let link of links) {
-        console.log( "{link['url']}\n");
-        const clicksUrl = link['clicks_collection_link'];
-        const clicks = await getCollection( accessToken, clicksUrl);
-        for (let click of clicks) {
-            const clickSubLink = click['subscriber_link'];
-            const cachedSubscriber = subscriberCache[clickSubLink];
-            let email;
-            if (cachedSubscriber) {
-                email = cachedSubscriber['email'];
-            } else {
-                const clickSub = await getWithRetry( accessToken, clickSubLink);
-                const clickSubBody = await clickSub.json();
-                email = clickSubBody['email'];
-            }
-            console.log(`    ${click['event_time']}: ${email}`);
-        }
+    const clicks = await getCollection(accessToken, broadcast['clicks_collection_link']);
+    for (let click of clicks) {
+        console.log(`    [${click['event_time']}]: ${click['email']}`);
     }
 })();
