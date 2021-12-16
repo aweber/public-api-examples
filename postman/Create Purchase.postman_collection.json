@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "92dba3c6-7dfb-4700-82c8-6e8ad9fdd939",
+		"name": "Create Purchase",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successfully get an account Id\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.globals.set(\"accountId\",jsonData.entries[0].id ) ;   ",
+							"});",
+							"",
+							"pm.test(\"Successfully submitted request\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successfully get a  random list\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Successfully retrieved the first list Id on the account\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.globals.set(\"listId\",jsonData.entries[0].id );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/accounts/{{accountId}}/lists",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"{{accountId}}",
+						"lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Purchase",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successfully created a purchase\", function(){",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"Activity link is sent as Location header\", function(){",
+							"    var link = pm.response.headers.get(\"Location\");",
+							"    pm.globals.set(\"activity_link\", link);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"event_time\": \"2021-12-16T17:04:34Z\",\n    \"currency\": \"USD\",\n    \"event_note\": \"event identifier for purchase\",\n    \"product_name\": \"product purchased\",\n    \"value\": 1.0,\n    \"vendor\": \"my-vendor\",\n    \"url\": \"https://example.com/link/to/product\",\n    \"ad_tracking\": \"short note\",\n    \"custom_fields\": {},\n    \"email\": \"updateme@example.com\",\n    \"ip_address\": \"204.194.222.13\",\n    \"misc_notes\": \"some notes about the subscriber\",\n    \"name\": \"Joe Public\",\n    \"tags\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{listURL}}/purchases",
+					"host": [
+						"{{listURL}}"
+					],
+					"path": [
+						"purchases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch subscriber activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Purchase is present\", function() {",
+							"    const jsonData = pm.response.json();",
+							"    const matched = jsonData.entries.filter((elm) => (elm.event_time === \"2021-12-16T12:04:34-05:00\"));",
+							"    pm.expect(matched.length).to.be.equal(1)",
+							"    // This test may fail the first time that it is run since the",
+							"    // purchase is added asynchronously",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{activity_link}}",
+					"host": [
+						"{{activity_link}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "tokenType",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "accessToken",
+				"value": "{{accessToken}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://api.aweber.com/1.0"
+		}
+	]
+}
