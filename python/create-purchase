@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+import json
+import sys
+import time
+
+import arrow
+import requests_oauthlib
+
+try:
+    from urllib.parse import urlencode, urlsplit, urlunsplit
+except ImportError:
+    from urllib import urlencode, urlsplit, urlunsplit
+
+TOKEN_URL = "https://auth.aweber.com/oauth2/token"
+EMAIL = 'example@example.com'  # change this to a real email address
+IP_ADDRESS = '127.0.0.1'  # change this to a PUBLIC IP address
+
+with open('credentials.json', 'rt') as f:
+    credentials = json.load(f)
+
+client_id = credentials['client_id']
+client_secret = credentials['client_secret']
+token = credentials['token']
+
+extra = {
+    'client_id': client_id,
+    'client_secret': client_secret,
+    'token': token
+}
+
+
+def token_updater(token):
+    with open('credentials.json', 'wt') as creds_file:
+        json.dump({
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'token': token
+        }, creds_file)
+    print('Token was refreshed.\n'
+          'Updated credentials.json with your new credentials')
+
+
+session = requests_oauthlib.OAuth2Session(
+    client_id=credentials['client_id'],
+    token=credentials['token'],
+    auto_refresh_url=TOKEN_URL,
+    auto_refresh_kwargs=extra,
+    token_updater=token_updater)
+
+
+def handle_api_failure(response):
+    print('ERROR:', response.request.method, response.request.url, 'failed:',
+          response.status_code, response.reason)
+    json.dump(response.json(), sys.stdout, indent=2)
+    print('')
+    sys.exit(-1)
+
+
+def get_collection(url):
+    collection = []
+    while url:
+        response = session.get(url)
+        if not response.ok:
+            handle_api_failure(response)
+        body = response.json()
+        collection.extend(body.pop('entries'))
+
+        # if there is a next link, there are more pages to retrieve
+        next_link = body.get('next_collection_link')
+        url = next_link if next_link else None
+        params = {}
+    return collection
+
+
+# use the first list of the first account when adding a purchase
+accounts = get_collection('https://api.aweber.com/1.0/accounts')
+lists = get_collection(accounts[0]['lists_collection_link'])
+
+# add a purchase
+event_time = arrow.get()
+print('Creating purchase for', EMAIL, 'on', lists[0]['id'],
+      'with event time of', event_time)
+response = session.post(
+    lists[0]['self_link'] + '/purchases',
+    json={
+        'event_time': event_time.isoformat(),
+        'currency': 'USD',
+        'event_note': 'event identifier for purchase',
+        'product_name': 'product purchased',
+        'value': 1.0,
+        'vendor': 'my-vendor',
+        'url': 'https://example.com/link/to/product',
+        'ad_tracking': 'short note',
+        'custom_fields': {},
+        'email': EMAIL,
+        'ip_address': IP_ADDRESS,
+        'misc_notes': 'some notes about the subscriber',
+        'name': 'Joe Public',
+        'tags': ['purchase'],
+    })
+if not response.ok:
+    handle_api_failure(response)
+
+activity_link = response.headers['Location']
+
+# retrieve the subscriber's activity until we see the tracked event
+# NOTE that the event time has the sub-second value clipped off
+event_time = event_time.replace(microsecond=0)
+print('retrieving subscriber activity looking for tracked event @', event_time)
+for _ in range(10):
+    matched = False
+    body = get_collection(activity_link)
+    for activity in body:
+        if (activity['type'] == 'tracked_event'
+                and arrow.get(activity['event_time']) == event_time):
+            print('MATCHED', activity['type'], activity['id'],
+                  activity['event_time'])
+            matched = True
+        else:
+            print('ignored', activity['type'], activity['id'],
+                  activity['event_time'])
+    if matched:
+        break
+    else:
+        print('tracked event not found yet, sleeping')
+        time.sleep(1.0)

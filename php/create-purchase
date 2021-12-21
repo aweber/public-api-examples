@@ -1,0 +1,89 @@
+#!/usr/bin/env php
+<?php
+require 'vendor/autoload.php';
+use GuzzleHttp\Client;
+
+# Modify the following values or adding a purchase will fail
+const EMAIL = 'example@example.com';
+const IP_ADDRESS = '127.0.0.1';
+
+/**
+ * Get all of the entries for a collection
+ *
+ * @param Client $client HTTP Client used to make a GET request
+ * @param string $accessToken Access token to pass in as an authorization header
+ * @param string $url Full url to make the request
+ * @return array Every entry in the collection
+ */
+function getCollection($client, $accessToken, $url) {
+    $collection = array();
+    while (isset($url)) {
+        $request = $client->get($url,
+            ['headers' => ['Authorization' => "Bearer $accessToken"]]
+        );
+        $body = $request->getBody();
+        $page = json_decode($body, true);
+        $collection = array_merge($page['entries'], $collection);
+        $url = isset($page['next_collection_link']) ? $page['next_collection_link'] : null;
+    }
+    return $collection;
+}
+
+$client = new GuzzleHttp\Client();
+$credentials = parse_ini_file('credentials.ini');
+$accessToken = $credentials['accessToken'];
+$accounts = getCollection($client, $accessToken, 'https://api.aweber.com/1.0/accounts');
+$lists = getCollection($client, $accessToken, $accounts[0]['lists_collection_link']);
+
+$purchaseTime = new \DateTimeImmutable();
+$formattedTime = $purchaseTime->format('Y-m-d\TH:i:s.vO');
+echo 'Creating event with event time of ', $formattedTime, PHP_EOL;
+try {
+    $purchaseResponse = $client->post($lists[0]['self_link'] . '/purchases', [
+        'json' => [
+            'event_time' => $formattedTime,
+            'currency' => 'USD',
+            'event_note' => 'event identifier for purchase',
+            'product_name' => 'product purchased',
+            'value' => 1.0,
+            'vendor' => 'my-vendor',
+            'url' => 'https://example.com/link/to/broadcast',
+            'ad_tracking' => 'short note',
+            'custom_fields' => [],
+            'email' => EMAIL,
+            'ip_address' => IP_ADDRESS,
+            'misc_notes' => 'some notes about the subscriber',
+            'name' => 'Jane Doe',
+            'tags' => ['purchase']
+        ],
+        'headers' => ['Authorization' => "Bearer $accessToken"]
+    ]);
+} catch (GuzzleHttp\Exception\RequestException $e) {
+    if ($e->hasResponse()) {
+        print_r(json_decode($e->getResponse()->getBody()));
+    }
+    die("Failed to create purchase\n");
+}
+
+$subscriberActivityLink = $purchaseResponse->getHeader('Location')[0];
+
+$foundMatch = false;
+while (!$foundMatch) {
+    echo 'Retrieving subscriber activity', PHP_EOL;
+    $activityResponse = $client->get($subscriberActivityLink,
+        ['headers' => ['Authorization' => "Bearer $accessToken"]]);
+    $body = json_decode($activityResponse->getBody(), true);
+    foreach ($body['entries'] as $activity) {
+        $eventTime = new \DateTimeImmutable($activity['event_time']);
+        // compare timestamps since tracked events have subsecond values truncated
+        if ($eventTime->getTimestamp() == $purchaseTime->getTimestamp()) {
+            echo 'New event found!', PHP_EOL;
+            print_r($activity);
+            $foundMatch = true;
+        }
+    }
+    if (!$foundMatch) {
+        echo 'Event not found, sleeping before checking again.', PHP_EOL;
+        sleep(1);
+    }
+}
