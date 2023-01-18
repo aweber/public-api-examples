@@ -32,7 +32,7 @@ GEM
       rack (>= 1.2, < 3)
     pastel (0.8.0)
       tty-color (~> 0.5)
-    rack (2.2.3)
+    rack (2.2.6.2)
     ruby2_keywords (0.0.5)
     tty-color (0.6.0)
     tty-cursor (0.7.1)
